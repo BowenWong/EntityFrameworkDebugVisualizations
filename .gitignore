@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/packages
+*.suo
+/EFDebugExtensions/obj/Debug
+/EFDebugExtensions/bin/Debug
+/EFDebugExtensions.UnitTests/obj/Debug
