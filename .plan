@@ -2,19 +2,25 @@ TODOs
 --------------------
 Create graph of DbContext entries
 	Entities
-		[x] Properties (names, old and new values)
-		[x] State
-		[x] EntityType
-		HashCode
-		[x] Key fields as string (IsTemporary)
-		How do I display removed entities?
+		Fix for deleted entities (see #warnings in GraphBuilder)
+		Fix lies for added entities (see #warning in GraphBuilder)
 
 	Relations
-		RelationName
+		State?
 		Type (Multiplicity? Required?)
-		Both ends of the relation (fromEntity, toEntity)
-		How do I display removed relations? 
-		How do I distinguish between unchanged and added?
+		Fix for null references (see #warning in GraphBuilder) => display twice, as relation AND as property?
+
+Improve visualization
+	Nicer EntityVertex header (EntityType, State, KeyInfo)
+	Display EntityVertex properties (Name, Original- and CurrentValue)
+	Distinguish EntityVertex states by color
+	How do I display removed relations? Can I?
+	How do I distinguish between unchanged and added?
+	How do I (nicely) show collection relations (and distinguish them from scalar relations)?
+
+Add test cases
+	indirect circular references
+	assert expectations about the produced graph
 
 Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 

@@ -17,17 +17,19 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public static List<EntityVertex> GetEntityVertices(this IObjectContextAdapter context)
         {
-            return context.ObjectContext
+            var existingVertices = new HashSet<EntityVertex>();
+            var stateEntries = context.ObjectContext
                     .ObjectStateManager
                     .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
-                    .Where(entry => entry.State != EntityState.Detached)
-                    .Select(entry => CreateEntityVertex(context, entry))
-                    .Where(e => e != null)
-                    .OrderBy(e => e.State).ThenBy(e => e.TypeName)
-                    .ToList();
+                    .Where(entry => entry.State != EntityState.Detached);
+
+            foreach (var entry in stateEntries)
+                CreateEntityVertex(context, entry, existingVertices);
+
+            return existingVertices.ToList();
         }
 
-        private static EntityVertex CreateEntityVertex(IObjectContextAdapter context, ObjectStateEntry entry)
+        private static EntityVertex CreateEntityVertex(IObjectContextAdapter context, ObjectStateEntry entry, HashSet<EntityVertex> existingVertices)
         {
 #warning what about entry.IsRelationship? are those deleted references? Einträge in Koppeltabellen?
             if (entry.IsRelationship)
@@ -36,12 +38,16 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             var entityType = entry.Entity.GetType();
             var entityVertex = new EntityVertex
             {
+                OriginalHashCode = entry.Entity.GetHashCode(),
                 State = entry.State,
                 FullTypeName = entityType.FullName,
                 TypeName = entityType.Name,
                 HasTemporaryKey = entry.EntityKey.IsTemporary,
                 EntitySetName = entry.EntitySet.Name,
             };
+
+            if (!existingVertices.Add(entityVertex))
+                return existingVertices.Single(v => v == entityVertex);
 
             var fieldMetaData = (entry.State != EntityState.Deleted ? entry.CurrentValues : (CurrentValueRecord) entry.OriginalValues).DataRecordInfo.FieldMetadata;
             for (int index = 0; index < fieldMetaData.Count; index++)
@@ -56,22 +62,29 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     IsKey = !entry.EntityKey.IsTemporary && entry.EntityKey.EntityKeyValues.Any(key => key.Key == entry.CurrentValues.DataRecordInfo.FieldMetadata[index].FieldType.Name)
                 });
             }
+            entityVertex.Properties = entityVertex.Properties.OrderBy(p => p.Name).ToList();
 
-#warning navigation properties should be separated from other properties as I need to construct edges from them
+#warning this contains information about the relations: entry.RelationshipManager.GetAllRelatedEnds() => do I have something like original and current? what about the state of the relation (added, removed etc.)?
             foreach (var navigationProperty in context.GetNavigationPropertiesForType(entityType))
             {
-#warning this contains information about the relations => do I have something like original and current? what about the name? Rels = entry.RelationshipManager.GetAllRelatedEnds()
-                entityVertex.Properties.Add(new EntityProperty
+                var currentValue = entityType.GetProperty(navigationProperty.Name).GetValue(entry.Entity);
+                if (currentValue == null)
                 {
-                    Name = navigationProperty.Name,
-                    IsRelation = true,
-#warning this needs to find or construct the destination EntityVertex
-                    CurrentValue = entityType.GetProperty(navigationProperty.Name)
-#warning can I say something about the state of the relation (added, removed etc.)?
-                });
+#warning what to do about 'empty' relations? how about adding them to properties as well (with target.KeyDescription as values)?
+                    continue;
+                }
+
+                var entitySetName = context.GetEntitySetName(currentValue.GetType());
+                var key = context.ObjectContext.CreateEntityKey(entitySetName, currentValue);
+                var targetEntity = context.ObjectContext
+                        .ObjectStateManager
+                        .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
+                        .SingleOrDefault(e => e.EntityKey == key);
+
+                EntityVertex target = CreateEntityVertex(context, targetEntity, existingVertices);
+                entityVertex.AddRelation(navigationProperty.Name, target);
             }
 
-            entityVertex.Properties = entityVertex.Properties.OrderBy(p => p.Name).ToList();
             return entityVertex;
         }
 
@@ -81,6 +94,24 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     .GetItems<EntityType>(DataSpace.OSpace)
                     .Single(p => p.FullName == entityType.FullName)
                     .NavigationProperties;
+        }
+
+        private static string GetEntitySetName(this IObjectContextAdapter context, Type entityType)
+        {
+            Type type = entityType;
+            EntitySetBase set = null;
+
+            while (set == null && type != null)
+            {
+                set = context.ObjectContext.MetadataWorkspace
+                        .GetEntityContainer(context.ObjectContext.DefaultContainerName, DataSpace.CSpace)
+                        .EntitySets
+                        .FirstOrDefault(item => item.ElementType.Name.Equals(type.Name));
+
+                type = type.BaseType;
+            }
+
+            return set != null ? set.Name : null;
         }
     }
 }

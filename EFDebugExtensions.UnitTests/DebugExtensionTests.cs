@@ -15,8 +15,8 @@ namespace EntityFramework.Debug.UnitTests
 
             using (var context = new TestDbContext())
             {
-                EntityWithChild child = context.EntitiesWithChild.Add(new EntityWithChild());
                 parent = context.EntitiesWithChild.Add(new EntityWithChild());
+                var child = context.EntitiesWithChild.Add(new EntityWithChild());
                 parent.Child = child;
                 context.SaveChanges();
             }
@@ -24,7 +24,6 @@ namespace EntityFramework.Debug.UnitTests
             using (var context = new TestDbContext())
             {
                 context.EntitiesWithChild.Attach(parent);
-                parent.Child = null;
 
                 ShowVisualizer(context);
 

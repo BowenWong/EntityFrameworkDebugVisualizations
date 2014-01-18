@@ -16,7 +16,7 @@ namespace EntityFramework.Debug.DebugVisualization
                 return;
 
             var vertices = dbContext.GetEntityVertices();
-            var json = JsonConvert.SerializeObject(vertices);
+            var json = JsonConvert.SerializeObject(vertices, new JsonSerializerSettings{PreserveReferencesHandling = PreserveReferencesHandling.All});
 
             var formatter = new BinaryFormatter();
             formatter.Serialize(outgoingData, json);

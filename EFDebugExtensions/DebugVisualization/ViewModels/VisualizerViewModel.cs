@@ -14,14 +14,16 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
             set { _graph = value; OnPropertyChanged(); }
         }
 
-        public VisualizerViewModel(IEnumerable<EntityVertex> vertices)
+        public VisualizerViewModel(List<EntityVertex> vertices)
         {
             Graph = new EntityGraph();
 
             foreach (var vertex in vertices)
                 Graph.AddVertex(vertex);
 
-#warning TODO: relations / edges
+            foreach (var vertex in vertices)
+                foreach (var relation in vertex.Relations)
+                    Graph.AddEdge(relation);
         }
 
         #region INotifyPropertyChanged

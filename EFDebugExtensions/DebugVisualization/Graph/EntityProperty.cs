@@ -10,7 +10,6 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         public object CurrentValue { get; set; }
 
         public bool IsKey { get; set; }
-        public bool IsRelation { get; set; }
 
         public string Description
         {

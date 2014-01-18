@@ -33,7 +33,7 @@
             <Style.Resources>
                 <ToolTip x:Key="ToolTipContent">
                     <StackPanel>
-                        <TextBlock FontWeight="Bold" Text="Edge.Name"/>
+                        <TextBlock FontWeight="Bold" Text="{Binding Name}"/>
                     </StackPanel>
                 </ToolTip>
             </Style.Resources>
