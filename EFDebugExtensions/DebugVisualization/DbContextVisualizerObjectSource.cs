@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using EntityFramework.Debug.DebugVisualization.Graph;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 using Newtonsoft.Json;
 

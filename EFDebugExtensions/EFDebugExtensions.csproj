@@ -83,6 +83,7 @@
     <Compile Include="DebugVisualization\Graph\EntityGraphLayout.cs" />
     <Compile Include="DebugVisualization\Graph\EntityProperty.cs" />
     <Compile Include="DebugVisualization\Graph\EntityVertex.cs" />
+    <Compile Include="DebugVisualization\Graph\GraphBuilder.cs" />
     <Compile Include="DebugVisualization\Graph\RelationEdge.cs" />
     <Compile Include="DebugVisualization\ViewModels\VisualizerViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

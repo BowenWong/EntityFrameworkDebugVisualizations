@@ -2,11 +2,11 @@ TODOs
 --------------------
 Create graph of DbContext entries
 	Entities
-		Properties (names, old and new values)
-		State
-		EntityType
+		[x] Properties (names, old and new values)
+		[x] State
+		[x] EntityType
 		HashCode
-		Key fields as string (IsTemporary)
+		[x] Key fields as string (IsTemporary)
 		How do I display removed entities?
 
 	Relations
@@ -20,7 +20,7 @@ Serialize graph for DbContextDebuggerVisualizer (in DbContextVisualizerObjectSou
 
 Draw result as graph using GraphSharp
 
-Dump graph as text for DebugExtensions
+Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 
 Add boilerplate for ObjectContext
 
