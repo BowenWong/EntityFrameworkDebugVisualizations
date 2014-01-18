@@ -29,7 +29,7 @@ namespace EntityFramework.Debug.DebugVisualization
                 if (stream == null)
                     throw new Exception("Debug window resource not found!");
 
-                window = (Window)XamlReader.Load(stream);//, parserContext);
+                window = (Window)XamlReader.Load(stream);
             }
 
             window.DataContext = new VisualizerViewModel();

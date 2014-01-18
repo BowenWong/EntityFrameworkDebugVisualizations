@@ -1,28 +1,41 @@
-Add debug visualizer
+TODOs
+--------------------
+Create graph of DbContext entries
+	Entities
+		Properties (names, old and new values)
+		State
+		EntityType
+		HashCode
+		Key fields as string (IsTemporary)
+		How do I display removed entities?
+
+	Relations
+		RelationName
+		Type (Multiplicity? Required?)
+		Both ends of the relation (fromEntity, toEntity)
+		How do I display removed relations? 
+		How do I distinguish between unchanged and added?
+
+Serialize graph for DbContextDebuggerVisualizer (in DbContextVisualizerObjectSource)
+
+Draw result as graph using GraphSharp
+
+Dump graph as text for DebugExtensions
+
+References
+--------------------
+WPF Debug visualizer
 	http://www.codeproject.com/Articles/73236/Writing-a-Debugger-Visualizer-in-WPF-Part-1
 	http://www.codeproject.com/Articles/85731/Writing-a-Debugger-Visualizer-in-WPF-Part-2
 
-Draw result as graph
-	GraphSharp oder GraphX
+GraphSharp
 		http://graphsharp.codeplex.com/
 		http://sachabarbs.wordpress.com/2010/08/31/pretty-cool-graphs-in-wpf/
 
-		https://graphx.codeplex.com/
+DGML?
+	http://en.wikipedia.org/wiki/DGML
+	http://blogs.msdn.com/b/mohamedg/archive/2010/03/02/visual-gcroot-via-dgml.aspx
+	http://blogs.infosupport.com/creating-custom-dgml-diagrams-using-the-progression-api/
 
-	QuickGraph as data structure, render with graphviz? 
-		https://quickgraph.codeplex.com/
-
-	GraphViz4Net
-		https://graphviz4net.codeplex.com/
-
-	DGML?
-		http://en.wikipedia.org/wiki/DGML
-		http://blogs.msdn.com/b/mohamedg/archive/2010/03/02/visual-gcroot-via-dgml.aspx
-		http://blogs.infosupport.com/creating-custom-dgml-diagrams-using-the-progression-api/
-
-	Network View
-		http://www.codeproject.com/Articles/182683/NetworkView-A-WPF-custom-control-for-visualizing-a
-
-	NodeXL
-		https://nodexl.codeplex.com/
-
+NodeXL
+	https://nodexl.codeplex.com/
