@@ -1,18 +1,11 @@
 TODOs
---------------------
+----------------------------------------
 Create graph of DbContext entries
-	Entities
-		Fix lies for added entities (see #warning in GraphBuilder)
-
 	Relations
-		State?
-		Type (Multiplicity? Required?)
+		State: How do I display removed relations? Can I? How do I distinguish between unchanged and added?
+		Type (Multiplicity? Required?): How do I (nicely) show collection relations (and distinguish them from scalar relations)?
 		Fix for null references (see #warning in GraphBuilder) => display twice, as relation AND as property?
-
-Improve visualization
-	How do I display removed relations? Can I? How do I distinguish between unchanged and added?
-	How do I (nicely) show collection relations (and distinguish them from scalar relations)?
-	Relation tooltip needs styling (and should include more information, see above)
+		Relation tooltip needs styling (and should include more information, see above)
 
 Add test cases
 	indirect circular references
@@ -22,6 +15,8 @@ Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 
 Add boilerplate for ObjectContext
 
+Clean up code
+
 Package this (VSIX or NuGet?) to provide an easy installation path
 
 Update readme.md
@@ -30,7 +25,7 @@ Figure out a way to set ZoomBox Mode to Original (1:1) initially
 	http://stackoverflow.com/questions/6458067/how-to-set-wpfextensions-zoomcontrol-default-zoom
 
 References
---------------------
+----------------------------------------
 WPF Debug visualizer
 	http://www.codeproject.com/Articles/73236/Writing-a-Debugger-Visualizer-in-WPF-Part-1
 	http://www.codeproject.com/Articles/85731/Writing-a-Debugger-Visualizer-in-WPF-Part-2

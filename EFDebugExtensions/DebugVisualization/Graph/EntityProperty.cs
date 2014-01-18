@@ -12,6 +12,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         public object CurrentValue { get; set; }
 
         public bool IsKey { get; set; }
+        public bool IsConcurrencyProperty { get; set; }
 
         public EntityState EntityState { get; set; }
 
@@ -25,6 +26,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             switch (EntityState)
             {
                 case EntityState.Added:
+                    return IsKey || IsConcurrencyProperty ? Name + ": <not assigned yet>" : Name + ": " + TrimToMaxLength(CurrentValue);
                 case EntityState.Unchanged:
                     return Name + ": " + TrimToMaxLength(CurrentValue);
                 case EntityState.Deleted:

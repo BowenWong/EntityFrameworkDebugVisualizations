@@ -5,6 +5,7 @@ using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Reflection;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
@@ -50,6 +51,8 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 return existingVertices.Single(v => v == entityVertex);
 
             var dbDataRecord = entry.State != EntityState.Deleted ? entry.CurrentValues : entry.OriginalValues;
+            var keyFields = context.GetPrimaryKeyFieldsForType(entityType);
+            var concurrencyProperties = context.GetConcurrencyFieldsForType(entityType);
             for (int index = 0; index < dbDataRecord.FieldCount; index++)
             {
                 entityVertex.Properties.Add(new EntityProperty
@@ -57,8 +60,8 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     Name = dbDataRecord.GetName(index),
                     CurrentValue = entry.State != EntityState.Deleted ? entry.CurrentValues.GetValue(index) : null,
                     OriginalValue = entry.State != EntityState.Added ? entry.OriginalValues.GetValue(index) : null,
-#warning this 'lies' for added entities with temporary keys (EntityKeyValues is null)
-                    IsKey = !entry.EntityKey.IsTemporary && entry.EntityKey.EntityKeyValues.Any(key => key.Key == dbDataRecord.GetName(index)),
+                    IsKey = keyFields.Any(key => key == dbDataRecord.GetName(index)),
+                    IsConcurrencyProperty = concurrencyProperties.Any(property => property == dbDataRecord.GetName(index)),
                     EntityState = entityVertex.State,
                 });
             }
@@ -94,6 +97,32 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     .GetItems<EntityType>(DataSpace.OSpace)
                     .Single(p => p.FullName == entityType.FullName)
                     .NavigationProperties;
+        }
+
+        private static List<string> GetPrimaryKeyFieldsForType(this IObjectContextAdapter context, Type entityType)
+        {
+            var metadata = context.ObjectContext.MetadataWorkspace
+                    .GetItems<EntityType>(DataSpace.OSpace)
+                    .SingleOrDefault(p => p.FullName == entityType.FullName);
+
+            if (metadata == null)
+                throw new InvalidOperationException(String.Format("The type {0} is not known to the DbContext.", entityType.FullName));
+
+            return metadata.KeyMembers.Select(k => k.Name).ToList();
+        }
+
+        private static List<string> GetConcurrencyFieldsForType(this IObjectContextAdapter context, Type entityType)
+        {
+            var objType = context.ObjectContext.MetadataWorkspace.GetItems<EntityType>(DataSpace.OSpace).Single(p => p.FullName == entityType.FullName);
+            var cTypeName = (string) objType.GetType()
+                    .GetProperty("CSpaceTypeName", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .GetValue(objType, null);
+
+            var conceptualType = context.ObjectContext.MetadataWorkspace.GetItems<EntityType>(DataSpace.CSpace).Single(p => p.FullName == cTypeName);
+            return conceptualType.Members
+                    .Where(member => member.TypeUsage.Facets.Any(facet => facet.Name == "ConcurrencyMode" && (ConcurrencyMode) facet.Value == ConcurrencyMode.Fixed))
+                    .Select(member => member.Name)
+                    .ToList();
         }
 
         private static string GetEntitySetName(this IObjectContextAdapter context, Type entityType)

@@ -54,12 +54,12 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public string KeyDescription
         {
-            get { return HasTemporaryKey ? "<added>" : Properties.Where(p => p.IsKey).Aggregate("", (description, p) => p.Description); }
+            get { return HasTemporaryKey ? "" : Properties.Where(p => p.IsKey).Aggregate("", (description, p) => p.Description); }
         }
 
         public string Header
         {
-            get { return string.Format("{0} {1} ({2})", State, TypeName, KeyDescription); }
+            get { return string.Format("{0} [{1}{2}]", TypeName, HasTemporaryKey ? "" : KeyDescription + ", ", State); }
         }
 
         public void AddRelation(string relationName, EntityVertex target)
