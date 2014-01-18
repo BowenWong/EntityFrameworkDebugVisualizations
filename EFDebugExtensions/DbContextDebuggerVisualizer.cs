@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Data.Entity;
+using System.Windows;
 using System.Windows.Media;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 
@@ -16,6 +17,9 @@ namespace EntityFramework.Debug
                 Background = Brushes.LightBlue,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
+
+            var dbContext = (DbContext)objectProvider.GetObject();
+            window.Title += " " + dbContext.GetType().Name;
 
             window.ShowDialog();
         }

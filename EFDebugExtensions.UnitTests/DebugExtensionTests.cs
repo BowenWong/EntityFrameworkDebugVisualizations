@@ -13,8 +13,6 @@ namespace EntityFramework.Debug.UnitTests
             {
                 context.Entities.Add(new Entity());
 
-                int test = 13;
-
                 var dump = context.DumpTrackedEntities();
                 Assert.IsNotNull(dump);
 

@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Diagnostics;
 using System.Reflection;
 using EntityFramework.Debug;
 using Microsoft.VisualStudio.DebuggerVisualizers;
@@ -11,4 +13,5 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 [assembly: AssemblyVersion("0.0.1.0")]
 [assembly: AssemblyFileVersion("0.0.1.0")]
 
-[assembly: DebuggerVisualizer(typeof(DbContextDebuggerVisualizer), typeof(VisualizerObjectSource), Target = typeof(int), Description = "Context Visualizer")]
+[assembly: DebuggerVisualizer(typeof(DbContextDebuggerVisualizer), typeof(VisualizerObjectSource), Target = typeof(DbContext), Description = "Context Visualizer")]
+[assembly: DebuggerVisualizer(typeof(DbContextDebuggerVisualizer), typeof(VisualizerObjectSource), Target = typeof(ObjectContext), Description = "Context Visualizer")]
