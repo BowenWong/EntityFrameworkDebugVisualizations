@@ -1,9 +1,8 @@
-﻿using System.Data.Entity;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 
-namespace EntityFramework.Debug
+namespace EntityFramework.Debug.DebugVisualization
 {
     public class DbContextDebuggerVisualizer : DialogDebuggerVisualizer
     {
@@ -18,8 +17,7 @@ namespace EntityFramework.Debug
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
 
-            var dbContext = (DbContext)objectProvider.GetObject();
-            window.Title += " " + dbContext.GetType().Name;
+            window.Title += " " + objectProvider.GetObject();
 
             window.ShowDialog();
         }

@@ -50,8 +50,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbContextDebuggerVisualizer.cs" />
+    <Compile Include="DebugVisualization\DbContextDebuggerVisualizer.cs" />
     <Compile Include="DebugExtensions.cs" />
+    <Compile Include="DebugVisualization\DbContextVisualizerObjectSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
