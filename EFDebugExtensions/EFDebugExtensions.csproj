@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugVisualization\Converters\EntityStateToBrushConverter.cs" />
     <Compile Include="DebugVisualization\DbContextDebuggerVisualizer.cs" />
     <Compile Include="DebugExtensions.cs" />
     <Compile Include="DebugVisualization\DbContextVisualizerObjectSource.cs" />

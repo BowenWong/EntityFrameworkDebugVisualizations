@@ -13,6 +13,7 @@ namespace EntityFramework.Debug.UnitTests.Models
 
     public class EntityWithChild : Entity
     {
+        public string Name { get; set; }
         public Entity Child { get; set; }
     }
 }

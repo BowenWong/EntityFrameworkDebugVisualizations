@@ -2,7 +2,6 @@ TODOs
 --------------------
 Create graph of DbContext entries
 	Entities
-		Fix for deleted entities (see #warnings in GraphBuilder)
 		Fix lies for added entities (see #warning in GraphBuilder)
 
 	Relations
@@ -11,12 +10,11 @@ Create graph of DbContext entries
 		Fix for null references (see #warning in GraphBuilder) => display twice, as relation AND as property?
 
 Improve visualization
-	Nicer EntityVertex header (EntityType, State, KeyInfo)
-	Display EntityVertex properties (Name, Original- and CurrentValue)
-	Distinguish EntityVertex states by color
-	How do I display removed relations? Can I?
-	How do I distinguish between unchanged and added?
+	Fix property description for added/removed entities
+	How do I display removed relations? Can I? How do I distinguish between unchanged and added?
 	How do I (nicely) show collection relations (and distinguish them from scalar relations)?
+	The lines for relations should be a bit thicker (to make it easier to hover over them for tooltips)
+	Relation tooltip needs styling (and should include more information, see above)
 
 Add test cases
 	indirect circular references

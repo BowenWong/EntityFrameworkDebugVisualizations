@@ -15,8 +15,8 @@ namespace EntityFramework.Debug.UnitTests
 
             using (var context = new TestDbContext())
             {
-                parent = context.EntitiesWithChild.Add(new EntityWithChild());
-                var child = context.EntitiesWithChild.Add(new EntityWithChild());
+                parent = context.EntitiesWithChild.Add(new EntityWithChild{Name = "Parent"});
+                var child = context.EntitiesWithChild.Add(new EntityWithChild{Name = "Child"});
                 parent.Child = child;
                 context.SaveChanges();
             }
@@ -24,6 +24,11 @@ namespace EntityFramework.Debug.UnitTests
             using (var context = new TestDbContext())
             {
                 context.EntitiesWithChild.Attach(parent);
+                var toDelete = context.EntitiesWithChild.Add(new EntityWithChild {Name = "Deleted"});
+                context.SaveChanges();
+
+                context.EntitiesWithChild.Remove(toDelete);
+                context.EntitiesWithChild.Add(new EntityWithChild {Name = "Added"});
 
                 ShowVisualizer(context);
 

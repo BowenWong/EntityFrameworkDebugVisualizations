@@ -49,17 +49,16 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             if (!existingVertices.Add(entityVertex))
                 return existingVertices.Single(v => v == entityVertex);
 
-            var fieldMetaData = (entry.State != EntityState.Deleted ? entry.CurrentValues : (CurrentValueRecord) entry.OriginalValues).DataRecordInfo.FieldMetadata;
-            for (int index = 0; index < fieldMetaData.Count; index++)
+            var dbDataRecord = entry.State != EntityState.Deleted ? entry.CurrentValues : entry.OriginalValues;
+            for (int index = 0; index < dbDataRecord.FieldCount; index++)
             {
                 entityVertex.Properties.Add(new EntityProperty
                 {
-#warning this might crash for deleted entities
-                    Name = entry.CurrentValues.DataRecordInfo.FieldMetadata[index].FieldType.Name,
+                    Name = dbDataRecord.GetName(index),
                     CurrentValue = entry.State != EntityState.Deleted ? entry.CurrentValues.GetValue(index) : null,
                     OriginalValue = entry.State != EntityState.Added ? entry.OriginalValues.GetValue(index) : null,
-#warning this might crash for deleted entities and 'lies' for added entities with temporary keys (EntityKeyValues is null)
-                    IsKey = !entry.EntityKey.IsTemporary && entry.EntityKey.EntityKeyValues.Any(key => key.Key == entry.CurrentValues.DataRecordInfo.FieldMetadata[index].FieldType.Name)
+#warning this 'lies' for added entities with temporary keys (EntityKeyValues is null)
+                    IsKey = !entry.EntityKey.IsTemporary && entry.EntityKey.EntityKeyValues.Any(key => key.Key == dbDataRecord.GetName(index)),
                 });
             }
             entityVertex.Properties = entityVertex.Properties.OrderBy(p => p.Name).ToList();

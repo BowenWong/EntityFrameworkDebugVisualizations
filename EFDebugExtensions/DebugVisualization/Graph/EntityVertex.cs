@@ -57,6 +57,11 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             get { return HasTemporaryKey ? "<added>" : Properties.Where(p => p.IsKey).Aggregate("", (description, p) => p.Description); }
         }
 
+        public string Header
+        {
+            get { return string.Format("{0} {1} ({2})", State, TypeName, KeyDescription); }
+        }
+
         public void AddRelation(string relationName, EntityVertex target)
         {
             Relations.Add(new RelationEdge(this, target){Name = relationName});

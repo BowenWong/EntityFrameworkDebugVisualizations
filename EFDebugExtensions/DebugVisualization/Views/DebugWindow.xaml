@@ -2,15 +2,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
         xmlns:graphControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
+        xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Converters;assembly=EFDebugExtensions"
         xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph;assembly=EFDebugExtensions"
-        Title="DbContext Debugger Visualizer" Width="800" Height="600"
+        Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
         WindowStartupLocation="CenterOwner">
     
     <Window.Resources>
+        <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter"/>
+        
         <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
             <StackPanel Orientation="Vertical" Margin="5">
-                <TextBlock Text="{Binding Path=TypeName, Mode=OneWay}" Foreground="White" />
-                <TextBlock Text="{Binding Path=KeyDescription, Mode=OneWay}" Foreground="White" />
+                <TextBlock Text="{Binding Path=Header, Mode=OneWay}" />
+                <Separator />
+                <ItemsControl ItemsSource="{Binding Properties}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Description}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </DataTemplate>
 
@@ -18,7 +28,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type graphControls:VertexControl}">
-                        <Border BorderBrush="White" Background="Black" BorderThickness="2" CornerRadius="10,10,10,10" Padding="{TemplateBinding Padding}">
+                        <Border BorderBrush="DarkGray" BorderThickness="2" CornerRadius="10,10,10,10" Padding="{TemplateBinding Padding}"
+                                Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}">
                             <ContentPresenter Content="{TemplateBinding Vertex}" ContentTemplate="{StaticResource EntityVertexTemplate}" />
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="2" Color="LightGray" Opacity="0.3" Direction="315" />
@@ -33,7 +44,7 @@
             <Style.Resources>
                 <ToolTip x:Key="ToolTipContent">
                     <StackPanel>
-                        <TextBlock FontWeight="Bold" Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding Name}"/>
                     </StackPanel>
                 </ToolTip>
             </Style.Resources>
@@ -44,7 +55,7 @@
     <Grid Background="LightBlue">
         <controls:ZoomControl x:Name="ZoomBox" x:FieldModifier="public" ZoomBoxOpacity="0.15">
             <graph:EntityGraphLayout Margin="10" LayoutAlgorithmType="FR" OverlapRemovalAlgorithmType="FSA"
-                                     HighlightAlgorithmType="Simple" Graph="{Binding Graph}" />
+                                     HighlightAlgorithmType="None" Graph="{Binding Graph}" />
         </controls:ZoomControl>
     </Grid>
 </Window>

@@ -13,7 +13,31 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public string Description
         {
-            get {  return Name + ": " + CurrentValue + (CurrentValue.Equals(OriginalValue) ? "" : " (changed from " + OriginalValue + ")"); }
+            get { return Name + ": " + TrimToMaxLength(CurrentValue) + (HasChanged ? " (changed from " + TrimToMaxLength(OriginalValue) + ")" : ""); }
+        }
+
+        public bool HasChanged
+        {
+            get
+            {
+                if (CurrentValue == null && OriginalValue == null)
+                    return false;
+
+                return CurrentValue != null && !CurrentValue.Equals(OriginalValue);
+            }
+        }
+
+        private static string TrimToMaxLength(object value)
+        {
+            if (value == null)
+                return null;
+
+            const int maxLength = 150;
+            var toTrim = value.ToString();
+            if (toTrim.Length <= maxLength)
+                return toTrim;
+
+            return toTrim.Substring(0, maxLength) + " [..]";
         }
     }
 }
