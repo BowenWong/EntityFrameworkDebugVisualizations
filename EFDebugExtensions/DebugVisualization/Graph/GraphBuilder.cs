@@ -59,6 +59,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     OriginalValue = entry.State != EntityState.Added ? entry.OriginalValues.GetValue(index) : null,
 #warning this 'lies' for added entities with temporary keys (EntityKeyValues is null)
                     IsKey = !entry.EntityKey.IsTemporary && entry.EntityKey.EntityKeyValues.Any(key => key.Key == dbDataRecord.GetName(index)),
+                    EntityState = entityVertex.State,
                 });
             }
             entityVertex.Properties = entityVertex.Properties.OrderBy(p => p.Name).ToList();

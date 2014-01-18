@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Data.Entity;
+using System.Diagnostics;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
@@ -11,19 +13,26 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public bool IsKey { get; set; }
 
+        public EntityState EntityState { get; set; }
+
         public string Description
         {
-            get { return Name + ": " + TrimToMaxLength(CurrentValue) + (HasChanged ? " (changed from " + TrimToMaxLength(OriginalValue) + ")" : ""); }
+            get { return GetDescription(); }
         }
 
-        public bool HasChanged
+        private string GetDescription()
         {
-            get
+            switch (EntityState)
             {
-                if (CurrentValue == null && OriginalValue == null)
-                    return false;
-
-                return CurrentValue != null && !CurrentValue.Equals(OriginalValue);
+                case EntityState.Added:
+                case EntityState.Unchanged:
+                    return Name + ": " + TrimToMaxLength(CurrentValue);
+                case EntityState.Deleted:
+                    return Name + ": " + TrimToMaxLength(OriginalValue);
+                case EntityState.Modified:
+                    return Name + ": " + TrimToMaxLength(CurrentValue) + " (changed from " + TrimToMaxLength(OriginalValue) + ")";
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
