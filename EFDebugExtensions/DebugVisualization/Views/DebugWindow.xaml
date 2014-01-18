@@ -49,6 +49,8 @@
                 </ToolTip>
             </Style.Resources>
             <Setter Property="ToolTip" Value="{StaticResource ToolTipContent}"/>
+            <Setter Property="StrokeThickness" Value="3"/>
+            <Setter Property="Margin" Value="3"/>
         </Style>
     </Window.Resources>
     
