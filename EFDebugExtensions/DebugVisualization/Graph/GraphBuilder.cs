@@ -11,15 +11,10 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 {
     public static class GraphBuilder
     {
-        public static List<EntityVertex> GetEntityVertices(this DbContext context)
-        {
-            return ((IObjectContextAdapter)context).GetEntityVertices();
-        }
-
-        public static List<EntityVertex> GetEntityVertices(this IObjectContextAdapter context)
+        public static List<EntityVertex> GetEntityVertices(this ObjectContext context)
         {
             var existingVertices = new HashSet<EntityVertex>();
-            var stateEntries = context.ObjectContext
+            var stateEntries = context
                     .ObjectStateManager
                     .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
                     .Where(entry => entry.State != EntityState.Detached);

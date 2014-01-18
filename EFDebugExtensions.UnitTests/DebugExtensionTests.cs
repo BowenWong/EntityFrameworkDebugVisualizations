@@ -38,7 +38,7 @@ namespace EntityFramework.Debug.UnitTests
 
         private static void ShowVisualizer(object obj)
         {
-            new VisualizerDevelopmentHost(obj, typeof(DbContextDebuggerVisualizer), typeof(DbContextVisualizerObjectSource)).ShowVisualizer();
+            new VisualizerDevelopmentHost(obj, typeof(ContextDebuggerVisualizer), typeof(ContextVisualizerObjectSource)).ShowVisualizer();
         }
 
         [TestMethod]

@@ -13,11 +13,7 @@ Add test cases
 
 Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 
-Add boilerplate for ObjectContext
-
 Clean up code
-
-Package this (VSIX or NuGet?) to provide an easy installation path
 
 Update readme.md
 

@@ -14,7 +14,7 @@ using WPFExtensions.Controls;
 
 namespace EntityFramework.Debug.DebugVisualization
 {
-    public class DbContextDebuggerVisualizer : DialogDebuggerVisualizer
+    public class ContextDebuggerVisualizer : DialogDebuggerVisualizer
     {
         protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider)
         {
