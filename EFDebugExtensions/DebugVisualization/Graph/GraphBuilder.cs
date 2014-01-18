@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
@@ -71,21 +72,45 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     continue;
                 }
 
-                var entitySetName = context.GetEntitySetName(currentValue.GetType());
-                var key = context.ObjectContext.CreateEntityKey(entitySetName, currentValue);
-                var targetEntity = context.ObjectContext
-                        .ObjectStateManager
-                        .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
-                        .SingleOrDefault(e => e.EntityKey == key);
+                var targetEntityType = currentValue.GetType();
+                var entitySetName = context.GetEntitySetName(targetEntityType);
 
-                EntityVertex target = CreateEntityVertex(context, targetEntity, existingVertices);
-                entityVertex.AddRelation(navigationProperty.Name, target);
+                if (targetEntityType.IsArray || targetEntityType.IsGenericType)
+                {
+                    var collection = (IEnumerable) currentValue;
+                    int numElements = 0;
+                    foreach (var element in collection)
+                    {
+                        AddRelationTarget(context, existingVertices, entitySetName, element, entityVertex, navigationProperty);
+                        numElements++;
+                    }
 
-                entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, "[" + target.KeyDescription + "]", entityVertex.State));
+                    entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, "Collection [" + numElements + " elements]", entityVertex.State));
+
+                }
+                else
+                {
+                    var target = AddRelationTarget(context, existingVertices, entitySetName, currentValue, entityVertex, navigationProperty);
+                    entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, "[" + target.KeyDescription + "]", entityVertex.State));
+                }
             }
 
             entityVertex.Properties = entityVertex.Properties.OrderBy(p => p.Name).ToList();
             return entityVertex;
+        }
+
+        private static EntityVertex AddRelationTarget(IObjectContextAdapter context, HashSet<EntityVertex> existingVertices, string entitySetName, object currentValue, EntityVertex entityVertex,
+                                                      NavigationProperty navigationProperty)
+        {
+            var key = context.ObjectContext.CreateEntityKey(entitySetName, currentValue);
+            var targetEntity = context.ObjectContext
+                    .ObjectStateManager
+                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
+                    .SingleOrDefault(e => e.EntityKey == key);
+
+            EntityVertex target = CreateEntityVertex(context, targetEntity, existingVertices);
+            entityVertex.AddRelation(navigationProperty.Name, target);
+            return target;
         }
 
         private static EntityProperty CreateRelationProperty(string name, object currentValue, EntityState entityState)
@@ -136,6 +161,11 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         private static string GetEntitySetName(this IObjectContextAdapter context, Type entityType)
         {
             Type type = entityType;
+            if (type.IsArray)
+                type = type.GetElementType();
+            if (type.IsGenericType)
+                type = type.GetGenericArguments()[0];
+
             EntitySetBase set = null;
 
             while (set == null && type != null)

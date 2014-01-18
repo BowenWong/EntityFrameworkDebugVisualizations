@@ -2,15 +2,16 @@ TODOs
 ----------------------------------------
 Create graph of DbContext entries
 	Relations
-		Revise display of collection relations as a property?
 		State: How do I display removed relations? Can I? How do I distinguish between unchanged and added?
-		Type (Multiplicity? Required?): How do I (nicely) show collection relations (and distinguish them from scalar relations)?
 		Relation tooltip needs styling (and should include more information, see above)
+		Multiple relations between identical vertices are not displayed correctly (only the first is visible)
+
+Add filters
+	By EntityState
+	By EntityType
 
 Add test cases
-	indirect circular references
 	assert expectations about the produced graph
-	test collection relations
 
 Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 

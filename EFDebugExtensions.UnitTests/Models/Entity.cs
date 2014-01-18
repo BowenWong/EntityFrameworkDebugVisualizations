@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EntityFramework.Debug.UnitTests.Models
 {
@@ -14,6 +15,12 @@ namespace EntityFramework.Debug.UnitTests.Models
     public class EntityWithChild : Entity
     {
         public string Name { get; set; }
-        public Entity Child { get; set; }
+        public Entity FavoriteChild { get; set; }
+        public List<EntityWithChild> Children { get; set; }
+
+        public EntityWithChild()
+        {
+            Children = new List<EntityWithChild>();
+        }
     }
 }

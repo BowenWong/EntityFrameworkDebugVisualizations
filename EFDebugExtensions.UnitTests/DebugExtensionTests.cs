@@ -16,8 +16,14 @@ namespace EntityFramework.Debug.UnitTests
             using (var context = new TestDbContext())
             {
                 parent = context.EntitiesWithChild.Add(new EntityWithChild{Name = "Parent"});
-                var child = context.EntitiesWithChild.Add(new EntityWithChild{Name = "Child"});
-                parent.Child = child;
+                var child = context.EntitiesWithChild.Add(new EntityWithChild{Name = "FavoriteChild"});
+                parent.Children.Add(new EntityWithChild {Name = "2nd Child"});
+                parent.Children.Add(new EntityWithChild {Name = "3nd Child"});
+                parent.Children.Add(new EntityWithChild {Name = "4th Child"});
+                context.SaveChanges();
+
+                parent.FavoriteChild = child;
+                parent.Children.Add(child);
                 context.SaveChanges();
             }
 
@@ -47,7 +53,7 @@ namespace EntityFramework.Debug.UnitTests
             using (var context = new TestDbContext())
             {
                 var child = context.EntitiesWithChild.Add(new EntityWithChild());
-                context.EntitiesWithChild.Add(new EntityWithChild { Child = child });
+                context.EntitiesWithChild.Add(new EntityWithChild { FavoriteChild = child });
                 context.SaveChanges();
 
                 context.EntitiesWithChild.Add(new EntityWithChild());
