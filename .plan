@@ -3,12 +3,18 @@ TODOs
 Create graph of DbContext entries
 	Relations
 		State: How do I display removed relations? Can I? How do I distinguish between unchanged and added?
-		Relation tooltip needs styling (and should include more information, see above)
 		Multiple relations between identical vertices are not displayed correctly (only the first is visible)
 
-Add filters
-	By EntityState
-	By EntityType
+Filters
+	re-implement using differences instead of updating the whole graph
+
+Visualization
+	Display properties in an expander (closed in default but add an expand all button)
+	Display filters a bit nicer and as an overlay like the zoom controls
+	Relation tooltip needs styling (and should include the state of the relation and its multiplicity?)
+	Check if setting the parameters of the OverlapRemovalAlgorithm improves the graph layout
+	Figure out a way to set ZoomBox Mode to Original (1:1) initially
+		http://stackoverflow.com/questions/6458067/how-to-set-wpfextensions-zoomcontrol-default-zoom
 
 Add test cases
 	assert expectations about the produced graph
@@ -19,8 +25,6 @@ Clean up code
 
 Update readme.md
 
-Figure out a way to set ZoomBox Mode to Original (1:1) initially
-	http://stackoverflow.com/questions/6458067/how-to-set-wpfextensions-zoomcontrol-default-zoom
 
 References
 ----------------------------------------
