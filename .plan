@@ -1,7 +1,6 @@
 TODOs
 --------------------
 Create graph of DbContext entries
-	Add DebuggerDisplay attributes to all graph classes
 	Entities
 		Properties (names, old and new values)
 		State

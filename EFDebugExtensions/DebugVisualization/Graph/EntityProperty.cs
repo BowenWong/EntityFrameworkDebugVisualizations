@@ -1,5 +1,8 @@
-﻿namespace EntityFramework.Debug.DebugVisualization.Graph
+﻿using System.Diagnostics;
+
+namespace EntityFramework.Debug.DebugVisualization.Graph
 {
+    [DebuggerDisplay("{Description}")]
     public class EntityProperty
     {
         public string Name { get; set; }

@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
+    [DebuggerDisplay("{TypeName}: {KeyDescription}")]
     public class EntityVertex
     {
         public EntityVertex()
