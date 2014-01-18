@@ -9,7 +9,6 @@ Filters
 	re-implement using differences instead of updating the whole graph
 
 Visualization
-	Display properties in an expander (closed in default but add an expand all button)
 	Display filters a bit nicer and as an overlay like the zoom controls
 	Relation tooltip needs styling (and should include the state of the relation and its multiplicity?)
 	Check if setting the parameters of the OverlapRemovalAlgorithm improves the graph layout

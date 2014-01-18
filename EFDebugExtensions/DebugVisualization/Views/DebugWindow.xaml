@@ -14,13 +14,15 @@
             <StackPanel Orientation="Vertical" Margin="5">
                 <TextBlock Text="{Binding Path=Header, Mode=OneWay}" />
                 <Separator Foreground="SlateGray" />
-                <ItemsControl ItemsSource="{Binding Properties}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Description}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <Expander Header="Properties" IsExpanded="false">
+                    <ItemsControl ItemsSource="{Binding Properties}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Description}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
             </StackPanel>
         </DataTemplate>
 
