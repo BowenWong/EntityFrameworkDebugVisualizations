@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
+using EntityFramework.Debug;
+using Microsoft.VisualStudio.DebuggerVisualizers;
 
 [assembly: AssemblyTitle("EFDebugExtensions")]
 [assembly: AssemblyDescription("Useful debug extensions for Object- and DbContext")]
@@ -7,3 +10,5 @@
 
 [assembly: AssemblyVersion("0.0.1.0")]
 [assembly: AssemblyFileVersion("0.0.1.0")]
+
+[assembly: DebuggerVisualizer(typeof(DbContextDebuggerVisualizer), typeof(VisualizerObjectSource), Target = typeof(int), Description = "Context Visualizer")]
