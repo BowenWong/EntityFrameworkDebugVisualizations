@@ -2,11 +2,6 @@ Add debug visualizer
 	http://www.codeproject.com/Articles/73236/Writing-a-Debugger-Visualizer-in-WPF-Part-1
 	http://www.codeproject.com/Articles/85731/Writing-a-Debugger-Visualizer-in-WPF-Part-2
 
-
-
-
-
-
 Draw result as graph
 	GraphSharp oder GraphX
 		http://graphsharp.codeplex.com/

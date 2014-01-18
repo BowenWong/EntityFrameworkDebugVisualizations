@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 using System.IO;
-using System.Text;
+using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 
 namespace EntityFramework.Debug.DebugVisualization
@@ -13,11 +13,8 @@ namespace EntityFramework.Debug.DebugVisualization
             if (dbContext == null)
                 return;
 
-            using (var streamWriter = new StreamWriter(outgoingData, Encoding.UTF8, 100, true))
-            {
-                streamWriter.Write(dbContext.GetType().FullName);
-                streamWriter.Flush();
-            }
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(outgoingData, dbContext.GetType().FullName);
         }
     }
 }
