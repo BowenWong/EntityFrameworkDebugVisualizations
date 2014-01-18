@@ -16,10 +16,6 @@ Create graph of DbContext entries
 		How do I display removed relations? 
 		How do I distinguish between unchanged and added?
 
-Serialize graph for DbContextDebuggerVisualizer (in DbContextVisualizerObjectSource)
-
-Draw result as graph using GraphSharp
-
 Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 
 Add boilerplate for ObjectContext

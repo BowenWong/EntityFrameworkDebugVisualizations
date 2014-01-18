@@ -20,7 +20,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             return context.ObjectContext
                     .ObjectStateManager
                     .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
-                    .Where(entry => entry.State != EntityState.Detached)// && entry.Entity != null)
+                    .Where(entry => entry.State != EntityState.Detached)
                     .Select(entry => CreateEntityVertex(context, entry))
                     .Where(e => e != null)
                     .OrderBy(e => e.State).ThenBy(e => e.TypeName)
@@ -29,7 +29,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         private static EntityVertex CreateEntityVertex(IObjectContextAdapter context, ObjectStateEntry entry)
         {
-#warning what about entry.IsRelationship? are those deleted references?
+#warning what about entry.IsRelationship? are those deleted references? Einträge in Koppeltabellen?
             if (entry.IsRelationship)
                 return null;
 
@@ -57,7 +57,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 });
             }
 
-#warning navigation properties should be kept separately from other properties as I need to construct edges from them
+#warning navigation properties should be separated from other properties as I need to construct edges from them
             foreach (var navigationProperty in context.GetNavigationPropertiesForType(entityType))
             {
 #warning this contains information about the relations => do I have something like original and current? what about the name? Rels = entry.RelationshipManager.GetAllRelatedEnds()

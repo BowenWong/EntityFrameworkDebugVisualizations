@@ -6,18 +6,25 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EntityFramework.Debug.UnitTests
 {
     [TestClass]
-    public class DebugExtensionTests
+    public class DebugExtensionTests : Testbase
     {
         [TestMethod]
         public void TestVisualizer()
         {
+            EntityWithChild parent;
+
             using (var context = new TestDbContext())
             {
-                var child = context.EntitiesWithChild.Add(new EntityWithChild());
-                var parent = context.EntitiesWithChild.Add(new EntityWithChild());
-                context.SaveChanges();
-
+                EntityWithChild child = context.EntitiesWithChild.Add(new EntityWithChild());
+                parent = context.EntitiesWithChild.Add(new EntityWithChild());
                 parent.Child = child;
+                context.SaveChanges();
+            }
+
+            using (var context = new TestDbContext())
+            {
+                context.EntitiesWithChild.Attach(parent);
+                parent.Child = null;
 
                 ShowVisualizer(context);
 
