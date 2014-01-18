@@ -1,6 +1,7 @@
 TODOs
 --------------------
 Create graph of DbContext entries
+	Add DebuggerDisplay attributes to all graph classes
 	Entities
 		Properties (names, old and new values)
 		State
@@ -21,6 +22,11 @@ Serialize graph for DbContextDebuggerVisualizer (in DbContextVisualizerObjectSou
 Draw result as graph using GraphSharp
 
 Dump graph as text for DebugExtensions
+
+Add boilerplate for ObjectContext
+
+Figure out a way to set ZoomBox Mode to Original (1:1) initially
+	http://stackoverflow.com/questions/6458067/how-to-set-wpfextensions-zoomcontrol-default-zoom
 
 References
 --------------------

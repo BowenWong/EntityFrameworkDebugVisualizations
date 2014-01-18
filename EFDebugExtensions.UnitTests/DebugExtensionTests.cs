@@ -13,9 +13,13 @@ namespace EntityFramework.Debug.UnitTests
         {
             using (var context = new TestDbContext())
             {
-                context.Entities.Add(new Entity());
+                var child = context.EntitiesWithChild.Add(new EntityWithChild());
+                context.EntitiesWithChild.Add(new EntityWithChild{Child = child});
+                context.SaveChanges();
 
-                TestShowVisualizer("Andy");
+                context.EntitiesWithChild.Add(new EntityWithChild());
+
+                ShowVisualizer(context);
 
                 var dump = context.DumpTrackedEntities();
                 Assert.IsNotNull(dump);
@@ -24,10 +28,9 @@ namespace EntityFramework.Debug.UnitTests
             }
         }
 
-        private static void TestShowVisualizer(object obj)
+        private static void ShowVisualizer(object obj)
         {
-            var host = new VisualizerDevelopmentHost(obj, typeof(DbContextDebuggerVisualizer));
-            host.ShowVisualizer();
+            new VisualizerDevelopmentHost(obj, typeof(DbContextDebuggerVisualizer), typeof(DbContextVisualizerObjectSource)).ShowVisualizer();
         }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
+using EntityFramework.Debug.DebugVisualization.Graph;
 using EntityFramework.Debug.DebugVisualization.ViewModels;
 using GraphSharp.Controls;
 using Microsoft.VisualStudio.DebuggerVisualizers;
+using Newtonsoft.Json;
 using WPFExtensions.Controls;
 
 namespace EntityFramework.Debug.DebugVisualization
@@ -32,7 +35,10 @@ namespace EntityFramework.Debug.DebugVisualization
                 window = (Window)XamlReader.Load(stream);
             }
 
-            window.DataContext = new VisualizerViewModel();
+            var jsonSerialized = (string)objectProvider.GetObject();
+            var vertices = JsonConvert.DeserializeObject<List<EntityVertex>>(jsonSerialized);
+
+            window.DataContext = new VisualizerViewModel(vertices);
             window.ShowDialog();
         }
     }

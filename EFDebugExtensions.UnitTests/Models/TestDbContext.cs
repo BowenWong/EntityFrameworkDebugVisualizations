@@ -9,7 +9,7 @@ namespace EntityFramework.Debug.UnitTests.Models
         {
         }
 
-        public IDbSet<Entity> Entities { get; set; }
+        public IDbSet<EntityWithChild> EntitiesWithChild { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

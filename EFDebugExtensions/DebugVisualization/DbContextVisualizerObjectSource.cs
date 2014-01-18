@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.DebuggerVisualizers;
+using Newtonsoft.Json;
 
 namespace EntityFramework.Debug.DebugVisualization
 {
@@ -13,8 +14,11 @@ namespace EntityFramework.Debug.DebugVisualization
             if (dbContext == null)
                 return;
 
+            var vertices = dbContext.GetEntityVertices();
+            var json = JsonConvert.SerializeObject(vertices);
+
             var formatter = new BinaryFormatter();
-            formatter.Serialize(outgoingData, dbContext.GetType().FullName);
+            formatter.Serialize(outgoingData, json);
         }
     }
 }

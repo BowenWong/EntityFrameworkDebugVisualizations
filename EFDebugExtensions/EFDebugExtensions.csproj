@@ -42,10 +42,14 @@
     <Reference Include="GraphSharp.Controls">
       <HintPath>..\packages\GraphSharp.1.1.0.0\lib\net40\GraphSharp.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.GraphModel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.GraphModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -77,6 +81,7 @@
     <Compile Include="DebugVisualization\DbContextVisualizerObjectSource.cs" />
     <Compile Include="DebugVisualization\Graph\EntityGraph.cs" />
     <Compile Include="DebugVisualization\Graph\EntityGraphLayout.cs" />
+    <Compile Include="DebugVisualization\Graph\EntityProperty.cs" />
     <Compile Include="DebugVisualization\Graph\EntityVertex.cs" />
     <Compile Include="DebugVisualization\Graph\RelationEdge.cs" />
     <Compile Include="DebugVisualization\ViewModels\VisualizerViewModel.cs" />

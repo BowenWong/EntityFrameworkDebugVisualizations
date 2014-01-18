@@ -8,8 +8,9 @@
     
     <Window.Resources>
         <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
-            <StackPanel Orientation="Horizontal" Margin="5">
+            <StackPanel Orientation="Vertical" Margin="5">
                 <TextBlock Text="{Binding Path=TypeName, Mode=OneWay}" Foreground="White" />
+                <TextBlock Text="{Binding Path=KeyDescription, Mode=OneWay}" Foreground="White" />
             </StackPanel>
         </DataTemplate>
 
@@ -41,8 +42,8 @@
     </Window.Resources>
     
     <Grid Background="LightBlue">
-        <controls:ZoomControl ZoomBoxOpacity="0.15">
-            <graph:EntityGraphLayout Margin="10" LayoutAlgorithmType="LinLog" OverlapRemovalAlgorithmType="FSW"
+        <controls:ZoomControl x:Name="ZoomBox" x:FieldModifier="public" ZoomBoxOpacity="0.15">
+            <graph:EntityGraphLayout Margin="10" LayoutAlgorithmType="FR" OverlapRemovalAlgorithmType="FSA"
                                      HighlightAlgorithmType="Simple" Graph="{Binding Graph}" />
         </controls:ZoomControl>
     </Grid>

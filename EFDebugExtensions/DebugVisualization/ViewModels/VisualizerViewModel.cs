@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using EntityFramework.Debug.DebugVisualization.Graph;
 
@@ -13,17 +14,14 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
             set { _graph = value; OnPropertyChanged(); }
         }
 
-        public VisualizerViewModel()
+        public VisualizerViewModel(IEnumerable<EntityVertex> vertices)
         {
             Graph = new EntityGraph();
 
-            var test1 = new EntityVertex {TypeName = "Test 1"};
-            Graph.AddVertex(test1);
+            foreach (var vertex in vertices)
+                Graph.AddVertex(vertex);
 
-            var test2 = new EntityVertex {TypeName = "Test 2"};
-            Graph.AddVertex(test2);
-
-            Graph.AddEdge(new RelationEdge(test1, test2));
+#warning TODO: relations / edges
         }
 
         #region INotifyPropertyChanged

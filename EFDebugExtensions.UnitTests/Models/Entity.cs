@@ -10,4 +10,9 @@ namespace EntityFramework.Debug.UnitTests.Models
         [Timestamp]
         public byte[] RowVersion { get; set; }
     }
+
+    public class EntityWithChild : Entity
+    {
+        public Entity Child { get; set; }
+    }
 }
