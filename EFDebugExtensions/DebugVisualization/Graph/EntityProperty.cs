@@ -13,6 +13,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public bool IsKey { get; set; }
         public bool IsConcurrencyProperty { get; set; }
+        public bool IsRelation { get; set; }
 
         public EntityState EntityState { get; set; }
 
@@ -41,7 +42,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         private static string TrimToMaxLength(object value)
         {
             if (value == null)
-                return null;
+                return "<null>";
 
             const int maxLength = 150;
             var toTrim = value.ToString();

@@ -60,7 +60,6 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     EntityState = entityVertex.State,
                 });
             }
-            entityVertex.Properties = entityVertex.Properties.OrderBy(p => p.Name).ToList();
 
 #warning this contains information about the relations: entry.RelationshipManager.GetAllRelatedEnds() => do I have something like original and current? what about the state of the relation (added, removed etc.)?
             foreach (var navigationProperty in context.GetNavigationPropertiesForType(entityType))
@@ -68,7 +67,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 var currentValue = entityType.GetProperty(navigationProperty.Name).GetValue(entry.Entity);
                 if (currentValue == null)
                 {
-#warning what to do about 'empty' relations? how about adding them to properties as well (with target.KeyDescription as values)?
+                    entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, null, entityVertex.State));
                     continue;
                 }
 
@@ -81,9 +80,23 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
                 EntityVertex target = CreateEntityVertex(context, targetEntity, existingVertices);
                 entityVertex.AddRelation(navigationProperty.Name, target);
+
+                entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, "[" + target.KeyDescription + "]", entityVertex.State));
             }
 
+            entityVertex.Properties = entityVertex.Properties.OrderBy(p => p.Name).ToList();
             return entityVertex;
+        }
+
+        private static EntityProperty CreateRelationProperty(string name, object currentValue, EntityState entityState)
+        {
+            return new EntityProperty
+            {
+                Name = name,
+                CurrentValue = currentValue,
+                EntityState = entityState,
+                IsRelation = true,
+            };
         }
 
         private static IEnumerable<NavigationProperty> GetNavigationPropertiesForType(this IObjectContextAdapter context, Type entityType)

@@ -13,7 +13,7 @@
         <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
             <StackPanel Orientation="Vertical" Margin="5">
                 <TextBlock Text="{Binding Path=Header, Mode=OneWay}" />
-                <Separator />
+                <Separator Foreground="SlateGray" />
                 <ItemsControl ItemsSource="{Binding Properties}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -28,7 +28,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type graphControls:VertexControl}">
-                        <Border BorderBrush="DarkGray" BorderThickness="2" CornerRadius="10,10,10,10" Padding="{TemplateBinding Padding}"
+                        <Border BorderBrush="SlateGray" BorderThickness="2" CornerRadius="10,10,10,10" Padding="{TemplateBinding Padding}"
                                 Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}">
                             <ContentPresenter Content="{TemplateBinding Vertex}" ContentTemplate="{StaticResource EntityVertexTemplate}" />
                             <Border.Effect>
