@@ -1,30 +1,29 @@
-TODOs
+Current TODOs
 ----------------------------------------
-Create graph of DbContext entries
-	Relations
-		State: How do I display removed relations? Can I? How do I distinguish between unchanged and added?
-		Multiple relations between identical vertices are not displayed correctly (only the first relation is visible)
-
 Visualization
-	Relations should be collapsible (hide related vertices and the edges leading to them)
-	Relation tooltip should include the state of the relation and needs some styling
+	Relation tooltip should include the state of the relation (at least unchanged/added, better if I could also display removed relations)
+	Relation tooltip needs some styling
+
+Add test cases
+	assert expectations about the produced graph for different scenarios
+
+Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
+Start visualizer via extension method
+Clean up code
+
+Add NuGet package
+Update readme.md
+
+
+Future Improvements
+----------------------------------------
+Visualization
+	Multiple relations between identical vertices are not displayed correctly (only the first relation is visible)
+	Relations could be collapsible (hide related vertices and the edges leading to them)
 	Add edge lables (relation name), might be best to switch to GraphX
 		http://www.panthernet.ru/en/projects-en/graphx-en
 	Figure out a way to set ZoomBox Mode to Original (1:1) initially => GraphX might improve this, too
 		http://stackoverflow.com/questions/6458067/how-to-set-wpfextensions-zoomcontrol-default-zoom
-
-Add test cases
-	assert expectations about the produced graph
-
-Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
-
-Start visualizer via extension method
-
-Add NuGet package
-
-Clean up code
-
-Update readme.md
 
 
 References
