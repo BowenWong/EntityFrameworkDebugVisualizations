@@ -29,4 +29,11 @@ namespace EntityFramework.Debug.UnitTests.Models
         public OwnerOwned Owned { get; set; }
         public OwnerOwned Owner { get; set; }
     }
+
+    public class OwnerOwnedCollection : Entity
+    {
+        public OwnerOwnedCollection Owner { get; set; }
+
+        public List<OwnerOwnedCollection> OwnedChildren { get; set; }
+    }
 }

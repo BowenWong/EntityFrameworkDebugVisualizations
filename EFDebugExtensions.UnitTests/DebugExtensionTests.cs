@@ -1,4 +1,5 @@
-﻿using EntityFramework.Debug.UnitTests.Models;
+﻿using System.Collections.Generic;
+using EntityFramework.Debug.UnitTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
@@ -8,7 +9,41 @@ namespace EntityFramework.Debug.UnitTests
     public class DebugExtensionTests : Testbase
     {
         [TestMethod]
-        public void TestCircularRelationship()
+        public void ShouldSeeOwnerWithNewOwned()
+        {
+            using (var context = new TestDbContext())
+            {
+                var owner = new OwnerOwned();
+                context.OwnerOwneds.Add(owner);
+
+                owner.Owned = new OwnerOwned();
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(2, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwned).Name));
+                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldSeeCollectionWithNewOwned()
+        {
+            using (var context = new TestDbContext())
+            {
+                var ownedOne = new OwnerOwnedCollection();
+                var owner = new OwnerOwnedCollection {OwnedChildren = new List<OwnerOwnedCollection> {ownedOne}};
+                context.OwnerOwnedCollections.Add(owner);
+
+                var ownedTwo = new OwnerOwnedCollection();
+                owner.OwnedChildren.Add(ownedTwo);
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(3, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwnedCollection).Name));
+                Assert.IsTrue(vertices.All(v => v.Relations.Count > 0));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldSeeOwnerOwnedWithCircularRelation()
         {
             using (var context = new TestDbContext())
             {
@@ -30,7 +65,29 @@ namespace EntityFramework.Debug.UnitTests
         }
 
         [TestMethod]
-        public void TestVisualizer()
+        public void ShouldSeeCircularRelationshipInCollection()
+        {
+            using (var context = new TestDbContext())
+            {
+                var owner = new OwnerOwnedCollection();
+                context.OwnerOwnedCollections.Add(owner);
+
+                var owned = new OwnerOwnedCollection();
+                context.OwnerOwnedCollections.Add(owned);
+
+                context.SaveChanges();
+
+                owner.OwnedChildren = new List<OwnerOwnedCollection> {owned};
+                owned.Owner = owner;
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(2, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwnedCollection).Name));
+                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldShowVisualizer()
         {
             using (var context = new TestDbContext())
             {
@@ -63,7 +120,7 @@ namespace EntityFramework.Debug.UnitTests
         }
 
         [TestMethod]
-        public void TestDumpNotNull()
+        public void ShouldDumpNonNullText()
         {
             using (var context = new TestDbContext())
             {

@@ -118,15 +118,13 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 }
 
                 var targetEntityType = currentValue.GetType();
-                var entitySetName = GetEntitySetName(context, targetEntityType);
-
                 if (targetEntityType.IsArray || targetEntityType.IsGenericType)
                 {
                     var collection = (IEnumerable)currentValue;
                     int numElements = 0;
                     foreach (var element in collection)
                     {
-                        AddRelationTarget(context, existingVertices, entitySetName, element, entityVertex, navigationProperty);
+                        AddRelationTarget(context, existingVertices, element, entityVertex, navigationProperty);
                         numElements++;
                     }
 
@@ -134,13 +132,13 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 }
                 else
                 {
-                    var target = AddRelationTarget(context, existingVertices, entitySetName, currentValue, entityVertex, navigationProperty);
+                    var target = AddRelationTarget(context, existingVertices, currentValue, entityVertex, navigationProperty);
                     entityVertex.Properties.Add(new EntityProperty(navigationProperty.Name, "[" + target.KeyDescription + "]", entityVertex.State));
                 }
             }
         }
 
-        private EntityVertex AddRelationTarget(IObjectContextAdapter context, HashSet<EntityVertex> existingVertices, string entitySetName, object currentValue, EntityVertex entityVertex,
+        private static EntityVertex AddRelationTarget(IObjectContextAdapter context, HashSet<EntityVertex> existingVertices, object currentValue, EntityVertex entityVertex,
                                                       NavigationProperty navigationProperty)
         {
             var existingTarget = existingVertices.SingleOrDefault(v => v.OriginalHashCode == currentValue.GetHashCode());
@@ -151,16 +149,13 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             }
 
             ObjectStateEntry stateEntry;
-            var key = context.ObjectContext.CreateEntityKey(entitySetName, currentValue);
-            if (context.ObjectContext.ObjectStateManager.TryGetObjectStateEntry(key, out stateEntry))
-            {
-                var target = new EntityVertex(context, stateEntry, existingVertices);
-                existingVertices.Add(target);
-                entityVertex.Relations.Add(new RelationEdge(entityVertex, target, navigationProperty));
-                return target;
-            }
+            if (!context.ObjectContext.ObjectStateManager.TryGetObjectStateEntry(currentValue, out stateEntry))
+                throw new NotSupportedException("Encountered related entity that is not tracked by the ObjectStateManager.");
 
-            throw new NotSupportedException("Encountered related entity that is not tracked by the ObjectStateManager.");
+            var target = new EntityVertex(context, stateEntry, existingVertices);
+            existingVertices.Add(target);
+            entityVertex.Relations.Add(new RelationEdge(entityVertex, target, navigationProperty));
+            return target;
         }
 
         private IEnumerable<NavigationProperty> GetNavigationProperties(IObjectContextAdapter context)
@@ -169,29 +164,6 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     .GetItems<EntityType>(DataSpace.OSpace)
                     .Single(p => p.FullName == EntityType.FullName)
                     .NavigationProperties;
-        }
-
-        private static string GetEntitySetName(IObjectContextAdapter context, Type entityType)
-        {
-            Type type = entityType;
-            if (type.IsArray)
-                type = type.GetElementType();
-            if (type.IsGenericType)
-                type = type.GetGenericArguments()[0];
-
-            EntitySetBase set = null;
-
-            while (set == null && type != null)
-            {
-                set = context.ObjectContext.MetadataWorkspace
-                        .GetEntityContainer(context.ObjectContext.DefaultContainerName, DataSpace.CSpace)
-                        .EntitySets
-                        .FirstOrDefault(item => item.ElementType.Name.Equals(type.Name));
-
-                type = type.BaseType;
-            }
-
-            return set != null ? set.Name : null;
         }
 
         private List<string> GetPrimaryKeyFields(IObjectContextAdapter context)
