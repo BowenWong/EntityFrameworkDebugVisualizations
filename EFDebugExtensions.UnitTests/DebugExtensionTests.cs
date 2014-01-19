@@ -1,6 +1,4 @@
-﻿using EntityFramework.Debug.DebugVisualization;
-using EntityFramework.Debug.UnitTests.Models;
-using Microsoft.VisualStudio.DebuggerVisualizers;
+﻿using EntityFramework.Debug.UnitTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityFramework.Debug.UnitTests
@@ -35,15 +33,10 @@ namespace EntityFramework.Debug.UnitTests
                 secondChild.Name = "Removed child";
                 parent.Children.Remove(secondChild);
 
-                ShowVisualizer(context);
+                context.ShowVisualizer();
 
                 context.SaveChanges();
             }
-        }
-
-        private static void ShowVisualizer(object obj)
-        {
-            new VisualizerDevelopmentHost(obj, typeof(ContextDebuggerVisualizer), typeof(ContextVisualizerObjectSource)).ShowVisualizer();
         }
 
         [TestMethod]

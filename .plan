@@ -7,9 +7,7 @@ Add test cases
 	assert expectations about the produced graph for different scenarios
 
 Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
-Start visualizer via extension method
 
-Update readme.md (add better description, change repo name and reference used projects!)
 Add NuGet package
 
 

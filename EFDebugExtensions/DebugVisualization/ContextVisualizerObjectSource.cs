@@ -1,8 +1,7 @@
-﻿using System.Data.Entity.Core.Objects;
+﻿using System;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using EntityFramework.Debug.DebugVisualization.Graph;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 using Newtonsoft.Json;
 
@@ -12,12 +11,10 @@ namespace EntityFramework.Debug.DebugVisualization
     {
         public override void GetData(object target, Stream outgoingData)
         {
-            var contextAdapter = target as IObjectContextAdapter;
-            var context = contextAdapter != null ? contextAdapter.ObjectContext : target as ObjectContext;
-            if (context == null)
-                return;
+            if (!(target is IObjectContextAdapter))
+                throw new ArgumentException("This debugger visualizer only works with an IObjectContextAdapter.");
 
-            var vertices = context.GetEntityVertices();
+            var vertices = ((IObjectContextAdapter)target).ObjectContext.GetEntityVertices();
             var json = JsonConvert.SerializeObject(vertices, new JsonSerializerSettings{PreserveReferencesHandling = PreserveReferencesHandling.All});
 
             var formatter = new BinaryFormatter();

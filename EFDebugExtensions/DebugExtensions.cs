@@ -5,17 +5,14 @@ using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
+using EntityFramework.Debug.DebugVisualization;
 using EntityFramework.Debug.DebugVisualization.Graph;
+using Microsoft.VisualStudio.DebuggerVisualizers;
 
 namespace EntityFramework.Debug
 {
     public static class DebugExtensions
     {
-        public static string DumpTrackedEntities(this DbContext context)
-        {
-            return ((IObjectContextAdapter)context).DumpTrackedEntities();
-        }
-
         public static string DumpTrackedEntities(this IObjectContextAdapter context)
         {
             var trackedEntities = context.ObjectContext.ObjectStateManager
@@ -88,6 +85,11 @@ namespace EntityFramework.Debug
                 return toTrim;
 
             return toTrim.Substring(0, maxLength) + " [..]";
+        }
+
+        public static void ShowVisualizer(this IObjectContextAdapter context)
+        {
+            new VisualizerDevelopmentHost(context, typeof(ContextDebuggerVisualizer), typeof(ContextVisualizerObjectSource)).ShowVisualizer();
         }
 
         public static List<EntityVertex> GetEntityVertices(this ObjectContext context)
