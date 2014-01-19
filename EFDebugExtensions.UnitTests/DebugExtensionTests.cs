@@ -1,11 +1,34 @@
 ﻿using EntityFramework.Debug.UnitTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace EntityFramework.Debug.UnitTests
 {
     [TestClass]
     public class DebugExtensionTests : Testbase
     {
+        [TestMethod]
+        public void TestCircularRelationship()
+        {
+            using (var context = new TestDbContext())
+            {
+                var owner = new OwnerOwned();
+                context.OwnerOwneds.Add(owner);
+
+                var owned = new OwnerOwned();
+                context.OwnerOwneds.Add(owned);
+
+                context.SaveChanges();
+
+                owner.Owned = owned;
+                owned.Owner = owner;
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(2, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwned).Name));
+                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
+            }
+        }
+
         [TestMethod]
         public void TestVisualizer()
         {

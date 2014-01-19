@@ -23,4 +23,10 @@ namespace EntityFramework.Debug.UnitTests.Models
             Children = new List<EntityWithChild>();
         }
     }
+
+    public class OwnerOwned : Entity
+    {
+        public OwnerOwned Owned { get; set; }
+        public OwnerOwned Owner { get; set; }
+    }
 }

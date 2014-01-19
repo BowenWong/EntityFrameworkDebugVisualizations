@@ -28,6 +28,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             AddProperties(context, entry);
 
             Relations = new List<RelationEdge>();
+            existingVertices.Add(this);
             AddRelations(context, entry, existingVertices, EntityType, this);
 
             Properties = Properties.OrderBy(p => p.Name).ToList();
@@ -139,7 +140,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             }
         }
 
-        private static EntityVertex AddRelationTarget(IObjectContextAdapter context, HashSet<EntityVertex> existingVertices, string entitySetName, object currentValue, EntityVertex entityVertex,
+        private EntityVertex AddRelationTarget(IObjectContextAdapter context, HashSet<EntityVertex> existingVertices, string entitySetName, object currentValue, EntityVertex entityVertex,
                                                       NavigationProperty navigationProperty)
         {
             var existingTarget = existingVertices.SingleOrDefault(v => v.OriginalHashCode == currentValue.GetHashCode());

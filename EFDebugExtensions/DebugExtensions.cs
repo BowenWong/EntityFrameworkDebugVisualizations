@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
@@ -16,7 +15,7 @@ namespace EntityFramework.Debug
         public static string DumpTrackedEntities(this IObjectContextAdapter context)
         {
             var builder = new StringBuilder();
-            foreach (var stateGroup in context.ObjectContext.GetEntityVertices().GroupBy(e => e.State))
+            foreach (var stateGroup in context.GetEntityVertices().GroupBy(e => e.State))
             {
                 builder.AppendLine(stateGroup.Key.ToString());
                 builder.AppendLine("----------------");
@@ -51,15 +50,16 @@ namespace EntityFramework.Debug
             new VisualizerDevelopmentHost(context, typeof(ContextDebuggerVisualizer), typeof(ContextVisualizerObjectSource)).ShowVisualizer();
         }
 
-        internal static List<EntityVertex> GetEntityVertices(this ObjectContext context)
+        public static List<EntityVertex> GetEntityVertices(this IObjectContextAdapter context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            context.DetectChanges();
+            context.ObjectContext.DetectChanges();
 
             var vertices = new HashSet<EntityVertex>();
             var stateEntries = context
+                    .ObjectContext
                     .ObjectStateManager
                     .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
 #warning what about entry.IsRelationship? are those deleted references? Einträge in Koppeltabellen?

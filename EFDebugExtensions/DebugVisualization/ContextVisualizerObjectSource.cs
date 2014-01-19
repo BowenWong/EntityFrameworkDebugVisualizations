@@ -14,7 +14,7 @@ namespace EntityFramework.Debug.DebugVisualization
             if (!(target is IObjectContextAdapter))
                 throw new ArgumentException("This debugger visualizer only works with an IObjectContextAdapter.");
 
-            var vertices = ((IObjectContextAdapter)target).ObjectContext.GetEntityVertices();
+            var vertices = ((IObjectContextAdapter)target).GetEntityVertices();
             var json = JsonConvert.SerializeObject(vertices, new JsonSerializerSettings{PreserveReferencesHandling = PreserveReferencesHandling.All});
 
             var formatter = new BinaryFormatter();
