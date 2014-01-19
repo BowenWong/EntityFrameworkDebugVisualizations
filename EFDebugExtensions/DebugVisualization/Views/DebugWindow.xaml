@@ -55,17 +55,17 @@
         </Style>
     </Window.Resources>
     
-    <Grid Background="LightBlue">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="130" />
         </Grid.ColumnDefinitions>
         
-        <controls:ZoomControl Grid.Column="0" x:Name="ZoomBox" x:FieldModifier="public" ZoomBoxOpacity="0.15">
+        <controls:ZoomControl Grid.Column="0" Grid.ColumnSpan="2" ZoomBoxOpacity="0.5">
             <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" />
         </controls:ZoomControl>
         
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="1" Opacity="0.5">
             <StackPanel>
                 <TextBlock Text="Filter by Entity State" Margin="5,0"/>
                 <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="5,0,0,0" />

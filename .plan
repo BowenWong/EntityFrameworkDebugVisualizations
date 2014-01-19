@@ -11,7 +11,9 @@ Filters
 Visualization
 	Display filters a bit nicer and as an overlay like the zoom controls
 	Relation tooltip needs styling (and should include the state of the relation and its multiplicity?)
-	Check if setting the parameters of the OverlapRemovalAlgorithm improves the graph layout
+	Add edge lables (relation name), might be best to switch to GraphX
+		http://www.panthernet.ru/en/projects-en/graphx-en
+	Check if setting the parameters of the OverlapRemovalAlgorithm improves the graph layout (try other LayoutAlgorithms)
 	Figure out a way to set ZoomBox Mode to Original (1:1) initially
 		http://stackoverflow.com/questions/6458067/how-to-set-wpfextensions-zoomcontrol-default-zoom
 
