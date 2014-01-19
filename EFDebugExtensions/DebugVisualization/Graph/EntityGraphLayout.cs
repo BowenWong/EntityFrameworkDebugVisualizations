@@ -8,7 +8,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         public EntityGraphLayout()
         {
             OverlapRemovalAlgorithmType = "FSA";
-            OverlapRemovalParameters = new OverlapRemovalParameters {HorizontalGap = 20, VerticalGap = 20};
+            OverlapRemovalParameters = new OverlapRemovalParameters {HorizontalGap = 30, VerticalGap = 30};
             HighlightAlgorithmType = "None";
 
             DestructionTransition = null;

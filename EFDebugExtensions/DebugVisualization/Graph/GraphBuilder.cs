@@ -14,20 +14,29 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
     {
         public static List<EntityVertex> GetEntityVertices(this ObjectContext context)
         {
-            var existingVertices = new HashSet<EntityVertex>();
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            context.DetectChanges();
+
             var stateEntries = context
                     .ObjectStateManager
-                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
-                    .Where(entry => entry.State != EntityState.Detached);
+                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged);
 
+            var vertices = new HashSet<EntityVertex>();
             foreach (var entry in stateEntries)
-                CreateEntityVertex(context, entry, existingVertices);
+                CreateEntityVertex(context, entry, vertices);
 
-            return existingVertices.ToList();
+            return vertices.ToList();
         }
 
         private static EntityVertex CreateEntityVertex(IObjectContextAdapter context, ObjectStateEntry entry, HashSet<EntityVertex> existingVertices)
         {
+            if (entry == null)
+                throw new ArgumentNullException("entry");
+            if (existingVertices == null)
+                throw new ArgumentNullException("existingVertices");
+
 #warning what about entry.IsRelationship? are those deleted references? Einträge in Koppeltabellen?
             if (entry.IsRelationship)
                 return null;
@@ -68,12 +77,12 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 var currentValue = entityType.GetProperty(navigationProperty.Name).GetValue(entry.Entity);
                 if (currentValue == null)
                 {
-                    entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, null, entityVertex.State));
+                    entityVertex.Properties.Add(new EntityProperty(navigationProperty.Name, null, entityVertex.State));
                     continue;
                 }
 
                 var targetEntityType = currentValue.GetType();
-                var entitySetName = context.GetEntitySetName(targetEntityType);
+                var entitySetName = context.GetEntitySetNameForType(targetEntityType);
 
                 if (targetEntityType.IsArray || targetEntityType.IsGenericType)
                 {
@@ -85,13 +94,12 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                         numElements++;
                     }
 
-                    entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, "Collection [" + numElements + " elements]", entityVertex.State));
-
+                    entityVertex.Properties.Add(new EntityProperty(navigationProperty.Name, "Collection [" + numElements + " elements]", entityVertex.State));
                 }
                 else
                 {
                     var target = AddRelationTarget(context, existingVertices, entitySetName, currentValue, entityVertex, navigationProperty);
-                    entityVertex.Properties.Add(CreateRelationProperty(navigationProperty.Name, "[" + target.KeyDescription + "]", entityVertex.State));
+                    entityVertex.Properties.Add(new EntityProperty(navigationProperty.Name, "[" + target.KeyDescription + "]", entityVertex.State));
                 }
             }
 
@@ -103,26 +111,19 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                                                       NavigationProperty navigationProperty)
         {
             var key = context.ObjectContext.CreateEntityKey(entitySetName, currentValue);
-            var targetEntity = context.ObjectContext
-                    .ObjectStateManager
-                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
-                    .SingleOrDefault(e => e.EntityKey == key);
+            ObjectStateEntry stateEntry;
+            if (!context.ObjectContext.ObjectStateManager.TryGetObjectStateEntry(key, out stateEntry))
+            {
+#warning how to proceed correctly here?
+                return null;
+            }
 
-            EntityVertex target = CreateEntityVertex(context, targetEntity, existingVertices);
+            EntityVertex target = CreateEntityVertex(context, stateEntry, existingVertices);
             entityVertex.AddRelation(navigationProperty, target);
             return target;
         }
 
-        private static EntityProperty CreateRelationProperty(string name, object currentValue, EntityState entityState)
-        {
-            return new EntityProperty
-            {
-                Name = name,
-                CurrentValue = currentValue,
-                EntityState = entityState,
-                IsRelation = true,
-            };
-        }
+#warning move the next four methods to a separate file
 
         private static IEnumerable<NavigationProperty> GetNavigationPropertiesForType(this IObjectContextAdapter context, Type entityType)
         {
@@ -158,7 +159,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     .ToList();
         }
 
-        private static string GetEntitySetName(this IObjectContextAdapter context, Type entityType)
+        private static string GetEntitySetNameForType(this IObjectContextAdapter context, Type entityType)
         {
             Type type = entityType;
             if (type.IsArray)

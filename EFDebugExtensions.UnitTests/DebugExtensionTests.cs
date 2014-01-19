@@ -11,13 +11,12 @@ namespace EntityFramework.Debug.UnitTests
         [TestMethod]
         public void TestVisualizer()
         {
-            EntityWithChild parent;
-
             using (var context = new TestDbContext())
             {
-                parent = context.EntitiesWithChild.Add(new EntityWithChild{Name = "Parent"});
+                var parent = context.EntitiesWithChild.Add(new EntityWithChild{Name = "Parent"});
                 var child = context.EntitiesWithChild.Add(new EntityWithChild{Name = "FavoriteChild"});
-                parent.Children.Add(new EntityWithChild {Name = "2nd Child"});
+                var secondChild = new EntityWithChild { Name = "2nd Child" };
+                parent.Children.Add(secondChild);
                 parent.Children.Add(new EntityWithChild {Name = "3nd Child"});
                 parent.Children.Add(new EntityWithChild {Name = "4th Child"});
                 context.SaveChanges();
@@ -25,16 +24,16 @@ namespace EntityFramework.Debug.UnitTests
                 parent.FavoriteChild = child;
                 parent.Children.Add(child);
                 context.SaveChanges();
-            }
 
-            using (var context = new TestDbContext())
-            {
-                context.EntitiesWithChild.Attach(parent);
                 var toDelete = context.EntitiesWithChild.Add(new EntityWithChild {Name = "Deleted"});
                 context.SaveChanges();
 
                 context.EntitiesWithChild.Remove(toDelete);
-                context.EntitiesWithChild.Add(new EntityWithChild {Name = "Added"});
+                parent.Children.Add(new EntityWithChild { Name = "1st addeded Child" });
+                parent.Children.Add(new EntityWithChild { Name = "2nd addeded Child" });
+
+                secondChild.Name = "Removed child";
+                parent.Children.Remove(secondChild);
 
                 ShowVisualizer(context);
 

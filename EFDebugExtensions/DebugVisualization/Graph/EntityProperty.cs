@@ -22,6 +22,16 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             get { return GetDescription(); }
         }
 
+        public EntityProperty() { }
+
+        public EntityProperty(string name, object currentValue, EntityState entityState)
+        {
+            Name = name;
+            CurrentValue = currentValue;
+            EntityState = entityState;
+            IsRelation = true;
+        }
+
         private string GetDescription()
         {
             switch (EntityState)
@@ -33,10 +43,21 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 case EntityState.Deleted:
                     return Name + ": " + TrimToMaxLength(OriginalValue);
                 case EntityState.Modified:
-                    return Name + ": " + TrimToMaxLength(CurrentValue) + " (changed from " + TrimToMaxLength(OriginalValue) + ")";
+                    return Name + ": " + TrimToMaxLength(CurrentValue) + (HasValueChanged() ? " (changed from " + TrimToMaxLength(OriginalValue) + ")" : "");
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private bool HasValueChanged()
+        {
+            if (OriginalValue == null && CurrentValue == null)
+                return false;
+
+            if (OriginalValue == null ^ CurrentValue == null)
+                return true;
+
+            return !CurrentValue.Equals(OriginalValue);
         }
 
         private static string TrimToMaxLength(object value)

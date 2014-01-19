@@ -3,6 +3,7 @@ Current TODOs
 Visualization
 	Relation tooltip should include the state of the relation (at least unchanged/added, better if I could also display removed relations)
 	Relation tooltip needs some styling
+	Hightlight changed properties
 
 Add test cases
 	assert expectations about the produced graph for different scenarios
