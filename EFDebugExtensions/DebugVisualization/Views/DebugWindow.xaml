@@ -45,8 +45,8 @@
         <Style TargetType="{x:Type graphControls:EdgeControl}">
             <Style.Resources>
                 <ToolTip x:Key="ToolTipContent">
-                    <StackPanel>
-                        <TextBlock Text="{Binding Name}"/>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding TooltipText}"/>
                     </StackPanel>
                 </ToolTip>
             </Style.Resources>
@@ -65,7 +65,7 @@
             <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
         </controls:ZoomControl>
         
-        <Grid Grid.Column="1" Opacity="0.5">
+        <Grid Grid.Column="1" Opacity="0.75">
             <StackPanel>
                 <TextBlock Text="Filter by Entity State" Margin="5,0,0,5"/>
                 <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="10,0,0,0" />

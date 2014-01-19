@@ -109,7 +109,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     .SingleOrDefault(e => e.EntityKey == key);
 
             EntityVertex target = CreateEntityVertex(context, targetEntity, existingVertices);
-            entityVertex.AddRelation(navigationProperty.Name, target);
+            entityVertex.AddRelation(navigationProperty, target);
             return target;
         }
 

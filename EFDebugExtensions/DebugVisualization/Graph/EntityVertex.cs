@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Diagnostics;
 using System.Linq;
 
@@ -62,9 +63,10 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             get { return string.Format("{0} [{1}{2}]", TypeName, HasTemporaryKey ? "" : KeyDescription + ", ", State); }
         }
 
-        public void AddRelation(string relationName, EntityVertex target)
+        public void AddRelation(NavigationProperty navigationProperty, EntityVertex target)
         {
-            Relations.Add(new RelationEdge(this, target){Name = relationName});
+            var multiplicity = string.Format("{0}-to-{1}", navigationProperty.FromEndMember.RelationshipMultiplicity, navigationProperty.ToEndMember.RelationshipMultiplicity);
+            Relations.Add(new RelationEdge(this, target) { Name = navigationProperty.Name, Multiplicity = multiplicity, DeleteBehavior = navigationProperty.ToEndMember.DeleteBehavior });
         }
     }
 }
