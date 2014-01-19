@@ -51,6 +51,10 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         public int OriginalHashCode { get; set; }
 
         public List<EntityProperty> Properties { get; set; }
+
+        public List<EntityProperty> ScalarProperties { get { return Properties.Where(p => !p.IsRelation).ToList(); } }
+        public List<EntityProperty> RelationProperties { get { return Properties.Where(p => p.IsRelation).ToList(); } }
+
         public List<RelationEdge> Relations { get; set; }
 
         public string KeyDescription

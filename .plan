@@ -6,8 +6,7 @@ Create graph of DbContext entries
 		Multiple relations between identical vertices are not displayed correctly (only the first relation is visible)
 
 Visualization
-	Properties and Relations should be in different expander groups
-	Relations should be collapsible
+	Relations should be collapsible (hide related vertices and the edges leading to them)
 	Relation tooltip should include the state of the relation and needs some styling
 	Add edge lables (relation name), might be best to switch to GraphX
 		http://www.panthernet.ru/en/projects-en/graphx-en
