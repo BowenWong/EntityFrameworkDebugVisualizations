@@ -6,10 +6,7 @@ Visualization
 Add test cases
 	assert expectations about the produced graph for different scenarios
 
-Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
-
 Add NuGet package
-
 
 Future Improvements
 ----------------------------------------
@@ -21,22 +18,3 @@ Visualization
 		http://www.panthernet.ru/en/projects-en/graphx-en
 	Figure out a way to set ZoomBox Mode to Original (1:1) initially => GraphX might improve this, too
 		http://stackoverflow.com/questions/6458067/how-to-set-wpfextensions-zoomcontrol-default-zoom
-
-
-References
-----------------------------------------
-WPF Debug visualizer
-	http://www.codeproject.com/Articles/73236/Writing-a-Debugger-Visualizer-in-WPF-Part-1
-	http://www.codeproject.com/Articles/85731/Writing-a-Debugger-Visualizer-in-WPF-Part-2
-
-GraphSharp
-		http://graphsharp.codeplex.com/
-		http://sachabarbs.wordpress.com/2010/08/31/pretty-cool-graphs-in-wpf/
-
-DGML?
-	http://en.wikipedia.org/wiki/DGML
-	http://blogs.msdn.com/b/mohamedg/archive/2010/03/02/visual-gcroot-via-dgml.aspx
-	http://blogs.infosupport.com/creating-custom-dgml-diagrams-using-the-progression-api/
-
-NodeXL
-	https://nodexl.codeplex.com/

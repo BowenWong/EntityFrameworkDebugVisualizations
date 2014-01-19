@@ -15,84 +15,43 @@ namespace EntityFramework.Debug
     {
         public static string DumpTrackedEntities(this IObjectContextAdapter context)
         {
-            var trackedEntities = context.ObjectContext.ObjectStateManager
-                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
-#warning what about entry.IsRelationship? are those deleted references?
-                    .Where(entry => !entry.IsRelationship && entry.State != EntityState.Detached && entry.Entity != null)
-                    .SelectMany(entry => (entry.State != EntityState.Deleted ? entry.CurrentValues : (CurrentValueRecord) entry.OriginalValues)
-                                        .DataRecordInfo
-                                        .FieldMetadata
-                                        .Select((field, index) => new
-                                        {
-                                            entry.State,
-                                            EntityType = entry.Entity.GetType(),
-                                            HashCode = entry.Entity.GetHashCode(),
-                                            PropertyName = entry.CurrentValues.DataRecordInfo.FieldMetadata[index].FieldType.Name,
-                                            CurrentValue = entry.State != EntityState.Deleted ? entry.CurrentValues.GetValue(index) : null,
-                                            OriginalValue = entry.State != EntityState.Added ? entry.OriginalValues.GetValue(index) : null,
-#warning this contains information about the relations => do I have something like original and current? what about the name?
-                                            Rels = entry.RelationshipManager.GetAllRelatedEnds()
-                                        }))
-                    .OrderBy(e => e.State).ThenBy(e => e.EntityType.Name)
-                    .ToList();
-
             var builder = new StringBuilder();
-
-            EntityState? previousState = null;
-            int previousHashCode = 0;
-            foreach (var entity in trackedEntities)
+            foreach (var stateGroup in context.ObjectContext.GetEntityVertices().GroupBy(e => e.State))
             {
-                if (entity.State != previousState)
+                builder.AppendLine(stateGroup.Key.ToString());
+                builder.AppendLine("----------------");
+
+                foreach (var entity in stateGroup)
                 {
-                    if (builder.Length > 0)
-                        builder.AppendLine();
+                    builder.AppendFormat("{0} (# {1})", entity.EntityType.Name, entity.OriginalHashCode).AppendLine();
 
-                    builder.AppendLine(entity.State.ToString());
-                    builder.AppendLine("----------");
-                }
-                previousState = entity.State;
+                    builder.Indent(4).AppendLine("Properties:");
+                    foreach (var property in entity.ScalarProperties)
+                        builder.Indent(8).AppendLine(property.Description);
 
-                if (entity.HashCode != previousHashCode)
-                {
-                    if (previousHashCode > 0)
-                        builder.AppendLine();
-                    builder.AppendFormat("{0} (# {1})", entity.EntityType.Name, entity.HashCode).AppendLine();
-                }
+                    builder.Indent(4).AppendLine("Relations:");
+                    foreach (var property in entity.RelationProperties)
+                        builder.Indent(8).AppendLine(property.Description);
 
-                previousHashCode = entity.HashCode;
-
-                switch (entity.State)
-                {
-                    case EntityState.Added:
-                        builder.AppendFormat("  {0}: '{1}'", entity.PropertyName, TrimToMaxLength(entity.CurrentValue.ToString())).AppendLine();
-                        break;
-                    case EntityState.Deleted:
-                        builder.AppendFormat("  {0}: '{1}'", entity.PropertyName, TrimToMaxLength(entity.OriginalValue.ToString())).AppendLine();
-                        break;
-                    default:
-                        builder.AppendFormat("  {0}: changed from '{1}' to '{2}'", entity.PropertyName, TrimToMaxLength(entity.OriginalValue.ToString()),
-                                             TrimToMaxLength(entity.CurrentValue.ToString())).AppendLine();
-                        break;
+                    builder.AppendLine();
                 }
             }
             return builder.ToString();
         }
 
-        private static string TrimToMaxLength(string toTrim)
+        private static StringBuilder Indent(this StringBuilder builder, int numSpaces)
         {
-            const int maxLength = 150;
-            if (toTrim.Length <= maxLength)
-                return toTrim;
-
-            return toTrim.Substring(0, maxLength) + " [..]";
+            for (int i = 0; i < numSpaces; i++)
+                builder.Append(" ");
+            return builder;
         }
-
+        
         public static void ShowVisualizer(this IObjectContextAdapter context)
         {
             new VisualizerDevelopmentHost(context, typeof(ContextDebuggerVisualizer), typeof(ContextVisualizerObjectSource)).ShowVisualizer();
         }
 
-        public static List<EntityVertex> GetEntityVertices(this ObjectContext context)
+        internal static List<EntityVertex> GetEntityVertices(this ObjectContext context)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
