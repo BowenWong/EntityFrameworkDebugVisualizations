@@ -16,8 +16,8 @@ and
 
 The first extension method just produces a string with a textual representation of the entities tracked by the context, while the second visualizes the entities and their relations graphically (as presented in the screenshot above).
 
-The graphical version is implemented as a DebuggerVisualizer. At the moment there is no easy (packaged) way to install it. You'll either have to download the source, compile it and copy the DLLs manually or just copy the DLLs after NuGet has installed the package.
+The graphical version is implemented as a DebuggerVisualizer. At the moment there is no easy (packaged) way to install it. You'll either have to download the source, compile it and copy the assemblies manually or just copy the assemblies after NuGet has installed the package.
 
-The NuGet package for the project can be found at https://www.nuget.org/packages/EntityFrameworkDebugVisualization/.
+There also is a [NuGet package](https://www.nuget.org/packages/EntityFrameworkDebugVisualization/) to install the project assemblies.
 
-This project uses GraphSharp (https://graphsharp.codeplex.com/) to display the entity graph and Json.Net (http://james.newtonking.com/json) to serialize it.
+This project uses [GraphSharp](https://graphsharp.codeplex.com/) to display the entity graph and [Json.Net](http://james.newtonking.com/json) to serialize it.
