@@ -1,4 +1,5 @@
-﻿using GraphSharp.Controls;
+﻿using GraphSharp.Algorithms.OverlapRemoval;
+using GraphSharp.Controls;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
@@ -6,8 +7,8 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
     {
         public EntityGraphLayout()
         {
-            LayoutAlgorithmType = "ISOM"; // "EfficientSugiyama"
             OverlapRemovalAlgorithmType = "FSA";
+            OverlapRemovalParameters = new OverlapRemovalParameters {HorizontalGap = 20, VerticalGap = 20};
             HighlightAlgorithmType = "None";
 
             DestructionTransition = null;

@@ -62,25 +62,28 @@
         </Grid.ColumnDefinitions>
         
         <controls:ZoomControl Grid.Column="0" Grid.ColumnSpan="2" ZoomBoxOpacity="0.5">
-            <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" />
+            <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
         </controls:ZoomControl>
         
         <Grid Grid.Column="1" Opacity="0.5">
             <StackPanel>
-                <TextBlock Text="Filter by Entity State" Margin="5,0"/>
-                <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="5,0,0,0" />
-                <CheckBox IsChecked="{Binding ShowDeletedEntities, Mode=TwoWay}" Content="Deleted" Margin="5,0,0,0" />
-                <CheckBox IsChecked="{Binding ShowModifiedEntities, Mode=TwoWay}" Content="Modified" Margin="5,0,0,0" />
-                <CheckBox IsChecked="{Binding ShowUnchangedEntities, Mode=TwoWay}" Content="Unchanged" Margin="5,0,0,0" />
+                <TextBlock Text="Filter by Entity State" Margin="5,0,0,5"/>
+                <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="10,0,0,0" />
+                <CheckBox IsChecked="{Binding ShowDeletedEntities, Mode=TwoWay}" Content="Deleted" Margin="10,0,0,0" />
+                <CheckBox IsChecked="{Binding ShowModifiedEntities, Mode=TwoWay}" Content="Modified" Margin="10,0,0,0" />
+                <CheckBox IsChecked="{Binding ShowUnchangedEntities, Mode=TwoWay}" Content="Unchanged" Margin="10,0,0,0" />
 
-                <TextBlock Text="Filter by Entity Type" Margin="5,15,0,0"/>
-                <ItemsControl ItemsSource="{Binding EntityTypes}" Margin="5,0,0,0">
+                <TextBlock Text="Filter by Entity Type" Margin="5,15,0,5"/>
+                <ItemsControl ItemsSource="{Binding EntityTypes}" Margin="10,0,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding TypeName}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <TextBlock Text="Layout algorithm" Margin="5,15,0,5"/>
+                <ComboBox ItemsSource="{Binding AlgorithmTypes}" SelectedItem="{Binding SelectedAlgorithmType, Mode=TwoWay}" Margin="10,0,5,0" />
             </StackPanel>
         </Grid>
     </Grid>

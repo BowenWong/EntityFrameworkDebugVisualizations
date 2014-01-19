@@ -48,6 +48,19 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
         private readonly List<EntityVertex> _vertices;
         private List<EntityVertex> _currentlyVisibleVertices;
 
+        private readonly List<string> _algorithmTypes;
+        private string _selectedAlgorithmType = "KK";
+        public List<string> AlgorithmTypes
+        {
+            get { return _algorithmTypes; }
+        }
+
+        public string SelectedAlgorithmType
+        {
+            get { return _selectedAlgorithmType; }
+            set { _selectedAlgorithmType = value; OnPropertyChanged(); }
+        }
+
         public VisualizerViewModel(List<EntityVertex> vertices)
         {
             if (vertices == null)
@@ -55,6 +68,7 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
 
             _vertices = vertices;
             EntityTypes = _vertices.Select(v => v.TypeName).Distinct().Select(typeName => new EntityTypeFilterViewModel(typeName, UpdateGraph)).ToList();
+            _algorithmTypes = new EntityGraphLayout().LayoutAlgorithmFactory.AlgorithmTypes.ToList();
 
             Graph = new EntityGraph();
             UpdateGraph();
