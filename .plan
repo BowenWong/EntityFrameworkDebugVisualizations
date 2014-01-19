@@ -5,9 +5,6 @@ Create graph of DbContext entries
 		State: How do I display removed relations? Can I? How do I distinguish between unchanged and added?
 		Multiple relations between identical vertices are not displayed correctly (only the first is visible)
 
-Filters
-	re-implement using differences instead of updating the whole graph
-
 Visualization
 	Display filters a bit nicer and as an overlay like the zoom controls
 	Relation tooltip needs styling (and should include the state of the relation and its multiplicity?)

@@ -9,6 +9,9 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             LayoutAlgorithmType = "ISOM"; // "EfficientSugiyama"
             OverlapRemovalAlgorithmType = "FSA";
             HighlightAlgorithmType = "None";
+
+            DestructionTransition = null;
+            CreationTransition = null;
         }
     }
 }

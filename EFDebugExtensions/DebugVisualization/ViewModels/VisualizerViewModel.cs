@@ -46,6 +46,7 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
         public List<EntityTypeFilterViewModel> EntityTypes { get; set; }
 
         private readonly List<EntityVertex> _vertices;
+        private List<EntityVertex> _currentlyVisibleVertices;
 
         public VisualizerViewModel(List<EntityVertex> vertices)
         {
@@ -55,13 +56,12 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
             _vertices = vertices;
             EntityTypes = _vertices.Select(v => v.TypeName).Distinct().Select(typeName => new EntityTypeFilterViewModel(typeName, UpdateGraph)).ToList();
 
+            Graph = new EntityGraph();
             UpdateGraph();
         }
 
         private void UpdateGraph()
         {
-            Graph = new EntityGraph();
-
             var typeWhitelist = EntityTypes.Where(e => e.IsSelected).Select(e => e.TypeName).ToList();
             var filteredVertices = _vertices
                     .Where(v => _showAddedEntities || v.State != EntityState.Added)
@@ -71,12 +71,18 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
                     .Where(v => typeWhitelist.Contains(v.TypeName))
                     .ToList();
 
-            Graph.AddVertexRange(filteredVertices);
-#warning re-implement filtering using Graph.RemoveVertexIf()
+            var toAdd = filteredVertices.Except(_currentlyVisibleVertices ?? new List<EntityVertex>()).ToList();
+            var toRemove = (_currentlyVisibleVertices ?? new List<EntityVertex>()).Where(v => !filteredVertices.Contains(v)).ToList();
 
-            var filteredEdges = filteredVertices.SelectMany(v => v.Relations).Where(r => filteredVertices.Contains(r.Target));
+            Graph.RemoveVertexIf(v => toRemove.Contains(v));
+            Graph.AddVertexRange(toAdd);
+
+            var filteredEdges = toAdd.SelectMany(v => v.Relations).Where(r => toAdd.Contains(r.Target));
             Graph.AddEdgeRange(filteredEdges);
-#warning re-implement filtering using Graph.RemoveEdgeIf()
+
+            Graph.RemoveEdgeIf(edge => toRemove.Contains(edge.Source) || toRemove.Contains(edge.Target));
+
+            _currentlyVisibleVertices = filteredVertices;
         }
     }
 }
