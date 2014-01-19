@@ -9,7 +9,16 @@
     
     <Window.Resources>
         <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter"/>
-        
+
+        <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
+            <TextBlock x:Name="description" Text="{Binding Description}" />
+            <DataTemplate.Triggers>
+                <DataTrigger Value="True" Binding="{Binding HasValueChanged}">
+                    <Setter TargetName="description" Property="Foreground" Value="DarkRed" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
         <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
             <StackPanel Orientation="Vertical" Margin="5">
                 <TextBlock Text="{Binding Path=Header, Mode=OneWay}" />
@@ -24,13 +33,7 @@
                 </ItemsControl>
                 <Separator Foreground="SlateGray" />
                 <Expander Header="Properties" IsExpanded="false">
-                    <ItemsControl ItemsSource="{Binding ScalarProperties}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Description}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding ScalarProperties}" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
                 </Expander>
             </StackPanel>
         </DataTemplate>

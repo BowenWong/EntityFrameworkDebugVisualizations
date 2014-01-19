@@ -2,8 +2,6 @@ Current TODOs
 ----------------------------------------
 Visualization
 	Relation tooltip should include the state of the relation (at least unchanged/added, better if I could also display removed relations)
-	Relation tooltip needs some styling
-	Hightlight changed properties
 
 Add test cases
 	assert expectations about the produced graph for different scenarios
@@ -11,14 +9,15 @@ Add test cases
 Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 Start visualizer via extension method
 
+Update readme.md (add better description, change repo name and reference used projects!)
 Add NuGet package
-Update readme.md
 
 
 Future Improvements
 ----------------------------------------
 Visualization
 	Multiple relations between identical vertices are not displayed correctly (only the first relation is visible)
+	Relation tooltip needs some styling
 	Relations could be collapsible (hide related vertices and the edges leading to them)
 	Add edge lables (relation name), might be best to switch to GraphX
 		http://www.panthernet.ru/en/projects-en/graphx-en

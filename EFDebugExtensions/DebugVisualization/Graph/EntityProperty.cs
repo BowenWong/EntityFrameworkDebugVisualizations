@@ -54,21 +54,24 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 case EntityState.Deleted:
                     return Name + ": " + TrimToMaxLength(OriginalValue);
                 case EntityState.Modified:
-                    return Name + ": " + TrimToMaxLength(CurrentValue) + (HasValueChanged() ? " (changed from " + TrimToMaxLength(OriginalValue) + ")" : "");
+                    return Name + ": " + TrimToMaxLength(CurrentValue) + (HasValueChanged ? " (changed from " + TrimToMaxLength(OriginalValue) + ")" : "");
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private bool HasValueChanged()
+        public bool HasValueChanged
         {
-            if (OriginalValue == null && CurrentValue == null)
-                return false;
+            get
+            {
+                if (OriginalValue == null && CurrentValue == null)
+                    return false;
 
-            if (OriginalValue == null ^ CurrentValue == null)
-                return true;
+                if (OriginalValue == null ^ CurrentValue == null)
+                    return true;
 
-            return !CurrentValue.Equals(OriginalValue);
+                return !CurrentValue.Equals(OriginalValue);
+            }
         }
 
         private static string TrimToMaxLength(object value)
