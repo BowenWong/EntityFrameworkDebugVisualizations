@@ -1,8 +1,11 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
+using EntityFramework.Debug.DebugVisualization.Graph;
 
 namespace EntityFramework.Debug
 {
@@ -85,6 +88,31 @@ namespace EntityFramework.Debug
                 return toTrim;
 
             return toTrim.Substring(0, maxLength) + " [..]";
+        }
+
+        public static List<EntityVertex> GetEntityVertices(this ObjectContext context)
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+
+            context.DetectChanges();
+
+            var vertices = new HashSet<EntityVertex>();
+            var stateEntries = context
+                    .ObjectStateManager
+                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
+#warning what about entry.IsRelationship? are those deleted references? Einträge in Koppeltabellen?
+                    .Where(e => !e.IsRelationship);
+            
+            foreach (var entry in stateEntries)
+            {
+                var existingVertex = vertices.SingleOrDefault(v => v.OriginalHashCode == entry.Entity.GetHashCode());
+                if (existingVertex != null)
+                    continue;
+
+                vertices.Add(new EntityVertex(context, entry, vertices));
+            }
+            return vertices.ToList();
         }
     }
 }

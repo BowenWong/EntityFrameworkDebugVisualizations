@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Diagnostics;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
@@ -30,6 +31,16 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             CurrentValue = currentValue;
             EntityState = entityState;
             IsRelation = true;
+        }
+
+        public EntityProperty(string name, ObjectStateEntry entry, int index, bool isKey, bool isConcurrencyProperty)
+        {
+            Name = name;
+            CurrentValue = entry.State != EntityState.Deleted ? entry.CurrentValues.GetValue(index) : null;
+            OriginalValue = entry.State != EntityState.Added ? entry.OriginalValues.GetValue(index) : null;
+            IsKey = isKey;
+            IsConcurrencyProperty = isConcurrencyProperty;
+            EntityState = entry.State;
         }
 
         private string GetDescription()

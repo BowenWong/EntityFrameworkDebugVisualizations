@@ -10,7 +10,6 @@ Add test cases
 
 Dump graph as text for DebugExtensions (base DumpTrackedEntities on graph)
 Start visualizer via extension method
-Clean up code
 
 Add NuGet package
 Update readme.md
