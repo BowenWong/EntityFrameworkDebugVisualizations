@@ -9,6 +9,29 @@ namespace EntityFramework.Debug.UnitTests
     public class DebugExtensionTests : Testbase
     {
         [TestMethod]
+        public void ShouldSeeTwoKeyProperties()
+        {
+            using (var context = new TestDbContext())
+            {
+                const string key1 = "ABC1";
+                const string key2 = "DEF2";
+                var entity = new MultiKeyEntity{KeyPart1 = key1, KeyPart2 = key2};
+                context.MultiKeyEntities.Add(entity);
+                context.SaveChanges();
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(1, vertices.Count(v => v.EntityType.Name == typeof(MultiKeyEntity).Name));
+                
+                var entityVertex = vertices[0];
+                Assert.AreEqual(2, entityVertex.Properties.Count(p => p.IsKey));
+                Assert.IsFalse(entityVertex.HasTemporaryKey);
+
+                Assert.IsTrue(entityVertex.KeyDescription.Contains(key1));
+                Assert.IsTrue(entityVertex.KeyDescription.Contains(key2));
+            }
+        }
+
+        [TestMethod]
         public void ShouldSeeOwnerWithNewOwned()
         {
             using (var context = new TestDbContext())

@@ -83,7 +83,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public string KeyDescription
         {
-            get { return HasTemporaryKey ? "" : Properties.Where(p => p.IsKey).Aggregate("", (description, p) => p.Description); }
+            get { return HasTemporaryKey ? "" : String.Join(", ", Properties.Where(p => p.IsKey).Select(p => p.Description)); }
         }
 
         public string Header

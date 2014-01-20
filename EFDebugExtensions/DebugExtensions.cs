@@ -63,13 +63,12 @@ namespace EntityFramework.Debug
                     .ObjectStateManager
                     .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
 #warning what about entry.IsRelationship? are those deleted references? Einträge in Koppeltabellen?
-                    .Where(e => !e.IsRelationship)
+                    .Where(entry => !entry.IsRelationship && entry.Entity != null)
                     .ToList();
             
             foreach (var entry in stateEntries)
             {
-                var existingVertex = vertices.SingleOrDefault(v => v.OriginalHashCode == entry.Entity.GetHashCode());
-                if (existingVertex != null)
+                if (vertices.Any(v => v.OriginalHashCode == entry.Entity.GetHashCode()))
                     continue;
 
                 vertices.Add(new EntityVertex(context, entry, vertices));

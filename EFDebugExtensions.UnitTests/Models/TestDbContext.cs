@@ -14,6 +14,8 @@ namespace EntityFramework.Debug.UnitTests.Models
         public IDbSet<OwnerOwned> OwnerOwneds { get; set; }
         public IDbSet<OwnerOwnedCollection> OwnerOwnedCollections { get; set; }
 
+        public IDbSet<MultiKeyEntity> MultiKeyEntities { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OwnerOwned>().HasOptional(o => o.Owned).WithOptionalPrincipal(o => o.Owner);
