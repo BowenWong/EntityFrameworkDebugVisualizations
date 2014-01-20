@@ -64,6 +64,7 @@
             </Style.Resources>
             <Setter Property="ToolTip" Value="{StaticResource ToolTipContent}"/>
             <Setter Property="StrokeThickness" Value="3"/>
+            <Setter Property="Foreground" Value="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}"/>
         </Style>
     </Window.Resources>
     

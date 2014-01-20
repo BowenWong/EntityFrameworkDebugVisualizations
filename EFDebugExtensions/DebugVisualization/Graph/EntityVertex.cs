@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
@@ -23,6 +25,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             EntityType = entry.Entity.GetType();
             HasTemporaryKey = entry.EntityKey.IsTemporary;
             EntitySetName = entry.EntitySet.Name;
+            EntityKey = entry.EntityKey;
 
             Properties = new List<EntityProperty>();
             AddProperties(context, entry);
@@ -71,13 +74,14 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         public Type EntityType { get; set; }
         public bool HasTemporaryKey { get; set; }
         public string EntitySetName { get; set; }
-
+        
+        public EntityKey EntityKey { get; set; }
         public int OriginalHashCode { get; set; }
 
         public List<EntityProperty> Properties { get; set; }
 
-        public List<EntityProperty> ScalarProperties { get { return Properties.Where(p => !p.IsRelation).ToList(); } }
-        public List<EntityProperty> RelationProperties { get { return Properties.Where(p => p.IsRelation).ToList(); } }
+        public IEnumerable<EntityProperty> ScalarProperties { get { return Properties.Where(p => !p.IsRelation).ToList(); } }
+        public IEnumerable<EntityProperty> RelationProperties { get { return Properties.Where(p => p.IsRelation).ToList(); } }
 
         public List<RelationEdge> Relations { get; set; }
 
@@ -107,7 +111,6 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         
         private void AddRelations(IObjectContextAdapter context, ObjectStateEntry entry, HashSet<EntityVertex> existingVertices, Type entityType, EntityVertex entityVertex)
         {
-#warning this contains information about the relations: entry.RelationshipManager.GetAllRelatedEnds() => do I have something like original and current? what about the state of the relation (added, removed etc.)?
             foreach (var navigationProperty in GetNavigationProperties(context))
             {
                 var currentValue = entityType.GetProperty(navigationProperty.Name).GetValue(entry.Entity);
@@ -158,7 +161,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             return target;
         }
 
-        private IEnumerable<NavigationProperty> GetNavigationProperties(IObjectContextAdapter context)
+        internal IEnumerable<NavigationProperty> GetNavigationProperties(IObjectContextAdapter context)
         {
             return context.ObjectContext.MetadataWorkspace
                     .GetItems<EntityType>(DataSpace.OSpace)
@@ -190,6 +193,12 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     .Where(member => member.TypeUsage.Facets.Any(facet => facet.Name == "ConcurrencyMode" && (ConcurrencyMode)facet.Value == ConcurrencyMode.Fixed))
                     .Select(member => member.Name)
                     .ToList();
+        }
+
+        [OnSerializing]
+        internal void OnSerializingMethod(StreamingContext context)
+        {
+            EntityKey = null; // remove EntityKey as it isn't serializable
         }
     }
 }
