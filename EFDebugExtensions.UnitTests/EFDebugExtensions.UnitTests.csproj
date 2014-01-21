@@ -64,10 +64,14 @@
   <ItemGroup>
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\TestDbContext.cs" />
-    <Compile Include="Testbase.cs" />
-    <Compile Include="TestBootstrapper.cs" />
-    <Compile Include="DebugExtensionTests.cs" />
+    <Compile Include="Infrastructure\Testbase.cs" />
+    <Compile Include="Infrastructure\TestBootstrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\CircularRelationBehaviors.cs" />
+    <Compile Include="Tests\DumpTrackedEntitiesBehaviors.cs" />
+    <Compile Include="Tests\PropertyBehaviors.cs" />
+    <Compile Include="Tests\RelationBehaviors.cs" />
+    <Compile Include="Tests\VisualizerBehaviors.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

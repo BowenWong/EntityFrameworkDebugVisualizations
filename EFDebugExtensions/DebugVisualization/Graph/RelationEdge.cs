@@ -31,6 +31,9 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
             State = EntityState.Unchanged;
             DeleteBehavior = navigationProperty.ToEndMember.DeleteBehavior;
+
+#warning display multiplicity a bit more informative: e.g. ZeroOrOne 'EntityName' to Many 'EntitySetName'
+
             Multiplicity = String.Format("{0}-to-{1}", navigationProperty.FromEndMember.RelationshipMultiplicity, navigationProperty.ToEndMember.RelationshipMultiplicity);
             Name = navigationProperty.Name;
         }

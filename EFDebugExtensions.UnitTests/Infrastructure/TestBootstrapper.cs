@@ -2,7 +2,7 @@
 using EntityFramework.Debug.UnitTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace EntityFramework.Debug.UnitTests
+namespace EntityFramework.Debug.UnitTests.Infrastructure
 {
     [TestClass]
     public class TestBootstrapper

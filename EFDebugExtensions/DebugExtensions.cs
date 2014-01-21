@@ -69,6 +69,13 @@ namespace EntityFramework.Debug
                     .Where(entry => !entry.IsRelationship && entry.Entity != null)
                     .ToList();
 
+            var relationStateEntries = context
+                    .ObjectContext
+                    .ObjectStateManager
+                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Unchanged)
+                    .Where(entry => entry.IsRelationship && entry.State != EntityState.Unchanged) // RelationEdges are unchanged by default, so no need to update
+                    .ToList();
+
             foreach (var entry in stateEntries)
             {
                 if (vertices.Any(v => v.OriginalHashCode == entry.Entity.GetHashCode()))
@@ -77,49 +84,47 @@ namespace EntityFramework.Debug
                 vertices.Add(new EntityVertex(context, entry, vertices));
             }
 
-#warning clean the following code up, it's shit!! I think it'd be best to integrate it into the vertex construction code above..
-            var relations = context
-                    .ObjectContext
-                    .ObjectStateManager
-                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Unchanged)
-                    .Where(entry => entry.IsRelationship)
-                    .ToList();
-
-            foreach (var relationStateEntry in relations)
+            foreach (var relationStateEntry in relationStateEntries)
             {
-                // RelationEdges are unchanged by default, so no need to update anything
-                if (relationStateEntry.State == EntityState.Unchanged)
-                    continue;
-
                 var relationKeys = GetEntityKeysForRelation(relationStateEntry);
                 foreach (var vertex in vertices)
                 {
-                    var matchingRelationKey = relationKeys.SingleOrDefault(k => k == vertex.EntityKey);
-                    if (matchingRelationKey == null)
+                    var associationSetEnd = vertex.GetAssociationEnd(relationStateEntry, relationKeys);
+                    if (associationSetEnd == null)
                         continue;
 
-                    var associationSet = (AssociationSet)relationStateEntry.EntitySet;
-                    var endMember = associationSet.AssociationSetEnds[relationKeys.IndexOf(matchingRelationKey)];
-                    if (endMember.EntitySet.Name != vertex.EntitySetName)
+                    var navigationProperty = vertex
+                            .GetNavigationProperties(context)
+                            .Single(n => n.FromEndMember.Name == associationSetEnd.CorrespondingAssociationEndMember.Name);
+
+                    var targetKey = relationKeys.Single(k => k != vertex.EntityKey);
+                    var target = vertices.SingleOrDefault(v => v.EntityKey == targetKey);
+                    if (target == null)
                         continue;
 
-                    foreach (var navigationProperty in vertex.GetNavigationProperties(context).Where(n => n.FromEndMember.Name == endMember.CorrespondingAssociationEndMember.Name))
+                    if (relationStateEntry.State == EntityState.Deleted)
                     {
-                        var targetKey = relationKeys.Single(k => k != vertex.EntityKey);
-                        var target = vertices.SingleOrDefault(v => v.EntityKey == targetKey);
-                        if (target == null)
-                            continue;
-
-                        var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
-                        if (relationStateEntry.State == EntityState.Deleted)
-                            vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) { State = EntityState.Deleted });
-                        else if (matchingRelation != null)
-                            matchingRelation.State = relationStateEntry.State;
+                        vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) {State = EntityState.Deleted});
+                        continue;
                     }
+
+                    var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
+                    if (matchingRelation != null)
+                        matchingRelation.State = relationStateEntry.State;    
                 }
             }
 
             return vertices.ToList();
+        }
+
+        private static AssociationSetEnd GetAssociationEnd(this EntityVertex vertex, ObjectStateEntry relation, List<EntityKey> relationKeys)
+        {
+            var keyIndex = relationKeys.IndexOf(vertex.EntityKey);
+            if (keyIndex < 0)
+                return null;
+
+            var associationSetEnd = ((AssociationSet)relation.EntitySet).AssociationSetEnds[keyIndex];
+            return associationSetEnd.EntitySet.Name == vertex.EntitySetName ? associationSetEnd : null;
         }
 
         private static List<EntityKey> GetEntityKeysForRelation(ObjectStateEntry relation)

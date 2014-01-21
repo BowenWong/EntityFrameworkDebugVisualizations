@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Transactions;
+using EntityFramework.Debug.DebugVisualization.Graph;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace EntityFramework.Debug.UnitTests
+namespace EntityFramework.Debug.UnitTests.Infrastructure
 {
     public class Testbase
     {
@@ -19,6 +22,11 @@ namespace EntityFramework.Debug.UnitTests
         {
             Transaction.Current.Rollback();
             _transactionScope.Dispose();
+        }
+
+        protected static EntityVertex GetVertexByIdProperty(IEnumerable<EntityVertex> vertices, int id)
+        {
+            return vertices.Single(v => (int) v.Properties.Single(p => p.Name == "Id").CurrentValue == id);
         }
     }
 }
