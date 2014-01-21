@@ -6,7 +6,7 @@ using QuickGraph;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{Name} ({State})")]
     public class RelationEdge : Edge<EntityVertex>
     {
         public string Name { get; set; }

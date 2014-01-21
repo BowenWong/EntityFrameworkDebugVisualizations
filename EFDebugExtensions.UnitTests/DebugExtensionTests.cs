@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using EntityFramework.Debug.UnitTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace EntityFramework.Debug.UnitTests
         }
 
         [TestMethod]
-        public void ShouldSeeOwnerWithNewOwned()
+        public void ShouldSeeNewOwnerWithNewOwned()
         {
             using (var context = new TestDbContext())
             {
@@ -44,6 +45,44 @@ namespace EntityFramework.Debug.UnitTests
                 var vertices = context.GetEntityVertices();
                 Assert.AreEqual(2, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwned).Name));
                 Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
+                Assert.IsTrue(vertices.All(v => v.State == EntityState.Added));
+                Assert.IsTrue(vertices.SelectMany(v => v.Relations).All(r => r.State == EntityState.Added));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldSeeUnchangedOwnerWithUnchangedOwned()
+        {
+            using (var context = new TestDbContext())
+            {
+                var owner = new OwnerOwned {Owned = new OwnerOwned()};
+                context.OwnerOwneds.Add(owner);
+                context.SaveChanges();
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(2, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwned).Name));
+                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
+                Assert.IsTrue(vertices.All(v => v.State == EntityState.Unchanged));
+                Assert.IsTrue(vertices.SelectMany(v => v.Relations).All(v => v.State == EntityState.Unchanged));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldSeeUnchangedOwnerWithRemovedOwned()
+        {
+            using (var context = new TestDbContext())
+            {
+                var owner = new OwnerOwned { Owned = new OwnerOwned() };
+                context.OwnerOwneds.Add(owner);
+                context.SaveChanges();
+
+                owner.Owned = null;
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(2, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwned).Name));
+                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
+                Assert.IsTrue(vertices.All(v => v.State == EntityState.Unchanged));
+                Assert.AreEqual(EntityState.Deleted, vertices.Single(v => (int)v.Properties.Single(p => p.Name == "Id").CurrentValue == owner.Id).Relations.Single().State);
             }
         }
 

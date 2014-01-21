@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using EntityFramework.Debug.DebugVisualization;
 using EntityFramework.Debug.DebugVisualization.Graph;
@@ -62,10 +66,9 @@ namespace EntityFramework.Debug
                     .ObjectContext
                     .ObjectStateManager
                     .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified | EntityState.Unchanged)
-#warning what about entry.IsRelationship? are those deleted references? Einträge in Koppeltabellen?
                     .Where(entry => !entry.IsRelationship && entry.Entity != null)
                     .ToList();
-            
+
             foreach (var entry in stateEntries)
             {
                 if (vertices.Any(v => v.OriginalHashCode == entry.Entity.GetHashCode()))
@@ -73,7 +76,68 @@ namespace EntityFramework.Debug
 
                 vertices.Add(new EntityVertex(context, entry, vertices));
             }
+
+
+#warning clean the following code up, it's shit!! I think it'd be best to integrate it into the vertex construction code above..
+            var relations = context
+                    .ObjectContext
+                    .ObjectStateManager
+                    .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Unchanged)
+                    .Where(entry => entry.IsRelationship)
+                    .ToList();
+
+            foreach (var relationStateEntry in relations)
+            {
+                // RelationEdges are unchanged by default, so no need to update anything
+                if (relationStateEntry.State == EntityState.Unchanged)
+                    continue;
+
+                var relationKeys = GetEntityKeysForRelation(relationStateEntry);
+                foreach (var vertex in vertices)
+                {
+                    if (!relationKeys.Contains(vertex.EntityKey))
+                        continue;
+
+                    var associationSet = (AssociationSet)relationStateEntry.EntitySet;
+                    if (associationSet.AssociationSetEnds.All(aset => aset.EntitySet.Name != vertex.EntitySetName))
+                        continue;
+
+#warning this isn't correct, it only ever matches for the principal direction of the relation! Use association sets..
+                    var navigationProperty = vertex.GetNavigationProperties(context).SingleOrDefault(n => relationStateEntry.EntitySet.Name == vertex.TypeName + "_" + n.Name);
+                    if (navigationProperty == null)
+                        continue;
+
+                    var targetKey = relationKeys.Single(k => k != vertex.EntityKey);
+                    var target = vertices.SingleOrDefault(v => v.EntityKey == targetKey);
+                    if (target == null)
+                        continue;
+
+                    var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
+                    if (relationStateEntry.State == EntityState.Deleted)
+                        vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) {State = EntityState.Deleted});
+                    else if (matchingRelation != null)
+                        matchingRelation.State = relationStateEntry.State;
+                }
+            }
+
             return vertices.ToList();
+        }
+
+        private static List<EntityKey> GetEntityKeysForRelation(ObjectStateEntry relation)
+        {
+            var keys = new List<EntityKey>();
+            var properties = relation
+                    .GetType()
+                    .GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic);
+            
+            var key0Property = properties.SingleOrDefault(p => p.Name == "Key0");
+            if (key0Property != null)
+                keys.Add((EntityKey)key0Property.GetValue(relation));
+
+            var key1Property = properties.SingleOrDefault(p => p.Name == "Key1");
+            if (key1Property != null)
+                keys.Add((EntityKey)key1Property.GetValue(relation));
+            return keys;
         }
     }
 }

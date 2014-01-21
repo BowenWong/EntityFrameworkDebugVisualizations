@@ -13,7 +13,7 @@ using System.Runtime.Serialization;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
-    [DebuggerDisplay("{TypeName}: {KeyDescription}")]
+    [DebuggerDisplay("{TypeName}: {KeyDescription} ({State})")]
     public class EntityVertex
     {
         public EntityVertex() { }
