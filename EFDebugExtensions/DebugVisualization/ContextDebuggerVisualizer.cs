@@ -18,7 +18,7 @@ namespace EntityFramework.Debug.DebugVisualization
     {
         protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider)
         {
-#warning this dummy call is required to load the assembly which in turn is required for the xaml parse to know the type and succeed
+            // DO NOT REMOVE: this dummy calls load the assembly which is required for the xaml parser to know the contained types
             var zoomControl = new ZoomControl();
             var vertexControl = new VertexControl();
 

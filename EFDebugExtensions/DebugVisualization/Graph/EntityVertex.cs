@@ -31,6 +31,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             AddProperties(context, entry);
 
             Relations = new List<RelationEdge>();
+#warning refactor: the ctor leaks "this" here and somebody could rely on the Relations being already there
             existingVertices.Add(this);
             AddRelations(context, entry, existingVertices, EntityType, this);
 

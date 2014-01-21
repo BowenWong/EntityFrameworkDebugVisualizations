@@ -240,7 +240,5 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 Assert.AreEqual(3, parentVertex.Relations.Count(r => r.Name == "Children" && r.State == EntityState.Unchanged));
             }
         }
-
-#warning think about the relation state code and what's to test there before refactoring it!
     }
 }

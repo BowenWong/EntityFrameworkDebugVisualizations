@@ -84,6 +84,8 @@ namespace EntityFramework.Debug
                 vertices.Add(new EntityVertex(context, entry, vertices));
             }
 
+#warning join the stuff below with relation building code in EntityVertex
+
             foreach (var relationStateEntry in relationStateEntries)
             {
                 var relationKeys = GetEntityKeysForRelation(relationStateEntry);
