@@ -81,10 +81,11 @@ namespace EntityFramework.Debug
                 if (vertices.Any(v => v.OriginalHashCode == entry.Entity.GetHashCode()))
                     continue;
 
-                vertices.Add(new EntityVertex(context, entry, vertices));
+                var entityVertex = new EntityVertex(context.ObjectContext.MetadataWorkspace, entry);
+                entityVertex.AddRelations(context, entry, vertices);
             }
 
-#warning join the stuff below with relation building code in EntityVertex
+#warning join the stuff below with relation building code in EntityVertex - OR - to (BETTER) RelationEdge (doesn't work for deleted relations.. *damn*)!
 
             foreach (var relationStateEntry in relationStateEntries)
             {

@@ -18,7 +18,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
     {
         public EntityVertex() { }
 
-        public EntityVertex(IObjectContextAdapter context, ObjectStateEntry entry, HashSet<EntityVertex> existingVertices)
+        public EntityVertex(MetadataWorkspace metadataWorkspace, ObjectStateEntry entry)
         {
             OriginalHashCode = entry.Entity.GetHashCode();
             State = entry.State;
@@ -28,41 +28,9 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             EntityKey = entry.EntityKey;
 
             Properties = new List<EntityProperty>();
-            AddProperties(context, entry);
+            AddProperties(metadataWorkspace, entry);
 
             Relations = new List<RelationEdge>();
-#warning refactor: the ctor leaks "this" here and somebody could rely on the Relations being already there
-            existingVertices.Add(this);
-            AddRelations(context, entry, existingVertices, EntityType, this);
-
-            Properties = Properties.OrderBy(p => p.Name).ToList();
-        }
-
-        private bool Equals(EntityVertex other)
-        {
-            return OriginalHashCode == other.OriginalHashCode;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((EntityVertex) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return OriginalHashCode;
-        }
-
-        public static bool operator ==(EntityVertex left, EntityVertex right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(EntityVertex left, EntityVertex right)
-        {
-            return !Equals(left, right);
         }
 
         public EntityState State { get; set; }
@@ -96,11 +64,11 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             get { return String.Format("{0} [{1}{2}]", TypeName, HasTemporaryKey ? "" : KeyDescription + ", ", State); }
         }
 
-        private void AddProperties(IObjectContextAdapter context, ObjectStateEntry entry)
+        private void AddProperties(MetadataWorkspace metadataWorkspace, ObjectStateEntry entry)
         {
             var dbDataRecord = entry.State != EntityState.Deleted ? entry.CurrentValues : entry.OriginalValues;
-            var keyFields = GetPrimaryKeyFields(context);
-            var concurrencyProperties = GetConcurrencyFields(context);
+            var keyFields = GetPrimaryKeyFields(metadataWorkspace);
+            var concurrencyProperties = GetConcurrencyFields(metadataWorkspace);
             for (int index = 0; index < dbDataRecord.FieldCount; index++)
             {
                 var name = dbDataRecord.GetName(index);
@@ -109,58 +77,110 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 Properties.Add(new EntityProperty(name, entry, index, isKey, isConcurrencyProperty));
             }
         }
-        
-        private void AddRelations(IObjectContextAdapter context, ObjectStateEntry entry, HashSet<EntityVertex> existingVertices, Type entityType, EntityVertex entityVertex)
+
+        internal void AddRelations(IObjectContextAdapter context, ObjectStateEntry entry, HashSet<EntityVertex> existingVertices)
         {
+            existingVertices.Add(this);
+
             foreach (var navigationProperty in GetNavigationProperties(context))
             {
-                var currentValue = entityType.GetProperty(navigationProperty.Name).GetValue(entry.Entity);
-                if (currentValue == null)
-                {
-                    entityVertex.Properties.Add(new EntityProperty(navigationProperty.Name, null, entityVertex.State));
-                    continue;
-                }
+                var targetPropertyInfo = EntityType.GetProperty(navigationProperty.Name);
+                var isCollectionType = IsCollectionType(targetPropertyInfo.PropertyType);
+                var currentValue = targetPropertyInfo.GetValue(entry.Entity);
 
-                var targetEntityType = currentValue.GetType();
-                if (targetEntityType.IsArray || targetEntityType.IsGenericType)
-                {
-                    var collection = (IEnumerable)currentValue;
-                    int numElements = 0;
-                    foreach (var element in collection)
-                    {
-                        AddRelationTarget(context, existingVertices, element, entityVertex, navigationProperty);
-                        numElements++;
-                    }
+                var targets = EnumerateCurrentValue(currentValue, isCollectionType)
+                        .Select(current => existingVertices.SingleOrDefault(v => v.OriginalHashCode == current.GetHashCode())
+                                           ?? CreateVertexFromEntity(current, context, existingVertices))
+                        .ToList();
 
-                    entityVertex.Properties.Add(new EntityProperty(navigationProperty.Name, "Collection [" + numElements + " elements]", entityVertex.State));
-                }
-                else
-                {
-                    var target = AddRelationTarget(context, existingVertices, currentValue, entityVertex, navigationProperty);
-                    entityVertex.Properties.Add(new EntityProperty(navigationProperty.Name, "[" + target.KeyDescription + "]", entityVertex.State));
-                }
+                CreateRelationProperty(navigationProperty, currentValue, targets, isCollectionType);
+
+                foreach (var target in targets)
+                    Relations.Add(new RelationEdge(this, target, navigationProperty));
             }
+            Properties = Properties.OrderBy(p => p.Name).ToList();
         }
 
-        private static EntityVertex AddRelationTarget(IObjectContextAdapter context, HashSet<EntityVertex> existingVertices, object currentValue, EntityVertex entityVertex,
-                                                      NavigationProperty navigationProperty)
+        private void CreateRelationProperty(NavigationProperty navigationProperty, object currentValue, IReadOnlyList<EntityVertex> targets, bool isCollectionType)
         {
-            var existingTarget = existingVertices.SingleOrDefault(v => v.OriginalHashCode == currentValue.GetHashCode());
-            if (existingTarget != null)
-            {
-                entityVertex.Relations.Add(new RelationEdge(entityVertex, existingTarget, navigationProperty));
-                return existingTarget;
-            }
+            var relationPropertyValue = currentValue != null ? GetRelationPropertyValue(targets, isCollectionType) : null;
+            Properties.Add(new EntityProperty(navigationProperty.Name, relationPropertyValue, State));
+        }
 
+        private static EntityVertex CreateVertexFromEntity(object entity, IObjectContextAdapter context, HashSet<EntityVertex> existingVertices)
+        {
             ObjectStateEntry stateEntry;
-            if (!context.ObjectContext.ObjectStateManager.TryGetObjectStateEntry(currentValue, out stateEntry))
+            if (!context.ObjectContext.ObjectStateManager.TryGetObjectStateEntry(entity, out stateEntry))
                 throw new NotSupportedException("Encountered related entity that is not tracked by the ObjectStateManager.");
 
-            var target = new EntityVertex(context, stateEntry, existingVertices);
-            existingVertices.Add(target);
-            entityVertex.Relations.Add(new RelationEdge(entityVertex, target, navigationProperty));
+            var target = new EntityVertex(context.ObjectContext.MetadataWorkspace, stateEntry);
+            target.AddRelations(context, stateEntry, existingVertices);
             return target;
         }
+
+        private static string GetRelationPropertyValue(IReadOnlyList<EntityVertex> targets, bool isCollectionType)
+        {
+            if (isCollectionType)
+                return "Collection [" + targets.Count + " elements]";
+
+            return "[" + targets[0].KeyDescription + "]";
+        }
+
+        private static IEnumerable<object> EnumerateCurrentValue(object currentValue, bool isCollectionType)
+        {
+            if (currentValue == null)
+                yield break;
+
+            if (isCollectionType)
+                foreach (var element in (IEnumerable)currentValue)
+                    yield return element;
+            else
+                yield return currentValue;
+        }
+
+        private static bool IsCollectionType(Type targetEntityType)
+        {
+            return targetEntityType.IsArray || targetEntityType.IsGenericType;
+        }
+
+        [OnSerializing]
+        internal void OnSerializingMethod(StreamingContext context)
+        {
+            EntityKey = null; // remove EntityKey as it isn't serializable
+        }
+
+        #region Equality members
+
+        private bool Equals(EntityVertex other)
+        {
+            return OriginalHashCode == other.OriginalHashCode;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((EntityVertex)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return OriginalHashCode;
+        }
+
+        public static bool operator ==(EntityVertex left, EntityVertex right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(EntityVertex left, EntityVertex right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
+
+        #region Property Helper Methods
 
         internal IEnumerable<NavigationProperty> GetNavigationProperties(IObjectContextAdapter context)
         {
@@ -170,9 +190,9 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     .NavigationProperties;
         }
 
-        private List<string> GetPrimaryKeyFields(IObjectContextAdapter context)
+        private List<string> GetPrimaryKeyFields(MetadataWorkspace metadataWorkspace)
         {
-            var metadata = context.ObjectContext.MetadataWorkspace
+            var metadata = metadataWorkspace
                     .GetItems<EntityType>(DataSpace.OSpace)
                     .SingleOrDefault(p => p.FullName == EntityType.FullName);
 
@@ -182,24 +202,20 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             return metadata.KeyMembers.Select(k => k.Name).ToList();
         }
 
-        private List<string> GetConcurrencyFields(IObjectContextAdapter context)
+        private List<string> GetConcurrencyFields(MetadataWorkspace metadataWorkspace)
         {
-            var objType = context.ObjectContext.MetadataWorkspace.GetItems<EntityType>(DataSpace.OSpace).Single(p => p.FullName == EntityType.FullName);
+            var objType = metadataWorkspace.GetItems<EntityType>(DataSpace.OSpace).Single(p => p.FullName == EntityType.FullName);
             var cTypeName = (string)objType.GetType()
                     .GetProperty("CSpaceTypeName", BindingFlags.Instance | BindingFlags.NonPublic)
                     .GetValue(objType, null);
 
-            var conceptualType = context.ObjectContext.MetadataWorkspace.GetItems<EntityType>(DataSpace.CSpace).Single(p => p.FullName == cTypeName);
+            var conceptualType = metadataWorkspace.GetItems<EntityType>(DataSpace.CSpace).Single(p => p.FullName == cTypeName);
             return conceptualType.Members
                     .Where(member => member.TypeUsage.Facets.Any(facet => facet.Name == "ConcurrencyMode" && (ConcurrencyMode)facet.Value == ConcurrencyMode.Fixed))
                     .Select(member => member.Name)
                     .ToList();
         }
 
-        [OnSerializing]
-        internal void OnSerializingMethod(StreamingContext context)
-        {
-            EntityKey = null; // remove EntityKey as it isn't serializable
-        }
+        #endregion
     }
 }
