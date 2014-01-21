@@ -80,9 +80,11 @@ namespace EntityFramework.Debug.UnitTests
                 owner.Owned = null;
 
                 var vertices = context.GetEntityVertices();
+
                 Assert.AreEqual(2, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwned).Name));
-                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
                 Assert.IsTrue(vertices.All(v => v.State == EntityState.Unchanged));
+
+                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
                 Assert.AreEqual(EntityState.Deleted, vertices.Single(v => (int)v.Properties.Single(p => p.Name == "Id").CurrentValue == owner.Id).Relations.Single().State);
                 Assert.AreEqual(EntityState.Deleted, vertices.Single(v => (int)v.Properties.Single(p => p.Name == "Id").CurrentValue == owned.Id).Relations.Single().State);
             }
@@ -150,6 +152,7 @@ namespace EntityFramework.Debug.UnitTests
             }
         }
 
+        [Ignore]
         [TestMethod]
         public void ShouldShowVisualizer()
         {

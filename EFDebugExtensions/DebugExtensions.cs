@@ -77,7 +77,6 @@ namespace EntityFramework.Debug
                 vertices.Add(new EntityVertex(context, entry, vertices));
             }
 
-
 #warning clean the following code up, it's shit!! I think it'd be best to integrate it into the vertex construction code above..
             var relations = context
                     .ObjectContext
@@ -95,28 +94,28 @@ namespace EntityFramework.Debug
                 var relationKeys = GetEntityKeysForRelation(relationStateEntry);
                 foreach (var vertex in vertices)
                 {
-                    if (!relationKeys.Contains(vertex.EntityKey))
+                    var matchingRelationKey = relationKeys.SingleOrDefault(k => k == vertex.EntityKey);
+                    if (matchingRelationKey == null)
                         continue;
 
                     var associationSet = (AssociationSet)relationStateEntry.EntitySet;
-                    if (associationSet.AssociationSetEnds.All(aset => aset.EntitySet.Name != vertex.EntitySetName))
+                    var endMember = associationSet.AssociationSetEnds[relationKeys.IndexOf(matchingRelationKey)];
+                    if (endMember.EntitySet.Name != vertex.EntitySetName)
                         continue;
 
-#warning this isn't correct, it only ever matches for the principal direction of the relation! Use association sets..
-                    var navigationProperty = vertex.GetNavigationProperties(context).SingleOrDefault(n => relationStateEntry.EntitySet.Name == vertex.TypeName + "_" + n.Name);
-                    if (navigationProperty == null)
-                        continue;
+                    foreach (var navigationProperty in vertex.GetNavigationProperties(context).Where(n => n.FromEndMember.Name == endMember.CorrespondingAssociationEndMember.Name))
+                    {
+                        var targetKey = relationKeys.Single(k => k != vertex.EntityKey);
+                        var target = vertices.SingleOrDefault(v => v.EntityKey == targetKey);
+                        if (target == null)
+                            continue;
 
-                    var targetKey = relationKeys.Single(k => k != vertex.EntityKey);
-                    var target = vertices.SingleOrDefault(v => v.EntityKey == targetKey);
-                    if (target == null)
-                        continue;
-
-                    var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
-                    if (relationStateEntry.State == EntityState.Deleted)
-                        vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) {State = EntityState.Deleted});
-                    else if (matchingRelation != null)
-                        matchingRelation.State = relationStateEntry.State;
+                        var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
+                        if (relationStateEntry.State == EntityState.Deleted)
+                            vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) { State = EntityState.Deleted });
+                        else if (matchingRelation != null)
+                            matchingRelation.State = relationStateEntry.State;
+                    }
                 }
             }
 
@@ -137,6 +136,10 @@ namespace EntityFramework.Debug
             var key1Property = properties.SingleOrDefault(p => p.Name == "Key1");
             if (key1Property != null)
                 keys.Add((EntityKey)key1Property.GetValue(relation));
+
+            if (keys.Count != 2)
+                throw new ArgumentException("A relation should have two keys.");
+
             return keys;
         }
     }
