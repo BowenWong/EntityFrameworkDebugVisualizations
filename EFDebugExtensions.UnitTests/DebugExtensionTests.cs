@@ -72,7 +72,8 @@ namespace EntityFramework.Debug.UnitTests
         {
             using (var context = new TestDbContext())
             {
-                var owner = new OwnerOwned { Owned = new OwnerOwned() };
+                var owned = new OwnerOwned();
+                var owner = new OwnerOwned { Owned = owned };
                 context.OwnerOwneds.Add(owner);
                 context.SaveChanges();
 
@@ -83,6 +84,7 @@ namespace EntityFramework.Debug.UnitTests
                 Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
                 Assert.IsTrue(vertices.All(v => v.State == EntityState.Unchanged));
                 Assert.AreEqual(EntityState.Deleted, vertices.Single(v => (int)v.Properties.Single(p => p.Name == "Id").CurrentValue == owner.Id).Relations.Single().State);
+                Assert.AreEqual(EntityState.Deleted, vertices.Single(v => (int)v.Properties.Single(p => p.Name == "Id").CurrentValue == owned.Id).Relations.Single().State);
             }
         }
 
