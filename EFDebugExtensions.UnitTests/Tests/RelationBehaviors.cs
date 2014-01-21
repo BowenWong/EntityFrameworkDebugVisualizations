@@ -130,7 +130,117 @@ namespace EntityFramework.Debug.UnitTests.Tests
             }
         }
 
-#warning test tooltip text
-#warning think about the relation state code and what's to test there!
+        [TestMethod]
+        public void ShouldSeeEntityWithChildRemoved()
+        {
+            using (var context = new TestDbContext())
+            {
+                var parent = context.EntitiesWithChild.Add(new EntityWithChild {Name = "Parent"});
+                var child = context.EntitiesWithChild.Add(new EntityWithChild {Name = "FavoriteChild"});
+                parent.Children.Add(child);
+                context.SaveChanges();
+
+                parent.Children.Remove(child);
+
+                var vertices = context.GetEntityVertices();
+
+                Assert.AreEqual(2, vertices.Count);
+                Assert.AreEqual(2, vertices.Count(v => v.State == EntityState.Unchanged));
+
+                var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
+                Assert.AreEqual(1, parentVertex.Relations.Count);
+                Assert.AreEqual(EntityState.Deleted, parentVertex.Relations[0].State);
+
+                var childVertex = GetVertexByIdProperty(vertices, child.Id);
+                Assert.AreEqual(0, childVertex.Relations.Count);
+            }
+        }
+
+        [TestMethod]
+        public void ShouldSeeEntityWithChildRemovedAndDeleted()
+        {
+            using (var context = new TestDbContext())
+            {
+                var parent = context.EntitiesWithChild.Add(new EntityWithChild { Name = "Parent" });
+                var child = context.EntitiesWithChild.Add(new EntityWithChild { Name = "FavoriteChild" });
+                parent.Children.Add(child);
+                context.SaveChanges();
+
+                parent.Children.Remove(child);
+                context.EntitiesWithChild.Remove(child);
+
+                var vertices = context.GetEntityVertices();
+
+                Assert.AreEqual(2, vertices.Count);
+
+                var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
+                Assert.AreEqual(EntityState.Unchanged, parentVertex.State);
+                Assert.AreEqual(1, parentVertex.Relations.Count);
+                Assert.AreEqual(EntityState.Deleted, parentVertex.Relations[0].State);
+
+                var childVertex = GetVertexByIdProperty(vertices, child.Id);
+                Assert.AreEqual(EntityState.Deleted, childVertex.State);
+                Assert.AreEqual(0, childVertex.Relations.Count);
+            }
+        }
+
+        [TestMethod]
+        public void ShouldSeeChildsAndRelationsInAllStates()
+        {
+            using (var context = new TestDbContext())
+            {
+                var parent = context.EntitiesWithChild.Add(new EntityWithChild { Name = "Parent" });
+                var child = context.EntitiesWithChild.Add(new EntityWithChild { Name = "FavoriteChild" });
+                var secondChild = new EntityWithChild { Name = "2nd Child" };
+                parent.Children.Add(secondChild);
+                parent.Children.Add(new EntityWithChild { Name = "3nd Child" });
+                parent.Children.Add(new EntityWithChild { Name = "4th Child" });
+                context.SaveChanges();
+
+                parent.FavoriteChild = child;
+                parent.Children.Add(child);
+                context.SaveChanges();
+
+                var toDelete = context.EntitiesWithChild.Add(new EntityWithChild { Name = "Deleted" });
+                context.SaveChanges();
+
+                context.EntitiesWithChild.Remove(toDelete);
+                parent.Children.Add(new EntityWithChild { Name = "1st addeded Child" });
+                parent.Children.Add(new EntityWithChild { Name = "2nd addeded Child" });
+
+                secondChild.Name = "Removed child";
+                parent.Children.Remove(secondChild);
+
+                var vertices = context.GetEntityVertices();
+
+                var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
+                Assert.AreEqual(EntityState.Unchanged, parentVertex.State);
+                Assert.AreEqual(7, parentVertex.Relations.Count);
+                Assert.AreEqual(6, parentVertex.Relations.Count(r => r.Name == "Children"));
+
+                // modified, deleted relation
+                var modifiedVertex = GetVertexByIdProperty(vertices, secondChild.Id);
+                Assert.AreEqual(EntityState.Modified, modifiedVertex.State);
+                Assert.AreEqual(0, modifiedVertex.Relations.Count);
+                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Deleted));
+
+                // deleted, deleted relation
+                var removedChild = GetVertexByIdProperty(vertices, toDelete.Id);
+                Assert.AreEqual(EntityState.Deleted, removedChild.State);
+                Assert.AreEqual(0, removedChild.Relations.Count);
+                
+                // check that two childs are added (and their relations too)
+                Assert.AreEqual(2, vertices.Count(v => v.State == EntityState.Added));
+                Assert.AreEqual(2, vertices.Count(v => v.State == EntityState.Added && v.Relations.All(r => r.State == EntityState.Added)));
+                Assert.AreEqual(2, parentVertex.Relations.Count(r => r.State == EntityState.Added));
+
+                // check that three childs are unchanged (and their relations too)
+                Assert.AreEqual(4, vertices.Count(v => v.State == EntityState.Unchanged));
+                Assert.AreEqual(3, vertices.Count(v => v.State == EntityState.Unchanged && v.Relations.All(r => r.State == EntityState.Unchanged)));
+                Assert.AreEqual(3, parentVertex.Relations.Count(r => r.Name == "Children" && r.State == EntityState.Unchanged));
+            }
+        }
+
+#warning think about the relation state code and what's to test there before refactoring it!
     }
 }

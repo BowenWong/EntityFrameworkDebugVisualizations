@@ -95,7 +95,9 @@ namespace EntityFramework.Debug
 
                     var navigationProperty = vertex
                             .GetNavigationProperties(context)
-                            .Single(n => n.FromEndMember.Name == associationSetEnd.CorrespondingAssociationEndMember.Name);
+                            .SingleOrDefault(n => n.FromEndMember.Name == associationSetEnd.CorrespondingAssociationEndMember.Name);
+                    if (navigationProperty == null)
+                        continue;
 
                     var targetKey = relationKeys.Single(k => k != vertex.EntityKey);
                     var target = vertices.SingleOrDefault(v => v.EntityKey == targetKey);

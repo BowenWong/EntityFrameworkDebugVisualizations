@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Transactions;
 using EntityFramework.Debug.DebugVisualization.Graph;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuickGraph;
 
 namespace EntityFramework.Debug.UnitTests.Infrastructure
 {
@@ -26,7 +28,13 @@ namespace EntityFramework.Debug.UnitTests.Infrastructure
 
         protected static EntityVertex GetVertexByIdProperty(IEnumerable<EntityVertex> vertices, int id)
         {
-            return vertices.Single(v => (int) v.Properties.Single(p => p.Name == "Id").CurrentValue == id);
+            return vertices.Single(v => (int?)GetPropertyValueByName(v, "Id") == id);
+        }
+
+        protected static object GetPropertyValueByName(EntityVertex vertex, string propertyName)
+        {
+            var property = vertex.Properties.Single(p => p.Name == propertyName);
+            return property.EntityState == EntityState.Deleted ? property.OriginalValue : property.CurrentValue;
         }
     }
 }

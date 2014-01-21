@@ -10,10 +10,8 @@ namespace EntityFramework.Debug.UnitTests.Models
         }
 
         public IDbSet<EntityWithChild> EntitiesWithChild { get; set; }
-
         public IDbSet<OwnerOwned> OwnerOwneds { get; set; }
         public IDbSet<OwnerOwnedCollection> OwnerOwnedCollections { get; set; }
-
         public IDbSet<MultiKeyEntity> MultiKeyEntities { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

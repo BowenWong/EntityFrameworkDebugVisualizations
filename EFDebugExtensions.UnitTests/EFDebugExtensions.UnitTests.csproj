@@ -63,6 +63,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Models\Entity.cs" />
+    <Compile Include="Models\EntityWithChild.cs" />
+    <Compile Include="Models\MultiKeyEntity.cs" />
+    <Compile Include="Models\OwnerOwned.cs" />
+    <Compile Include="Models\OwnerOwnedCollection.cs" />
     <Compile Include="Models\TestDbContext.cs" />
     <Compile Include="Infrastructure\Testbase.cs" />
     <Compile Include="Infrastructure\TestBootstrapper.cs" />
