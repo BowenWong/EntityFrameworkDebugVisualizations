@@ -64,6 +64,11 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             get { return String.Format("{0} [{1}{2}]", TypeName, HasTemporaryKey ? "" : KeyDescription + ", ", State); }
         }
 
+        public bool HasChanged
+        {
+            get { return State != EntityState.Unchanged; }
+        }
+
         private void AddProperties(MetadataWorkspace metadataWorkspace, ObjectStateEntry entry)
         {
             var dbDataRecord = entry.State != EntityState.Deleted ? entry.CurrentValues : entry.OriginalValues;

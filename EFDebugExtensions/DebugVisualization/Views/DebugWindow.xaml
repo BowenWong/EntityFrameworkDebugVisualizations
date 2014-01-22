@@ -9,19 +9,20 @@
     
     <Window.Resources>
         <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter"/>
+        <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter"/>
 
         <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
             <TextBlock x:Name="description" Text="{Binding Description}" />
             <DataTemplate.Triggers>
                 <DataTrigger Value="True" Binding="{Binding HasValueChanged}">
-                    <Setter TargetName="description" Property="Foreground" Value="DarkRed" />
+                    <Setter TargetName="description" Property="Foreground" Value="#A64733" />
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
         <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
             <StackPanel Orientation="Vertical" Margin="5">
-                <TextBlock Text="{Binding Path=Header, Mode=OneWay}" />
+                <TextBlock Text="{Binding Path=Header, Mode=OneWay}" FontWeight="SemiBold" />
                 <Separator Foreground="SlateGray" />
                 <TextBlock Text="Relations:"/>
                 <ItemsControl ItemsSource="{Binding RelationProperties}" Margin="5,0,0,0">
@@ -32,7 +33,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <Separator Foreground="SlateGray" />
-                <Expander Header="Properties" IsExpanded="false">
+                <Expander Header="Properties" IsExpanded="{Binding HasChanged, Mode=OneTime}">
                     <ItemsControl ItemsSource="{Binding ScalarProperties}" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
                 </Expander>
             </StackPanel>
@@ -63,11 +64,11 @@
                 </ToolTip>
             </Style.Resources>
             <Setter Property="ToolTip" Value="{StaticResource ToolTipContent}"/>
-            <Setter Property="StrokeThickness" Value="3"/>
-            <Setter Property="Foreground" Value="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}"/>
+            <Setter Property="StrokeThickness" Value="2"/>
+            <Setter Property="Foreground" Value="{Binding State, Converter={StaticResource RelationStateToBrushConverter}}"/>
             <Style.Triggers>
                 <DataTrigger Value="True" Binding="{Binding ContainsMultipleRelations}">
-                    <Setter Property="StrokeThickness" Value="5" />
+                    <Setter Property="StrokeThickness" Value="3" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
