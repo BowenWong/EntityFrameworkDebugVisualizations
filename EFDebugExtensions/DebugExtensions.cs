@@ -85,8 +85,6 @@ namespace EntityFramework.Debug
                 entityVertex.AddRelations(context, entry, vertices);
             }
 
-#warning join the stuff below with relation building code in EntityVertex - OR - to (BETTER) RelationEdge (doesn't work for deleted relations.. *damn*)!
-
             foreach (var relationStateEntry in relationStateEntries)
             {
                 var relationKeys = GetEntityKeysForRelation(relationStateEntry);
@@ -107,15 +105,11 @@ namespace EntityFramework.Debug
                     if (target == null)
                         continue;
 
-                    if (relationStateEntry.State == EntityState.Deleted)
-                    {
-                        vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) {State = EntityState.Deleted});
-                        continue;
-                    }
-
                     var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
                     if (matchingRelation != null)
-                        matchingRelation.State = relationStateEntry.State;    
+                        matchingRelation.State = relationStateEntry.State;
+                    else if (relationStateEntry.State == EntityState.Deleted)
+                        vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) { State = EntityState.Deleted });
                 }
             }
 
