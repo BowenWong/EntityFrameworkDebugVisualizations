@@ -29,8 +29,10 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
                 var childVertex = GetVertexByIdProperty(vertices, child.Id);
 
-                Assert.AreEqual(2, parentVertex.Relations.Count(r => r.State == EntityState.Added));
+                Assert.IsTrue(parentVertex.Relations.All(r => r.ContainsMultipleRelations));
                 Assert.IsTrue(parentVertex.Relations.All(r => r.Target == childVertex));
+                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Added));
+                Assert.AreEqual(2, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Added));
 
                 Assert.AreEqual(0, childVertex.Relations.Count());
             }
@@ -57,8 +59,10 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
                 var childVertex = GetVertexByIdProperty(vertices, child.Id);
 
-                Assert.AreEqual(2, parentVertex.Relations.Count(r => r.State == EntityState.Unchanged));
+                Assert.IsTrue(parentVertex.Relations.All(r => r.ContainsMultipleRelations));
                 Assert.IsTrue(parentVertex.Relations.All(r => r.Target == childVertex));
+                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Unchanged));
+                Assert.AreEqual(2, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Unchanged));
 
                 Assert.AreEqual(0, childVertex.Relations.Count());
             }
@@ -88,8 +92,10 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
                 var childVertex = GetVertexByIdProperty(vertices, child.Id);
 
-                Assert.AreEqual(2, parentVertex.Relations.Count(r => r.State == EntityState.Deleted));
+                Assert.IsTrue(parentVertex.Relations.All(r => r.ContainsMultipleRelations));
                 Assert.IsTrue(parentVertex.Relations.All(r => r.Target == childVertex));
+                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Deleted));
+                Assert.AreEqual(2, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Deleted));
 
                 Assert.AreEqual(0, childVertex.Relations.Count());
             }
@@ -117,9 +123,11 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
                 var childVertex = GetVertexByIdProperty(vertices, child.Id);
 
-                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Unchanged));
-                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Added));
+                Assert.IsTrue(parentVertex.Relations.All(r => r.ContainsMultipleRelations));
                 Assert.IsTrue(parentVertex.Relations.All(r => r.Target == childVertex));
+                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Added));
+                Assert.AreEqual(1, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Added));
+                Assert.AreEqual(1, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Unchanged));
 
                 Assert.AreEqual(0, childVertex.Relations.Count());
             }
@@ -148,9 +156,11 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
                 var childVertex = GetVertexByIdProperty(vertices, child.Id);
 
-                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Deleted));
-                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Added));
+                Assert.IsTrue(parentVertex.Relations.All(r => r.ContainsMultipleRelations));
                 Assert.IsTrue(parentVertex.Relations.All(r => r.Target == childVertex));
+                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Deleted));
+                Assert.AreEqual(1, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Added));
+                Assert.AreEqual(1, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Deleted));
 
                 Assert.AreEqual(0, childVertex.Relations.Count());
             }
@@ -179,9 +189,11 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
                 var childVertex = GetVertexByIdProperty(vertices, child.Id);
 
-                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Unchanged));
-                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Deleted));
+                Assert.IsTrue(parentVertex.Relations.All(r => r.ContainsMultipleRelations));
                 Assert.IsTrue(parentVertex.Relations.All(r => r.Target == childVertex));
+                Assert.AreEqual(1, parentVertex.Relations.Count(r => r.State == EntityState.Deleted));
+                Assert.AreEqual(1, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Unchanged));
+                Assert.AreEqual(1, parentVertex.Relations.SelectMany(r => r.Relations).Count(r => r.State == EntityState.Deleted));
 
                 Assert.AreEqual(0, childVertex.Relations.Count());
             }

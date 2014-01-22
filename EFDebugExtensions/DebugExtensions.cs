@@ -121,7 +121,7 @@ namespace EntityFramework.Debug
                     foreach (var relation in parallelRelation.Skip(1).ToList())
                     {
                         first.Merge(relation);
-                        //vertex.Relations.Remove(relation);
+                        vertex.Relations.Remove(relation);
                     }
                 }
             }

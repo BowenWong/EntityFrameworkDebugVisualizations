@@ -79,7 +79,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public void Merge(RelationEdgeSet parallelRelation)
         {
-
+            Relations.AddRange(parallelRelation.Relations);
         }
     }
 }
