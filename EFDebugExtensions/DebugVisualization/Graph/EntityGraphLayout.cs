@@ -3,7 +3,7 @@ using GraphSharp.Controls;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
-    public class EntityGraphLayout : GraphLayout<EntityVertex, RelationEdge, EntityGraph>
+    public class EntityGraphLayout : GraphLayout<EntityVertex, RelationEdgeSet, EntityGraph>
     {
         public EntityGraphLayout()
         {

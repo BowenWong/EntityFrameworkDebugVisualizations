@@ -105,11 +105,24 @@ namespace EntityFramework.Debug
                     if (target == null)
                         continue;
 
-                    var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
+                    var matchingRelation = vertex.Relations.SingleOrDefault(r => r.Relations[0].Name == navigationProperty.Name && r.Target.EntityKey == target.EntityKey);
                     if (matchingRelation != null)
-                        matchingRelation.State = relationStateEntry.State;
+                        matchingRelation.Relations[0].State = relationStateEntry.State;
                     else if (relationStateEntry.State == EntityState.Deleted)
-                        vertex.Relations.Add(new RelationEdge(vertex, target, navigationProperty) { State = EntityState.Deleted });
+                        vertex.Relations.Add(new RelationEdgeSet(vertex, target, navigationProperty, EntityState.Deleted));
+                }
+            }
+
+            foreach (var vertex in vertices)
+            {
+                foreach (var parallelRelation in vertex.Relations.GroupBy(r => r.Target).Where(r => r.Count() > 1))
+                {
+                    var first = parallelRelation.First();
+                    foreach (var relation in parallelRelation.Skip(1).ToList())
+                    {
+                        first.Merge(relation);
+                        //vertex.Relations.Remove(relation);
+                    }
                 }
             }
 

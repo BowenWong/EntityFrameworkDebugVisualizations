@@ -71,7 +71,8 @@
     <Compile Include="DebugVisualization\Graph\EntityGraphLayout.cs" />
     <Compile Include="DebugVisualization\Graph\EntityProperty.cs" />
     <Compile Include="DebugVisualization\Graph\EntityVertex.cs" />
-    <Compile Include="DebugVisualization\Graph\RelationEdge.cs" />
+    <Compile Include="DebugVisualization\Graph\Relation.cs" />
+    <Compile Include="DebugVisualization\Graph\RelationEdgeSet.cs" />
     <Compile Include="DebugVisualization\ViewModels\AViewModel.cs" />
     <Compile Include="DebugVisualization\ViewModels\EntityTypeFilterViewModel.cs" />
     <Compile Include="DebugVisualization\ViewModels\VisualizerViewModel.cs" />

@@ -216,7 +216,7 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 var parentVertex = GetVertexByIdProperty(vertices, parent.Id);
                 Assert.AreEqual(EntityState.Unchanged, parentVertex.State);
                 Assert.AreEqual(7, parentVertex.Relations.Count);
-                Assert.AreEqual(6, parentVertex.Relations.Count(r => r.Name == "Children"));
+                Assert.AreEqual(6, parentVertex.Relations.Count(r => r.Relations[0].Name == "Children"));
 
                 // modified, deleted relation
                 var modifiedVertex = GetVertexByIdProperty(vertices, secondChild.Id);
@@ -237,7 +237,7 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 // check that three childs are unchanged (and their relations too)
                 Assert.AreEqual(4, vertices.Count(v => v.State == EntityState.Unchanged));
                 Assert.AreEqual(3, vertices.Count(v => v.State == EntityState.Unchanged && v.Relations.All(r => r.State == EntityState.Unchanged)));
-                Assert.AreEqual(3, parentVertex.Relations.Count(r => r.Name == "Children" && r.State == EntityState.Unchanged));
+                Assert.AreEqual(3, parentVertex.Relations.Count(r => r.Relations[0].Name == "Children" && r.State == EntityState.Unchanged));
             }
         }
     }

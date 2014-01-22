@@ -1,38 +1,51 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Diagnostics;
+using System.Linq;
 using QuickGraph;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
     [DebuggerDisplay("{Name} ({State})")]
-    public class RelationEdge : Edge<EntityVertex>
+    public class RelationEdgeSet : Edge<EntityVertex>
     {
-        public string Name { get; set; }
+        public List<Relation> Relations { get; set; }
 
-        public string Multiplicity { get; set; }
-
-        public OperationAction DeleteBehavior { get; set; }
-
-        public EntityState State { get; set; }
+        public bool ContainsMultipleRelations
+        {
+            get { return Relations.Count > 1; }
+        }
 
         public string TooltipText
         {
-            get { return string.Format("{0} ({1}){2}\nState: {3}", Name, Multiplicity, DeleteBehavior == OperationAction.Cascade ? " (cascaded delete)" : "", State); }
+            get { return string.Join("\n\n", Relations.Select(r => r.TooltipText)); }
         }
 
-        public RelationEdge(EntityVertex source, EntityVertex target, NavigationProperty navigationProperty)
+        public EntityState State
+        {
+            get
+            {
+                if (Relations.Any(r => r.State == EntityState.Deleted))
+                    return EntityState.Deleted;
+                if (Relations.Any(r => r.State == EntityState.Added))
+                    return EntityState.Added;
+                return EntityState.Unchanged;
+            }
+        }
+
+        public RelationEdgeSet(EntityVertex source, EntityVertex target, NavigationProperty navigationProperty, EntityState state = EntityState.Unchanged)
                 : base(source, target)
         {
+            Relations = new List<Relation>();
+
             // this is required for json deserialization
             if (navigationProperty == null) 
                 return;
 
-            State = EntityState.Unchanged;
-            DeleteBehavior = navigationProperty.ToEndMember.DeleteBehavior;
-            Multiplicity = GetHumanReadableMultiplicity(navigationProperty);
-            Name = navigationProperty.Name;
+            var multiplicity = GetHumanReadableMultiplicity(navigationProperty);
+            Relations.Add(new Relation(navigationProperty.Name, multiplicity, navigationProperty.ToEndMember.DeleteBehavior, state));
         }
 
         private string GetHumanReadableMultiplicity(NavigationProperty navigationProperty)
@@ -62,6 +75,11 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 default:
                     throw new ArgumentOutOfRangeException("multiplicity");
             }
+        }
+
+        public void Merge(RelationEdgeSet parallelRelation)
+        {
+
         }
     }
 }

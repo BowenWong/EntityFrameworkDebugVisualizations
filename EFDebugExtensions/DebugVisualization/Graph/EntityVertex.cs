@@ -30,7 +30,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             Properties = new List<EntityProperty>();
             AddProperties(metadataWorkspace, entry);
 
-            Relations = new List<RelationEdge>();
+            Relations = new List<RelationEdgeSet>();
         }
 
         public EntityState State { get; set; }
@@ -52,7 +52,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
         public IEnumerable<EntityProperty> ScalarProperties { get { return Properties.Where(p => !p.IsRelation).ToList(); } }
         public IEnumerable<EntityProperty> RelationProperties { get { return Properties.Where(p => p.IsRelation).ToList(); } }
 
-        public List<RelationEdge> Relations { get; set; }
+        public List<RelationEdgeSet> Relations { get; set; }
 
         public string KeyDescription
         {
@@ -96,7 +96,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                 CreateRelationProperty(navigationProperty, currentValue, targets, isCollectionType);
 
                 foreach (var target in targets)
-                    Relations.Add(new RelationEdge(this, target, navigationProperty));
+                    Relations.Add(new RelationEdgeSet(this, target, navigationProperty));
             }
             Properties = Properties.OrderBy(p => p.Name).ToList();
         }
