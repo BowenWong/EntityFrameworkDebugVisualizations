@@ -5,7 +5,6 @@ using System.Linq;
 using System.Transactions;
 using EntityFramework.Debug.DebugVisualization.Graph;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuickGraph;
 
 namespace EntityFramework.Debug.UnitTests.Infrastructure
 {

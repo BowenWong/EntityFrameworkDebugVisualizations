@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
         xmlns:graphControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
-        xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Converters;assembly=EFDebugExtensions"
-        xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph;assembly=EFDebugExtensions"
+        xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Converters;assembly=EntityFrameworkDebugVisualizations"
+        xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph;assembly=EntityFrameworkDebugVisualizations"
         Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
         WindowStartupLocation="CenterOwner">
     

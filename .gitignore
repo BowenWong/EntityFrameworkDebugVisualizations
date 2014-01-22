@@ -10,3 +10,7 @@
 /EFDebugExtensions.UnitTests/bin/Debug
 /EFDebugExtensions.sln.DotSettings
 /EFDebugExtensions.sln.DotSettings.user
+/EntityFrameworkDebugVisualizations/bin/Debug
+/EntityFrameworkDebugVisualizations.UnitTests/bin/Debug
+/EntityFrameworkDebugVisualizations/obj/Debug
+/EntityFrameworkDebugVisualizations.UnitTests/obj/Debug

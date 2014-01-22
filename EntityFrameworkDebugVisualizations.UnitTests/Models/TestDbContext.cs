@@ -5,7 +5,7 @@ namespace EntityFramework.Debug.UnitTests.Models
     public class TestDbContext : DbContext
     {
         public TestDbContext()
-                : base("EFDebugExtensions.UnitTests")
+                : base("EntityFrameworkDebugVisualizations.UnitTests")
         {
         }
 
