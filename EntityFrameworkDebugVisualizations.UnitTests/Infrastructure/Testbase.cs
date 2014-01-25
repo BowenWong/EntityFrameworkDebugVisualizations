@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityFramework.Debug.UnitTests.Infrastructure
 {
+    [DeploymentItem("EntityFramework.SqlServer.dll")]
+    [TestClass]
     public class Testbase
     {
         private TransactionScope _transactionScope;

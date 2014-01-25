@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using EntityFramework.Debug.UnitTests.Infrastructure;
 using EntityFramework.Debug.UnitTests.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EntityFramework.Debug.UnitTests.Tests
 {
     [TestClass]
-    public class CircularRelationBehaviors
+    public class CircularRelationBehaviors : Testbase
     {
         [TestMethod]
         public void ShouldSeeOwnerOwnedWithCircularRelation()
