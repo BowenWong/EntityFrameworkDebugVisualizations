@@ -10,11 +10,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using GraphX;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
     [DebuggerDisplay("{TypeName}: {KeyDescription} ({State})")]
-    public class EntityVertex
+    public class EntityVertex : VertexBase
     {
         public EntityVertex() { }
 

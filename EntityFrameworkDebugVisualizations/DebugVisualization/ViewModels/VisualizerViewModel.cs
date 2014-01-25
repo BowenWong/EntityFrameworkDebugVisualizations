@@ -68,7 +68,7 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
 
             _vertices = vertices;
             EntityTypes = _vertices.Select(v => v.TypeName).Distinct().Select(typeName => new EntityTypeFilterViewModel(typeName, UpdateGraph)).ToList();
-            _algorithmTypes = new EntityGraphLayout().LayoutAlgorithmFactory.AlgorithmTypes.ToList();
+            //_algorithmTypes = new EntityGraphLayout().LayoutAlgorithmFactory.AlgorithmTypes.ToList();
 
             Graph = new EntityGraph();
             UpdateGraph();

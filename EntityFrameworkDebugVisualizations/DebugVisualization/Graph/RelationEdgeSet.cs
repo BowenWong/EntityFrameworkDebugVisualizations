@@ -4,12 +4,12 @@ using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Diagnostics;
 using System.Linq;
-using QuickGraph;
+using GraphX;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
     [DebuggerDisplay("{Name} ({State})")]
-    public class RelationEdgeSet : Edge<EntityVertex>
+    public class RelationEdgeSet : EdgeBase<EntityVertex>
     {
         public List<Relation> Relations { get; set; }
 

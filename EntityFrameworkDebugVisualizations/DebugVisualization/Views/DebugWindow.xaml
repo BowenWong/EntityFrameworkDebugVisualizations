@@ -1,7 +1,7 @@
 ﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
-        xmlns:graphControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
+        xmlns:graphControls="clr-namespace:GraphX;assembly=GraphX.Controls"
+        xmlns:controls="clr-namespace:GraphX.Controls;assembly=GraphX.Controls"
         xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Converters;assembly=EntityFrameworkDebugVisualizations"
         xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph;assembly=EntityFrameworkDebugVisualizations"
         Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
@@ -79,7 +79,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="130" />
         </Grid.ColumnDefinitions>
-        
+
         <controls:ZoomControl Grid.Column="0" Grid.ColumnSpan="2" ZoomBoxOpacity="0.5">
             <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
         </controls:ZoomControl>

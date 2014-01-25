@@ -7,10 +7,10 @@ using System.Windows;
 using System.Windows.Markup;
 using EntityFramework.Debug.DebugVisualization.Graph;
 using EntityFramework.Debug.DebugVisualization.ViewModels;
-using GraphSharp.Controls;
+using GraphX;
+using GraphX.Controls;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 using Newtonsoft.Json;
-using WPFExtensions.Controls;
 
 namespace EntityFramework.Debug.DebugVisualization
 {
@@ -20,7 +20,7 @@ namespace EntityFramework.Debug.DebugVisualization
         {
             // DO NOT REMOVE: this dummy calls load the assembly which is required for the xaml parser to know the contained types
             var zoomControl = new ZoomControl();
-            var vertexControl = new VertexControl();
+            var vertexControl = new VertexControl(null);
 
             var assembly = Assembly.GetExecutingAssembly();
             var resourceNames = assembly.GetManifestResourceNames();
