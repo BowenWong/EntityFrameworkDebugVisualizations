@@ -58,6 +58,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
@@ -71,18 +73,27 @@
     <Compile Include="DebugVisualization\Graph\EntityGraphLayout.cs" />
     <Compile Include="DebugVisualization\Graph\EntityProperty.cs" />
     <Compile Include="DebugVisualization\Graph\EntityVertex.cs" />
+    <Compile Include="DebugVisualization\Graph\Logic.cs" />
     <Compile Include="DebugVisualization\Graph\Relation.cs" />
     <Compile Include="DebugVisualization\Graph\RelationEdgeSet.cs" />
     <Compile Include="DebugVisualization\ViewModels\AViewModel.cs" />
     <Compile Include="DebugVisualization\ViewModels\EntityTypeFilterViewModel.cs" />
     <Compile Include="DebugVisualization\ViewModels\VisualizerViewModel.cs" />
+    <Compile Include="DebugVisualization\Views\GraphArea.xaml.cs">
+      <DependentUpon>GraphArea.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="DebugVisualization\Views\GraphArea.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DebugVisualization\Views\DebugWindow.xaml">
       <SubType>Designer</SubType>

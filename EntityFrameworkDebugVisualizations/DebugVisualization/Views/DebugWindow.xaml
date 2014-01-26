@@ -4,6 +4,7 @@
         xmlns:controls="clr-namespace:GraphX.Controls;assembly=GraphX.Controls"
         xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Converters;assembly=EntityFrameworkDebugVisualizations"
         xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph;assembly=EntityFrameworkDebugVisualizations"
+        xmlns:userControls="clr-namespace:EntityFramework.Debug.DebugVisualization.Views;assembly=EntityFrameworkDebugVisualizations"
         Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
         WindowStartupLocation="CenterOwner">
     
@@ -80,9 +81,7 @@
             <ColumnDefinition Width="130" />
         </Grid.ColumnDefinitions>
 
-        <controls:ZoomControl Grid.Column="0" Grid.ColumnSpan="2" ZoomBoxOpacity="0.5">
-            <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
-        </controls:ZoomControl>
+        <userControls:GraphArea Grid.Column="0" Grid.ColumnSpan="2" Graph="{Binding Graph}" />
         
         <Grid Grid.Column="1" Opacity="0.75">
             <StackPanel>
