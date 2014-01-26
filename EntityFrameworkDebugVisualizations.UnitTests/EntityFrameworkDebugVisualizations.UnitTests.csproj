@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityInternalProperty.cs" />
+    <Compile Include="Models\EntityPrivateProperty.cs" />
     <Compile Include="Models\EntityWithChild.cs" />
     <Compile Include="Models\GuidEntity.cs" />
     <Compile Include="Models\MultiKeyEntity.cs" />

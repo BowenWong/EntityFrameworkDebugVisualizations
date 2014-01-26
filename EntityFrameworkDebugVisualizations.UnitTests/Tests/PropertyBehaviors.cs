@@ -211,5 +211,20 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 Assert.IsTrue(vertices[0].Properties.Any(p => p.Name == "InternalProperty"));
             }
         }
+
+        [TestMethod]
+        public void ShouldSeePrivateProperty()
+        {
+            using (var context = new TestDbContext())
+            {
+                var entity = new EntityPrivateProperty();
+                context.EntityPrivateProperties.Add(entity);
+
+                var vertices = context.GetEntityVertices();
+
+                Assert.AreEqual(1, vertices.Count);
+                Assert.IsTrue(vertices[0].Properties.Any(p => p.Name == "PrivateProperty"));
+            }
+        }
     }
 }
