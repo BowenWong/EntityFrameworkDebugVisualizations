@@ -1,11 +1,12 @@
 ﻿using System.Data.Entity;
+using EntityFramework.Debug.UnitTests.Infrastructure;
 
 namespace EntityFramework.Debug.UnitTests.Models
 {
     public class TestDbContext : DbContext
     {
         public TestDbContext()
-                : base("EntityFrameworkDebugVisualizations.UnitTests")
+                : base(TestBootstrapper.DbName)
         {
         }
 
