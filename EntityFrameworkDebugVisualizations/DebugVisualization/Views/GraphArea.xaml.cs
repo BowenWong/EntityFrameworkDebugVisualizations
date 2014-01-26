@@ -33,11 +33,12 @@ namespace EntityFramework.Debug.DebugVisualization.Views
         {
             InitializeComponent();
 
+            Zoom.ZoomDeltaMultiplier = 25.0;
+
             var logicCore = new Logic();
             logicCore.DefaultLayoutAlgorithm = LayoutAlgorithmTypeEnum.ISOM;
             logicCore.DefaultLayoutAlgorithmParams =
                                logicCore.AlgorithmFactory.CreateLayoutParameters(LayoutAlgorithmTypeEnum.ISOM);
-            //((ISOMLayoutParameters)logicCore.DefaultLayoutAlgorithmParams).MaxIterations = 100;
             logicCore.DefaultOverlapRemovalAlgorithm = OverlapRemovalAlgorithmTypeEnum.FSA;
             logicCore.DefaultOverlapRemovalAlgorithmParams =
                               logicCore.AlgorithmFactory.CreateOverlapRemovalParameters(OverlapRemovalAlgorithmTypeEnum.FSA);
@@ -49,8 +50,8 @@ namespace EntityFramework.Debug.DebugVisualization.Views
             logicCore.EnableParallelEdges = true;
             logicCore.ParallelEdgeDistance = 25;
 
-#warning try this!
-            //logicCore.EdgeCurvingEnabled
+            logicCore.EdgeCurvingEnabled = true;
+            logicCore.EdgeShowSelfLooped = true;
 
             Area.LogicCore = logicCore;
         }

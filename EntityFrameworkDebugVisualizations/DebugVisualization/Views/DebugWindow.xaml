@@ -46,7 +46,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type graphControls:VertexControl}">
-                        <Border BorderBrush="SlateGray" BorderThickness="2" CornerRadius="10,10,10,10" Padding="{TemplateBinding Padding}"
+                        <Border BorderBrush="SlateGray" BorderThickness="2" CornerRadius="10" Padding="{TemplateBinding Padding}"
                                 Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}">
                             <ContentPresenter Content="{TemplateBinding Vertex}" ContentTemplate="{StaticResource EntityVertexTemplate}" />
                             <Border.Effect>
@@ -69,11 +69,6 @@
             <Setter Property="ToolTip" Value="{StaticResource ToolTipContent}"/>
             <Setter Property="StrokeThickness" Value="2"/>
             <Setter Property="Foreground" Value="{Binding State, Converter={StaticResource RelationStateToBrushConverter}}"/>
-            <Style.Triggers>
-                <DataTrigger Value="True" Binding="{Binding ContainsMultipleRelations}">
-                    <Setter Property="StrokeThickness" Value="3" />
-                </DataTrigger>
-            </Style.Triggers>
         </Style>
     </Window.Resources>
     
