@@ -7,7 +7,7 @@ namespace EntityFramework.Debug.UnitTests.Tests
     [TestClass]
     public class VisualizerBehaviors : Testbase
     {
-        //[Ignore]
+        [Ignore]
         [TestMethod]
         public void ShouldShowVisualizer()
         {
