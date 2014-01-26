@@ -178,5 +178,20 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 Assert.IsTrue(vertices[0].Properties.Single(p => p.Name == "Name").HasValueChanged);
             }
         }
+
+        [TestMethod]
+        public void ShouldSeeInternalProperty()
+        {
+            using (var context = new TestDbContext())
+            {
+                var entity = new EntityInternalProperty { InternalProperty= "The internal property" };
+                context.EntityInternalProperties.Add(entity);
+
+                var vertices = context.GetEntityVertices();
+
+                Assert.AreEqual(1, vertices.Count);
+                Assert.IsTrue(vertices[0].Properties.Any(p => p.Name == "InternalProperty"));
+            }
+        }
     }
 }
