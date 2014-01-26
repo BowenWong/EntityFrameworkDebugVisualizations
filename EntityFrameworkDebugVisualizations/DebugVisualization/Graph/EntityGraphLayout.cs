@@ -1,5 +1,4 @@
 ﻿using GraphX;
-using GraphX.GraphSharp.Algorithms.OverlapRemoval;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {

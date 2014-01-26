@@ -76,10 +76,5 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
                     throw new ArgumentOutOfRangeException("multiplicity");
             }
         }
-
-        public void Merge(RelationEdgeSet parallelRelation)
-        {
-            Relations.AddRange(parallelRelation.Relations);
-        }
     }
 }

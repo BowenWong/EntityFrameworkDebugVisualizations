@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph"
              xmlns:controls="clr-namespace:GraphX.Controls;assembly=GraphX.Controls">
-    <controls:ZoomControl>
+    <controls:ZoomControl x:Name="Zoom">
         <graph:EntityGraphLayout x:Name="Area" Margin="10" />
     </controls:ZoomControl>
 </UserControl>

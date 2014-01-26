@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using EntityFramework.Debug.DebugVisualization.Graph;
 using GraphX;
-using GraphX.GraphSharp.Algorithms.Layout.Simple.FDP;
 using GraphX.GraphSharp.Algorithms.OverlapRemoval;
 
 namespace EntityFramework.Debug.DebugVisualization.Views
@@ -18,7 +17,10 @@ namespace EntityFramework.Debug.DebugVisualization.Views
                 graphArea.Area.EnableWinFormsHostingMode = true;
             
             graphArea.Area.LogicCore.Graph = graphArea.Graph;
+
+            graphArea.Zoom.Zoom = 0.01;
             graphArea.Area.GenerateGraph(true);
+            graphArea.Zoom.ZoomToFill();
         }
 
         public EntityGraph Graph
@@ -43,6 +45,12 @@ namespace EntityFramework.Debug.DebugVisualization.Views
             ((OverlapRemovalParameters)logicCore.DefaultOverlapRemovalAlgorithmParams).VerticalGap = 50;
             logicCore.DefaultEdgeRoutingAlgorithm = EdgeRoutingAlgorithmTypeEnum.SimpleER;
             logicCore.AsyncAlgorithmCompute = false;
+
+            logicCore.EnableParallelEdges = true;
+            logicCore.ParallelEdgeDistance = 25;
+
+#warning try this!
+            //logicCore.EdgeCurvingEnabled
 
             Area.LogicCore = logicCore;
         }

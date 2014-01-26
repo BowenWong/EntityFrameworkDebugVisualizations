@@ -113,19 +113,6 @@ namespace EntityFramework.Debug
                 }
             }
 
-            foreach (var vertex in vertices)
-            {
-                foreach (var parallelRelation in vertex.Relations.GroupBy(r => r.Target).Where(r => r.Count() > 1))
-                {
-                    var first = parallelRelation.First();
-                    foreach (var relation in parallelRelation.Skip(1).ToList())
-                    {
-                        first.Merge(relation);
-                        vertex.Relations.Remove(relation);
-                    }
-                }
-            }
-
             return vertices.ToList();
         }
 
