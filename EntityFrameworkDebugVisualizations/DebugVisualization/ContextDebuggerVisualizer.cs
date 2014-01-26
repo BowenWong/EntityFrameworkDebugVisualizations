@@ -39,6 +39,7 @@ namespace EntityFramework.Debug.DebugVisualization
             var vertices = JsonConvert.DeserializeObject<List<EntityVertex>>(jsonSerialized);
 
             window.DataContext = new VisualizerViewModel(vertices);
+            window.Loaded += (o, e) => window.Activate();
             window.ShowDialog();
         }
     }
