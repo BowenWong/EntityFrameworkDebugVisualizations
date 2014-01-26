@@ -100,7 +100,8 @@ namespace EntityFramework.Debug
                     if (navigationProperty == null)
                         continue;
 
-                    var targetKey = relationKeys.Single(k => k != vertex.EntityKey);
+                    // if both relation keys are identical the vertex is referencing itself
+                    var targetKey = relationKeys.Distinct().Count() == 1 ? vertex.EntityKey : relationKeys.Single(k => k != vertex.EntityKey);
                     var target = vertices.SingleOrDefault(v => v.EntityKey == targetKey);
                     if (target == null)
                         continue;

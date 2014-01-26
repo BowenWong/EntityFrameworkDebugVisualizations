@@ -10,6 +10,25 @@ namespace EntityFramework.Debug.UnitTests.Tests
     public class CircularRelationBehaviors : Testbase
     {
         [TestMethod]
+        public void ShouldSeeCircularRelationWithItself()
+        {
+            using (var context = new TestDbContext())
+            {
+                var owner = new OwnerOwned();
+                context.OwnerOwneds.Add(owner);
+
+                context.SaveChanges();
+
+                owner.Owned = owner;
+
+                var vertices = context.GetEntityVertices();
+                Assert.AreEqual(1, vertices.Count(v => v.EntityType.Name == typeof(OwnerOwned).Name));
+                Assert.IsTrue(vertices.All(v => v.Relations.Count == 1));
+                Assert.IsTrue(vertices.All(v => v.Relations.All(r => r.Relations.Count == 2)));
+            }
+        }
+
+        [TestMethod]
         public void ShouldSeeOwnerOwnedWithCircularRelation()
         {
             using (var context = new TestDbContext())
