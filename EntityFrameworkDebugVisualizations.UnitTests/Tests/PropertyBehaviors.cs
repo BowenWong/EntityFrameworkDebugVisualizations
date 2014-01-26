@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
@@ -32,6 +33,23 @@ namespace EntityFramework.Debug.UnitTests.Tests
 
                 Assert.IsTrue(entityVertex.KeyDescription.Contains(key1));
                 Assert.IsTrue(entityVertex.KeyDescription.Contains(key2));
+            }
+        }
+
+        [TestMethod]
+        public void ShouldSeeGuidPrimaryKey()
+        {
+            using (var context = new TestDbContext())
+            {
+                var entity = new GuidEntity();
+                context.GuidEntities.Add(entity);
+
+                List<EntityVertex> vertices = context.GetEntityVertices();
+                Assert.AreEqual(1, vertices.Count(v => v.EntityType.Name == typeof(GuidEntity).Name));
+
+                EntityVertex entityVertex = vertices[0];
+                Assert.AreEqual(1, entityVertex.Properties.Count(p => p.IsKey));
+                Assert.IsTrue(entityVertex.HasTemporaryKey);
             }
         }
 

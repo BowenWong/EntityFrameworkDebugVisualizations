@@ -15,6 +15,7 @@ namespace EntityFramework.Debug.UnitTests.Models
         public IDbSet<OwnerOwnedCollection> OwnerOwnedCollections { get; set; }
         public IDbSet<MultiKeyEntity> MultiKeyEntities { get; set; }
         public IDbSet<EntityInternalProperty> EntityInternalProperties { get; set; }
+        public IDbSet<GuidEntity> GuidEntities { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

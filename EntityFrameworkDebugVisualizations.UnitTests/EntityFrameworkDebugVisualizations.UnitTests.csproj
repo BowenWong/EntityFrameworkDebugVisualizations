@@ -87,6 +87,7 @@
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityInternalProperty.cs" />
     <Compile Include="Models\EntityWithChild.cs" />
+    <Compile Include="Models\GuidEntity.cs" />
     <Compile Include="Models\MultiKeyEntity.cs" />
     <Compile Include="Models\OwnerOwned.cs" />
     <Compile Include="Models\OwnerOwnedCollection.cs" />
