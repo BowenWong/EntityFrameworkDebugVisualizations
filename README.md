@@ -1,5 +1,5 @@
-EntityFrameworkDebugVisualizations
-=================
+Entity Framework: Debug Visualizations
+-----------------
 
 A visualization of the entities and their relations as tracked by Db- and ObjectContext.
 - Displays all entities tracked by the ObjectStateManager (Db- or ObjectContext) as 'entity cards'
@@ -14,7 +14,7 @@ A visualization of the entities and their relations as tracked by Db- and Object
 - The shown entities can be filtered by
     - their state
     - their type 
-- Thanks to GraphSharp you are free to rearrange, zoom, pane and choose a layout algorithm as you like
+- Thanks to GraphSharp you are free to rearrange, zoom, pane and choose a layout algorithm you like
 
 ![](https://raw.github.com/andypelzer/EntityFrameworkDebugVisualizations/master/Documentation/Screenshots/DebugVisualizer.png)
 
@@ -27,9 +27,9 @@ and
 
     context.ShowVisualizer();
 
-The first extension method just produces a string with a textual representation of the entities tracked by the context, while the second visualizes the entities and their relations graphically (as presented in the screenshot above).
+The first extension method just produces a string with a textual representation of the entities tracked by the context, while the second visualizes the entities and their relations graphically as presented in the screenshot above.
 
-The graphical version is implemented as a DebuggerVisualizer. At the moment there is no easy (packaged) way to install it. You'll either have to download the source, compile it and copy the assemblies manually or just copy the assemblies after NuGet has installed the package.
+The graphical version is also implemented as a DebuggerVisualizer. At the moment there is no easy, packaged way to install it. You'll either have to download the source, compile it and copy the assemblies manually or just copy the assemblies after NuGet has installed the package.
 
 There also is a [NuGet package](https://www.nuget.org/packages/EntityFrameworkDebugVisualization/) to install the project assemblies.
 
