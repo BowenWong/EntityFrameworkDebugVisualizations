@@ -18,11 +18,6 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
             get { return Relations.Count > 1; }
         }
 
-        public string TooltipText
-        {
-            get { return string.Join("\n\n", Relations.Select(r => r.TooltipText)); }
-        }
-
         public EntityState State
         {
             get

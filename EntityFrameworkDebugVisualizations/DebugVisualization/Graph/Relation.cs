@@ -1,5 +1,6 @@
 using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
+using System.Windows;
 
 namespace EntityFramework.Debug.DebugVisualization.Graph
 {
@@ -21,9 +22,6 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public EntityState State { get; set; }
 
-        public string TooltipText
-        {
-            get { return string.Format("{0} ({1}){2}\nState: {3}", Name, Multiplicity, DeleteBehavior == OperationAction.Cascade ? " (cascaded delete)" : "", State); }
-        }
+        public Visibility DisplayCascadedDelete { get { return DeleteBehavior == OperationAction.Cascade ? Visibility.Visible : Visibility.Collapsed; } }
     }
 }

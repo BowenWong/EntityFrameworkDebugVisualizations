@@ -5,6 +5,7 @@
                    xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Converters;assembly=EntityFrameworkDebugVisualizations"
                    xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph;assembly=EntityFrameworkDebugVisualizations"
                    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                   xmlns:metroConverters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro"
                    Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
                    WindowStartupLocation="CenterOwner">
 
@@ -40,6 +41,7 @@
             
             <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter" />
             <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter" />
+            <metroConverters:ToUpperConverter x:Key="ToUpperConverter" />
 
             <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
                 <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" Margin="0,0,5,0" />
@@ -52,8 +54,9 @@
 
             <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
                 <StackPanel Orientation="Vertical" Margin="5">
-                    <TextBlock Text="{Binding Path=Header, Mode=OneWay}" Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250"
-                               Foreground="White" Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}" />
+                    <TextBlock Text="{Binding Path=Header, Converter={StaticResource ToUpperConverter}, Mode=OneWay}" 
+                               Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250" Foreground="White" 
+                               Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}" />
                     
                     <StackPanel Orientation="Vertical" Background="#FFFCFCFC" Opacity="0.85">
                         <TextBlock Style="{StaticResource HeaderTextBlock}" Text="Relations:" Margin="0,5,0,0" />
@@ -82,19 +85,42 @@
 
             <Style TargetType="{x:Type graphControls:EdgeControl}">
                 <Style.Resources>
-                    <ToolTip x:Key="ToolTipContent">
+                    <ToolTip x:Key="ToolTipContent" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding TooltipText}" />
+                            <ItemsControl ItemsSource="{Binding Relations}" Background="#FFFCFCFC">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical" Margin="0,0,0,15">
+                                            <TextBlock Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250" Foreground="White" 
+                                                       Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} [{1}]">
+                                                        <Binding Path="Name" Converter="{StaticResource ToUpperConverter}" />
+                                                        <Binding Path="State" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Style="{StaticResource ContentTextBlock}" Text="{Binding Multiplicity, StringFormat='Cardinality: {0}'}" Margin="5,5,5,0" />
+                                                <TextBlock Style="{StaticResource ContentTextBlock}" Text="Will cascade on delete" Margin="5,5,5,0"
+                                                           Visibility="{Binding DisplayCascadedDelete}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
                     </ToolTip>
                 </Style.Resources>
                 <Setter Property="ToolTip" Value="{StaticResource ToolTipContent}" />
-                <Setter Property="StrokeThickness" Value="2" />
+                <Setter Property="StrokeThickness" Value="3" />
+                <Setter Property="Opacity" Value="0.9" />
                 <Setter Property="Foreground"
                         Value="{Binding State, Converter={StaticResource RelationStateToBrushConverter}}" />
                 <Style.Triggers>
                     <DataTrigger Value="True" Binding="{Binding ContainsMultipleRelations}">
-                        <Setter Property="StrokeThickness" Value="3.5" />
+                        <Setter Property="StrokeThickness" Value="5" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

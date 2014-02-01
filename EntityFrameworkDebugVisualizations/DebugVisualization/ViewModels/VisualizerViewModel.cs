@@ -49,7 +49,7 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
         private List<EntityVertex> _currentlyVisibleVertices;
 
         private readonly List<string> _algorithmTypes;
-        private string _selectedAlgorithmType = "KK";
+        private string _selectedAlgorithmType = "BoundedFR";
         public List<string> AlgorithmTypes
         {
             get { return _algorithmTypes; }

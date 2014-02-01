@@ -61,12 +61,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
 
         public string Header
         {
-            get { return String.Format("{0} [{1}{2}]", TypeName, HasTemporaryKey ? "" : KeyDescription + ", ", State).ToUpperInvariant(); }
-        }
-
-        public bool HasChanged
-        {
-            get { return State != EntityState.Unchanged; }
+            get { return String.Format("{0} [{1}{2}]", TypeName, HasTemporaryKey ? "" : KeyDescription + ", ", State); }
         }
 
         private void AddProperties(MetadataWorkspace metadataWorkspace, ObjectStateEntry entry)
