@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:WPFExtensions.Converters;assembly=WPFExtensions"
-                    xmlns:controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions">
+                    xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Views.Converters"
+                    xmlns:controls="clr-namespace:EntityFramework.Debug.DebugVisualization.Views.Controls">
 
     <converters:DoubleToLog10Converter x:Key="Log10Converter" />
     <converters:EqualityToBooleanConverter x:Key="EqualityConverter" />

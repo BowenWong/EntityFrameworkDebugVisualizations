@@ -7,11 +7,12 @@ using System.Windows;
 using System.Windows.Markup;
 using EntityFramework.Debug.DebugVisualization.Graph;
 using EntityFramework.Debug.DebugVisualization.ViewModels;
+using EntityFramework.Debug.DebugVisualization.Views.Controls;
 using GraphSharp.Controls;
 using MahApps.Metro.Controls;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 using Newtonsoft.Json;
-using WPFExtensions.Controls;
+using WPFExtensions.Converters;
 
 namespace EntityFramework.Debug.DebugVisualization
 {
@@ -23,6 +24,7 @@ namespace EntityFramework.Debug.DebugVisualization
             var zoomControl = new ZoomControl();
             var vertexControl = new VertexControl();
             var metroWindow = new MetroWindow();
+            var dummy = new BoolToVisibilityConverter();
 
             var assembly = Assembly.GetExecutingAssembly();
             var resourceNames = assembly.GetManifestResourceNames();

@@ -69,7 +69,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugVisualization\Converters\EntityStateToBrushConverter.cs" />
+    <Compile Include="DebugVisualization\Views\Controls\ContentSizeChangedDelegate.cs" />
+    <Compile Include="DebugVisualization\Views\Controls\ZoomContentPresenter.cs" />
+    <Compile Include="DebugVisualization\Views\Controls\ZoomControl.cs" />
+    <Compile Include="DebugVisualization\Views\Controls\ZoomControlModes.cs" />
+    <Compile Include="DebugVisualization\Views\Controls\ZoomViewModifierMode.cs" />
+    <Compile Include="DebugVisualization\Views\Converters\DoubleToLog10Converter.cs" />
+    <Compile Include="DebugVisualization\Views\Converters\EntityStateToBrushConverter.cs" />
     <Compile Include="DebugVisualization\ContextDebuggerVisualizer.cs" />
     <Compile Include="DebugExtensions.cs" />
     <Compile Include="DebugVisualization\ContextVisualizerObjectSource.cs" />
@@ -82,6 +88,7 @@
     <Compile Include="DebugVisualization\ViewModels\AViewModel.cs" />
     <Compile Include="DebugVisualization\ViewModels\EntityTypeFilterViewModel.cs" />
     <Compile Include="DebugVisualization\ViewModels\VisualizerViewModel.cs" />
+    <Compile Include="DebugVisualization\Views\Converters\EqualityToBooleanConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
