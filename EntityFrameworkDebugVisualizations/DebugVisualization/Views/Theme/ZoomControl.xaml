@@ -27,7 +27,7 @@
                                         <TextBlock><Run FontWeight="Bold">(SHIFT +) Drag:</Run> Pan</TextBlock>
                                     </StackPanel>
                                 </Border.ToolTip>
-                                <StackPanel Orientation="Vertical">
+                                <!--<StackPanel Orientation="Vertical">
                                     <StackPanel.Resources>
                                         <Style TargetType="{x:Type RadioButton}">
                                             <Setter Property="Template">
@@ -75,7 +75,7 @@
                                                  IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Original}}" />
                                     <RadioButton Content="Fill" GroupName="rbgZoomMode"
                                                  IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Fill}}" />
-                                </StackPanel>
+                                </StackPanel>-->
                             </Border>
 
                             <!-- ZoomBox -->

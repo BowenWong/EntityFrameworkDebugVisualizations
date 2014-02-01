@@ -15,6 +15,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Buttons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.CheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.RadioButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Slider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
@@ -41,7 +42,7 @@
             <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter" />
 
             <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
-                <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" />
+                <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" Margin="0,0,5,0" />
                 <DataTemplate.Triggers>
                     <DataTrigger Value="True" Binding="{Binding HasValueChanged}">
                         <Setter TargetName="description" Property="Foreground" Value="#086F9E" />
@@ -54,7 +55,7 @@
                     <TextBlock Text="{Binding Path=Header, Mode=OneWay}" Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250"
                                Foreground="White" Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}" />
                     
-                    <StackPanel Orientation="Vertical" Background="#FFFCFCFC">
+                    <StackPanel Orientation="Vertical" Background="#FFFCFCFC" Opacity="0.85">
                         <TextBlock Style="{StaticResource HeaderTextBlock}" Text="Relations:" Margin="0,5,0,0" />
                         <ItemsControl ItemsSource="{Binding RelationProperties}" Margin="5,0,0,0" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
                         
@@ -93,43 +94,58 @@
                         Value="{Binding State, Converter={StaticResource RelationStateToBrushConverter}}" />
                 <Style.Triggers>
                     <DataTrigger Value="True" Binding="{Binding ContainsMultipleRelations}">
-                        <Setter Property="StrokeThickness" Value="3" />
+                        <Setter Property="StrokeThickness" Value="3.5" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="155" />
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        
-        <controls:ZoomControl Grid.Column="0" Grid.ColumnSpan="2" ZoomBoxOpacity="0.5">
+
+        <controls:ZoomControl x:Name="zoomControl" Grid.ColumnSpan="2">
             <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
         </controls:ZoomControl>
-        
-        <Grid Grid.Column="1" Opacity="0.85">
-            <StackPanel>
-                <TextBlock Text="Filter by Entity State" Margin="5,0,0,5" Style="{StaticResource HeaderTextBlock}"/>
-                <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="10,0,0,0" />
-                <CheckBox IsChecked="{Binding ShowDeletedEntities, Mode=TwoWay}" Content="Deleted" Margin="10,0,0,0" />
-                <CheckBox IsChecked="{Binding ShowModifiedEntities, Mode=TwoWay}" Content="Modified" Margin="10,0,0,0" />
-                <CheckBox IsChecked="{Binding ShowUnchangedEntities, Mode=TwoWay}" Content="Unchanged" Margin="10,0,0,0" />
 
-                <TextBlock Text="Filter by Entity Type" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
-                <ItemsControl ItemsSource="{Binding EntityTypes}" Margin="10,0,0,0">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding TypeName}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+        <ToggleButton IsChecked="{Binding ElementName=settingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
+                      Style="{StaticResource MetroToggleButton}" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal"
+                      Width="100" Height="30" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
+            Settings
+        </ToggleButton>
 
-                <TextBlock Text="Layout algorithm" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
-                <ComboBox ItemsSource="{Binding AlgorithmTypes}" SelectedItem="{Binding SelectedAlgorithmType, Mode=TwoWay}" Margin="10,0,10,0" />
-            </StackPanel>
-        </Grid>
+        <metro:FlyoutsControl>
+            <metro:Flyout x:Name="settingsFlyout" Header="Settings" Position="Left" Theme="Adapt" IsOpen="True">
+                <StackPanel Margin="10" Width="160">
+                    <TextBlock Text="Filter by Entity State" Margin="5,0,0,5" Style="{StaticResource HeaderTextBlock}"/>
+                    <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="10,0,0,0" />
+                    <CheckBox IsChecked="{Binding ShowDeletedEntities, Mode=TwoWay}" Content="Deleted" Margin="10,0,0,0" />
+                    <CheckBox IsChecked="{Binding ShowModifiedEntities, Mode=TwoWay}" Content="Modified" Margin="10,0,0,0" />
+                    <CheckBox IsChecked="{Binding ShowUnchangedEntities, Mode=TwoWay}" Content="Unchanged" Margin="10,0,0,0" />
+
+                    <TextBlock Text="Filter by Entity Type" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
+                    <ItemsControl ItemsSource="{Binding EntityTypes}" Margin="10,0,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding TypeName}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Layout algorithm" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
+                    <ComboBox ItemsSource="{Binding AlgorithmTypes}" SelectedItem="{Binding SelectedAlgorithmType, Mode=TwoWay}" Margin="10,0,10,0" />
+
+                    <TextBlock Text="{Binding ElementName=zoomControl,Path=Zoom,StringFormat='Zoom ({0:F2}x)'}" 
+                               Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}" />
+                    <RadioButton Content="1:1" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,0,0,0"
+                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Original}}" />
+                    <RadioButton Content="Fill" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
+                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Fill}}" />
+                </StackPanel>
+            </metro:Flyout>
+        </metro:FlyoutsControl>
     </Grid>
 </metro:MetroWindow>
