@@ -20,13 +20,13 @@ namespace EntityFramework.Debug.DebugVisualization.Converters
             switch (state)
             {
                 case EntityState.Unchanged:
-                    return new BrushConverter().ConvertFrom("#EEEEEE");
+                    return new BrushConverter().ConvertFrom("#83919F");
                 case EntityState.Added:
-                    return new BrushConverter().ConvertFrom("#B4F3AE");
+                    return new BrushConverter().ConvertFrom("#077507");
                 case EntityState.Deleted:
-                    return new BrushConverter().ConvertFrom("#FFC3B6");
+                    return new BrushConverter().ConvertFrom("#890725");
                 case EntityState.Modified:
-                    return new BrushConverter().ConvertFrom("#FFF4B6");
+                    return new BrushConverter().ConvertFrom("#FA6800");
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -50,11 +50,11 @@ namespace EntityFramework.Debug.DebugVisualization.Converters
             switch (state)
             {
                 case EntityState.Unchanged:
-                    return new BrushConverter().ConvertFrom("#777777");
+                    return new BrushConverter().ConvertFrom("#83919F");
                 case EntityState.Added:
-                    return new BrushConverter().ConvertFrom("#39972F");
+                    return new BrushConverter().ConvertFrom("#077507");
                 case EntityState.Deleted:
-                    return new BrushConverter().ConvertFrom("#A64733");
+                    return new BrushConverter().ConvertFrom("#890725");
                 default:
                     throw new ArgumentOutOfRangeException();
             }

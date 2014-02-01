@@ -27,35 +27,42 @@
             <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MetroComboBoxItem}" />
             <Style TargetType="Slider" BasedOn="{StaticResource MetroSlider}" />
 
+            <Style x:Key="HeaderTextBlock" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="15"/>
+            </Style>
+
+            <Style x:Key="ContentTextBlock" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+            
             <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter" />
             <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter" />
 
             <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
-                <TextBlock x:Name="description" Text="{Binding Description}" />
+                <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" />
                 <DataTemplate.Triggers>
                     <DataTrigger Value="True" Binding="{Binding HasValueChanged}">
-                        <Setter TargetName="description" Property="Foreground" Value="#A64733" />
+                        <Setter TargetName="description" Property="Foreground" Value="#086F9E" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
 
             <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
                 <StackPanel Orientation="Vertical" Margin="5">
-                    <TextBlock Text="{Binding Path=Header, Mode=OneWay}" FontWeight="SemiBold" />
-                    <Separator Foreground="SlateGray" />
-                    <TextBlock Text="Relations:" />
-                    <ItemsControl ItemsSource="{Binding RelationProperties}" Margin="5,0,0,0">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Description}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Separator Foreground="SlateGray" />
-                    <Expander Header="Properties" IsExpanded="{Binding HasChanged, Mode=OneTime}">
-                        <ItemsControl ItemsSource="{Binding ScalarProperties}"
-                                      ItemTemplate="{StaticResource EntityPropertyTemplate}" />
-                    </Expander>
+                    <TextBlock Text="{Binding Path=Header, Mode=OneWay}" Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250"
+                               Foreground="White" Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}" />
+                    
+                    <StackPanel Orientation="Vertical" Background="#FFFCFCFC">
+                        <TextBlock Style="{StaticResource HeaderTextBlock}" Text="Relations:" Margin="0,5,0,0" />
+                        <ItemsControl ItemsSource="{Binding RelationProperties}" Margin="5,0,0,0" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
+                        
+                        <Separator Foreground="#576573" />
+                        
+                        <TextBlock Style="{StaticResource HeaderTextBlock}" Text="Properties:" />
+                        <ItemsControl ItemsSource="{Binding ScalarProperties}" Margin="5,0,0,0" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
+                    </StackPanel>
                 </StackPanel>
             </DataTemplate>
 
@@ -63,14 +70,9 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type graphControls:VertexControl}">
-                            <Border BorderBrush="SlateGray" BorderThickness="2" CornerRadius="10,10,10,10"
-                                    Padding="{TemplateBinding Padding}"
-                                    Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}">
+                            <Border BorderThickness="0" CornerRadius="0" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter Content="{TemplateBinding Vertex}"
                                                   ContentTemplate="{StaticResource EntityVertexTemplate}" />
-                                <Border.Effect>
-                                    <DropShadowEffect BlurRadius="2" Color="LightGray" Opacity="0.3" Direction="315" />
-                                </Border.Effect>
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -101,7 +103,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="155" />
         </Grid.ColumnDefinitions>
         
         <controls:ZoomControl Grid.Column="0" Grid.ColumnSpan="2" ZoomBoxOpacity="0.5">
@@ -110,13 +112,13 @@
         
         <Grid Grid.Column="1" Opacity="0.85">
             <StackPanel>
-                <TextBlock Text="Filter by Entity State" Margin="5,0,0,5"/>
+                <TextBlock Text="Filter by Entity State" Margin="5,0,0,5" Style="{StaticResource HeaderTextBlock}"/>
                 <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="10,0,0,0" />
                 <CheckBox IsChecked="{Binding ShowDeletedEntities, Mode=TwoWay}" Content="Deleted" Margin="10,0,0,0" />
                 <CheckBox IsChecked="{Binding ShowModifiedEntities, Mode=TwoWay}" Content="Modified" Margin="10,0,0,0" />
                 <CheckBox IsChecked="{Binding ShowUnchangedEntities, Mode=TwoWay}" Content="Unchanged" Margin="10,0,0,0" />
 
-                <TextBlock Text="Filter by Entity Type" Margin="5,15,0,5"/>
+                <TextBlock Text="Filter by Entity Type" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
                 <ItemsControl ItemsSource="{Binding EntityTypes}" Margin="10,0,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -125,7 +127,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <TextBlock Text="Layout algorithm" Margin="5,15,0,5"/>
+                <TextBlock Text="Layout algorithm" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
                 <ComboBox ItemsSource="{Binding AlgorithmTypes}" SelectedItem="{Binding SelectedAlgorithmType, Mode=TwoWay}" Margin="10,0,10,0" />
             </StackPanel>
         </Grid>
