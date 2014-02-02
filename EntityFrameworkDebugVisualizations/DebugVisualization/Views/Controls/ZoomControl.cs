@@ -16,10 +16,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             DependencyProperty.Register("AnimationLength", typeof(TimeSpan), typeof(ZoomControl),
                                         new UIPropertyMetadata(TimeSpan.FromMilliseconds(500)));
 
-        public static readonly DependencyProperty MaxZoomDeltaProperty =
-            DependencyProperty.Register("MaxZoomDelta", typeof(double), typeof(ZoomControl),
-                                        new UIPropertyMetadata(5.0));
-
         public static readonly DependencyProperty MaxZoomProperty =
             DependencyProperty.Register("MaxZoom", typeof(double), typeof(ZoomControl), new UIPropertyMetadata(100.0));
 
@@ -85,17 +81,11 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             DependencyProperty.Register("ZoomBox", typeof(Rect), typeof(ZoomControl),
                                         new UIPropertyMetadata(new Rect()));
 
-        public static readonly DependencyProperty ZoomDeltaMultiplierProperty =
-            DependencyProperty.Register("ZoomDeltaMultiplier", typeof(double), typeof(ZoomControl),
-                                        new UIPropertyMetadata(100.0));
-
         public static readonly DependencyProperty ZoomProperty =
             DependencyProperty.Register("Zoom", typeof(double), typeof(ZoomControl),
                                         new UIPropertyMetadata(1.0, ZoomPropertyChanged));
 
         private Point _mouseDownPos;
-
-
         private ZoomContentPresenter _presenter;
 
         /// <summary>Applied to the presenter.</summary>
@@ -193,18 +183,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
         {
             get { return (double)GetValue(MaxZoomProperty); }
             set { SetValue(MaxZoomProperty, value); }
-        }
-
-        public double MaxZoomDelta
-        {
-            get { return (double)GetValue(MaxZoomDeltaProperty); }
-            set { SetValue(MaxZoomDeltaProperty, value); }
-        }
-
-        public double ZoomDeltaMultiplier
-        {
-            get { return (double)GetValue(ZoomDeltaMultiplierProperty); }
-            set { SetValue(ZoomDeltaMultiplierProperty, value); }
         }
 
         public double Zoom
@@ -338,15 +316,9 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                     return;
                 case ZoomViewModifierMode.Pan:
                     break;
-                case ZoomViewModifierMode.ZoomIn:
-                    break;
-                case ZoomViewModifierMode.ZoomOut:
-                    break;
                 case ZoomViewModifierMode.ZoomBox:
                     ZoomTo(ZoomBox);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
 
             ModifierMode = ZoomViewModifierMode.None;
@@ -377,10 +349,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                     TranslateX = translate.X;
                     TranslateY = translate.Y;
                     break;
-                case ZoomViewModifierMode.ZoomIn:
-                    break;
-                case ZoomViewModifierMode.ZoomOut:
-                    break;
                 case ZoomViewModifierMode.ZoomBox:
                     var pos = e.GetPosition(this);
                     var x = Math.Min(_mouseDownPos.X, pos.X);
@@ -389,8 +357,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                     var sizeY = Math.Abs(_mouseDownPos.Y - pos.Y);
                     ZoomBox = new Rect(x, y, sizeX, sizeY);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -469,16 +435,13 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         private void ZoomControlMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            bool handle = (Keyboard.Modifiers & ModifierKeys.Control) > 0 && ModifierMode == ZoomViewModifierMode.None;
-            if (!handle)
-                return;
-
             e.Handled = true;
             var origoPosition = new Point(ActualWidth / 2, ActualHeight / 2);
             Point mousePosition = e.GetPosition(this);
 
+            const double maxZoomDelta = 5.0;
             DoZoom(
-                Math.Max(1 / MaxZoomDelta, Math.Min(MaxZoomDelta, e.Delta / 10000.0 * ZoomDeltaMultiplier + 1)),
+                Math.Max(1 / maxZoomDelta, Math.Min(maxZoomDelta, e.Delta / 100.0 + 1)),
                 origoPosition,
                 mousePosition,
                 mousePosition);
