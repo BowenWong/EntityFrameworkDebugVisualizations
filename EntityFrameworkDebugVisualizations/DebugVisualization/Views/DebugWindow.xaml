@@ -8,6 +8,7 @@
                    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                    xmlns:metroConverters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro"
                    xmlns:wpfExtensions="clr-namespace:WPFExtensions.AttachedBehaviours;assembly=WPFExtensions"
+                   xmlns:wpfExtConverters="clr-namespace:WPFExtensions.Converters;assembly=WPFExtensions"
                    Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
                    WindowStartupLocation="CenterOwner">
 
@@ -45,6 +46,7 @@
             <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter" />
             <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter" />
             <metroConverters:ToUpperConverter x:Key="ToUpperConverter" />
+            <wpfExtConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
             <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
                 <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" Margin="0,0,5,0" />
@@ -145,21 +147,22 @@
         <controls:ZoomControl x:Name="zoomControl" Grid.ColumnSpan="2">
             <graph:EntityGraphLayout x:Name="graphLayout" Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
         </controls:ZoomControl>
-
+        
         <ToggleButton IsChecked="{Binding ElementName=settingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
                       Style="{StaticResource MetroToggleButton}" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal"
                       Width="100" Height="30" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
             Settings
         </ToggleButton>
         
-        <GroupBox Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="240" Height="160"
-                  Margin="10" Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}">
+        <GroupBox Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="270" Height="180"
+                  Margin="10" Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}" 
+                  Visibility="{Binding ElementName=isMiniMapEnabled, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid Background="#FFFCFCFC">
-                <Rectangle>
-                    <Rectangle.Fill>
-                        <VisualBrush Visual="{Binding ElementName=graphLayout}" />
-                    </Rectangle.Fill>
-                </Rectangle>
+                <Canvas>
+                    <Canvas.Background>
+                        <VisualBrush Visual="{Binding ElementName=graphLayout}" Stretch="Uniform" />
+                    </Canvas.Background>
+                </Canvas>
             </Grid>
         </GroupBox>
 
@@ -192,6 +195,35 @@
                                  IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Fill}}" />
                     <RadioButton Content="Custom" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
                                  IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Custom}}" />
+
+                    <CheckBox x:Name="isMiniMapEnabled" IsChecked="True" Content="Display mini-map" Margin="5,15,0,5" FontFamily="Segoe UI" FontSize="14" />
+
+                    <TextBlock Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="X {0:N0} | Y {1:N0}">
+                                <Binding ElementName="zoomControl" Path="TranslateX"/>
+                                <Binding ElementName="zoomControl" Path="TranslateY"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <TextBlock Margin="5,5,0,5" Style="{StaticResource HeaderTextBlock}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="ZC: W {0:N0} | H {1:N0}">
+                                <Binding ElementName="zoomControl" Path="ActualWidth"/>
+                                <Binding ElementName="zoomControl" Path="ActualHeight"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <TextBlock Margin="5,5,0,5" Style="{StaticResource HeaderTextBlock}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="G: W {0:N0} | H {1:N0}">
+                                <Binding ElementName="graphLayout" Path="ActualWidth"/>
+                                <Binding ElementName="graphLayout" Path="ActualHeight"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel>
             </metro:Flyout>
         </metro:FlyoutsControl>
