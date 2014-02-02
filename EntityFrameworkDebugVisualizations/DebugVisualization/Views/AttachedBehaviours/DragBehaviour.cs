@@ -213,6 +213,10 @@ namespace EntityFramework.Debug.DebugVisualization.Views.AttachedBehaviours
 	        double horizontalChange = pos.X - GetOriginalX(obj);
 	        double verticalChange = pos.Y - GetOriginalY(obj);
 
+            const double maxDelta = 35.0;
+            horizontalChange = Math.Min(maxDelta, Math.Max(-maxDelta, horizontalChange));
+            verticalChange = Math.Min(maxDelta, Math.Max(-maxDelta, verticalChange));
+
 	        if (double.IsNaN(GetX(obj)))
 	            SetX(obj, 0);
 	        if (double.IsNaN(GetY(obj)))

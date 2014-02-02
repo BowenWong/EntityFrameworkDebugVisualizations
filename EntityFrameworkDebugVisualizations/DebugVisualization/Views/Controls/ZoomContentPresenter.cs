@@ -28,7 +28,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
         protected override Size MeasureOverride(Size constraint)
         {
             base.MeasureOverride(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            const int max = 1000000000;
+            const double max = 1e9;
             var x = double.IsInfinity(constraint.Width) ? max : constraint.Width;
             var y = double.IsInfinity(constraint.Height) ? max : constraint.Height;
             return new Size(x, y);
