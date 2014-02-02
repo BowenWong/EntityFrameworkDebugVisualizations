@@ -8,7 +8,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return object.Equals(value, parameter);
+            return Equals(value, parameter);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -16,8 +16,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Converters
             if ((bool)value)
                 return parameter;
 
-            //it's false, so don't bind it back
-            throw new Exception("EqualityToBooleanConverter: It's false, I won't bind back.");
+            return Binding.DoNothing;
         }
     }
 }

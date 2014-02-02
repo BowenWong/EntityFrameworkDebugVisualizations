@@ -6,6 +6,8 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 {
     public class ZoomContentPresenter : ContentPresenter
     {
+        public delegate void ContentSizeChangedHandler(object sender, Size newSize);
+
         public event ContentSizeChangedHandler ContentSizeChanged;
 
         private Size _contentSize;
@@ -26,7 +28,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
         protected override Size MeasureOverride(Size constraint)
         {
             base.MeasureOverride(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            var max = 1000000000;
+            const int max = 1000000000;
             var x = double.IsInfinity(constraint.Width) ? max : constraint.Width;
             var y = double.IsInfinity(constraint.Height) ? max : constraint.Height;
             return new Size(x, y);

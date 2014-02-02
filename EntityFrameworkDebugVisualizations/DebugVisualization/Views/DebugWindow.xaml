@@ -170,6 +170,8 @@
                                  IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Original}}" />
                     <RadioButton Content="Fill" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
                                  IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Fill}}" />
+                    <RadioButton Content="Custom" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
+                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Custom}}" />
                 </StackPanel>
             </metro:Flyout>
         </metro:FlyoutsControl>

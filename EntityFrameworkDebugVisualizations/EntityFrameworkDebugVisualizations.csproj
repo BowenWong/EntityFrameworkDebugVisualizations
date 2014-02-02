@@ -69,7 +69,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugVisualization\Views\Controls\ContentSizeChangedDelegate.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomContentPresenter.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControl.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControlModes.cs" />

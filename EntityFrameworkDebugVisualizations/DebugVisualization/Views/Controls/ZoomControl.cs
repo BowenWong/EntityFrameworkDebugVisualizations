@@ -12,10 +12,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
     {
         private const string PART_Presenter = "PART_Presenter";
 
-        public static readonly DependencyProperty HideZoomProperty =
-            DependencyProperty.Register("HideZoom", typeof(Visibility), typeof(ZoomControl),
-                                        new UIPropertyMetadata(Visibility.Visible));
-
         public static readonly DependencyProperty AnimationLengthProperty =
             DependencyProperty.Register("AnimationLength", typeof(TimeSpan), typeof(ZoomControl),
                                         new UIPropertyMetadata(TimeSpan.FromMilliseconds(500)));
@@ -32,9 +28,9 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         public static readonly DependencyProperty ModeProperty =
             DependencyProperty.Register("Mode", typeof(ZoomControlModes), typeof(ZoomControl),
-                                        new UIPropertyMetadata(ZoomControlModes.Custom, Mode_PropertyChanged));
+                                        new UIPropertyMetadata(ZoomControlModes.Custom, ModePropertyChanged));
 
-        private static void Mode_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void ModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var zc = (ZoomControl)d;
             var mode = (ZoomControlModes)e.NewValue;
@@ -59,11 +55,11 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         public static readonly DependencyProperty TranslateXProperty =
             DependencyProperty.Register("TranslateX", typeof(double), typeof(ZoomControl),
-                                        new UIPropertyMetadata(0.0, TranslateX_PropertyChanged, TranslateX_Coerce));
+                                        new UIPropertyMetadata(0.0, TranslateXPropertyChanged, TranslateXCoerce));
 
         public static readonly DependencyProperty TranslateYProperty =
             DependencyProperty.Register("TranslateY", typeof(double), typeof(ZoomControl),
-                                        new UIPropertyMetadata(0.0, TranslateY_PropertyChanged, TranslateY_Coerce));
+                                        new UIPropertyMetadata(0.0, TranslateYPropertyChanged, TranslateYCoerce));
 
         public static readonly DependencyProperty ZoomBoxBackgroundProperty =
             DependencyProperty.Register("ZoomBoxBackground", typeof(Brush), typeof(ZoomControl),
@@ -95,40 +91,35 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         public static readonly DependencyProperty ZoomProperty =
             DependencyProperty.Register("Zoom", typeof(double), typeof(ZoomControl),
-                                        new UIPropertyMetadata(1.0, Zoom_PropertyChanged));
+                                        new UIPropertyMetadata(1.0, ZoomPropertyChanged));
 
         private Point _mouseDownPos;
 
 
         private ZoomContentPresenter _presenter;
 
-        /// <summary>
-        /// Applied to the presenter.
-        /// </summary>
+        /// <summary>Applied to the presenter.</summary>
         private ScaleTransform _scaleTransform;
         private Vector _startTranslate;
         private TransformGroup _transformGroup;
 
-        /// <summary>
-        /// Applied to the scrollviewer.
-        /// </summary>
+        /// <summary>Applied to the scrollviewer.</summary>
         private TranslateTransform _translateTransform;
 
         private int _zoomAnimCount;
-        private bool _isZooming = false;
+        private bool _isZooming;
 
         static ZoomControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(ZoomControl),
-                                                     new FrameworkPropertyMetadata(typeof(ZoomControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ZoomControl), new FrameworkPropertyMetadata(typeof(ZoomControl)));
         }
 
         public ZoomControl()
         {
-            PreviewMouseWheel += ZoomControl_MouseWheel;
-            PreviewMouseDown += ZoomControl_PreviewMouseDown;
-            MouseDown += ZoomControl_MouseDown;
-            MouseUp += ZoomControl_MouseUp;
+            PreviewMouseWheel += ZoomControlMouseWheel;
+            PreviewMouseDown += (sender1, e1) => OnMouseDown(e1, true);
+            MouseDown += (sender, e) => OnMouseDown(e, false);
+            MouseUp += ZoomControlMouseUp;
         }
 
         public Brush ZoomBoxBackground
@@ -248,25 +239,21 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             }
         }
 
-        /// <summary>
-        /// Gets or sets the active modifier mode.
-        /// </summary>
+        /// <summary>Gets or sets the active modifier mode.</summary>
         public ZoomViewModifierMode ModifierMode
         {
             get { return (ZoomViewModifierMode)GetValue(ModifierModeProperty); }
             set { SetValue(ModifierModeProperty, value); }
         }
 
-        /// <summary>
-        /// Gets or sets the mode of the zoom control.
-        /// </summary>
+        /// <summary>Gets or sets the mode of the zoom control.</summary>
         public ZoomControlModes Mode
         {
             get { return (ZoomControlModes)GetValue(ModeProperty); }
             set { SetValue(ModeProperty, value); }
         }
 
-        private static object TranslateX_Coerce(DependencyObject d, object basevalue)
+        private static object TranslateXCoerce(DependencyObject d, object basevalue)
         {
             var zc = (ZoomControl)d;
             return zc.GetCoercedTranslateX((double)basevalue, zc.Zoom);
@@ -283,7 +270,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                                        ActualWidth);
         }
 
-        private static object TranslateY_Coerce(DependencyObject d, object basevalue)
+        private static object TranslateYCoerce(DependencyObject d, object basevalue)
         {
             var zc = (ZoomControl)d;
             return zc.GetCoercedTranslateY((double)basevalue, zc.Zoom);
@@ -300,16 +287,14 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                                        ActualHeight);
         }
 
-        /// <summary>
-        /// Coerces the translation.
-        /// </summary>
+        /// <summary>Coerces the translation.</summary>
         /// <param name="translate">The desired translate.</param>
         /// <param name="zoom">The factor of the zoom.</param>
         /// <param name="contentSize">The size of the content inside the zoomed ContentPresenter.</param>
         /// <param name="desiredSize">The desired size of the zoomed ContentPresenter.</param>
         /// <param name="actualSize">The size of the ZoomControl.</param>
         /// <returns>The coerced translation.</returns>
-        private double GetCoercedTranslate(double translate, double zoom, double contentSize, double desiredSize, double actualSize)
+        private static double GetCoercedTranslate(double translate, double zoom, double contentSize, double desiredSize, double actualSize)
         {
             /*if (_presenter == null)
                 return 0.0;
@@ -345,7 +330,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             return translate;
         }
 
-        private void ZoomControl_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ZoomControlMouseUp(object sender, MouseButtonEventArgs e)
         {
             switch (ModifierMode)
             {
@@ -365,7 +350,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             }
 
             ModifierMode = ZoomViewModifierMode.None;
-            PreviewMouseMove -= ZoomControl_PreviewMouseMove;
+            PreviewMouseMove -= ZoomControlPreviewMouseMove;
             ReleaseMouseCapture();
         }
 
@@ -381,7 +366,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             ZoomBox = new Rect();
         }
 
-        private void ZoomControl_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void ZoomControlPreviewMouseMove(object sender, MouseEventArgs e)
         {
             switch (ModifierMode)
             {
@@ -407,16 +392,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private void ZoomControl_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            OnMouseDown(e, false);
-        }
-
-        private void ZoomControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            OnMouseDown(e, true);
         }
 
         private void OnMouseDown(MouseButtonEventArgs e, bool isPreview)
@@ -450,10 +425,10 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             _mouseDownPos = e.GetPosition(this);
             _startTranslate = new Vector(TranslateX, TranslateY);
             Mouse.Capture(this);
-            PreviewMouseMove += ZoomControl_PreviewMouseMove;
+            PreviewMouseMove += ZoomControlPreviewMouseMove;
         }
 
-        private static void TranslateX_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void TranslateXPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var zc = (ZoomControl)d;
             if (zc._translateTransform == null)
@@ -463,7 +438,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                 zc.Mode = ZoomControlModes.Custom;
         }
 
-        private static void TranslateY_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void TranslateYPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var zc = (ZoomControl)d;
             if (zc._translateTransform == null)
@@ -473,14 +448,14 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                 zc.Mode = ZoomControlModes.Custom;
         }
 
-        private static void Zoom_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void ZoomPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var zc = (ZoomControl)d;
 
             if (zc._scaleTransform == null)
                 return;
 
-            double zoom = (double)e.NewValue;
+            var zoom = (double)e.NewValue;
             zc._scaleTransform.ScaleX = zoom;
             zc._scaleTransform.ScaleY = zoom;
             if (!zc._isZooming)
@@ -492,14 +467,14 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             }
         }
 
-        private void ZoomControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void ZoomControlMouseWheel(object sender, MouseWheelEventArgs e)
         {
             bool handle = (Keyboard.Modifiers & ModifierKeys.Control) > 0 && ModifierMode == ZoomViewModifierMode.None;
             if (!handle)
                 return;
 
             e.Handled = true;
-            Point origoPosition = new Point(ActualWidth / 2, ActualHeight / 2);
+            var origoPosition = new Point(ActualWidth / 2, ActualHeight / 2);
             Point mousePosition = e.GetPosition(this);
 
             DoZoom(
@@ -592,7 +567,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             var tY = -h / 2.0;
 
             return new Vector(tX, tY);
-            //return new Vector(0, 0);
         }
 
         public void ZoomToFill()
