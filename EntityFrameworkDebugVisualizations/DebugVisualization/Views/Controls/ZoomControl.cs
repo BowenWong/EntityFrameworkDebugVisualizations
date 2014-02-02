@@ -439,9 +439,9 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             var origoPosition = new Point(ActualWidth / 2, ActualHeight / 2);
             Point mousePosition = e.GetPosition(this);
 
-            const double maxZoomDelta = 5.0;
+            var deltaZoom = Math.Max(0.2, Math.Min(2.0, e.Delta / 300.0 + 1));
             DoZoom(
-                Math.Max(1 / maxZoomDelta, Math.Min(maxZoomDelta, e.Delta / 100.0 + 1)),
+                deltaZoom,
                 origoPosition,
                 mousePosition,
                 mousePosition);
