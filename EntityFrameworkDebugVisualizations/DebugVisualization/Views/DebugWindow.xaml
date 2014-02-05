@@ -8,7 +8,7 @@
                    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                    xmlns:metroConverters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro"
                    xmlns:wpfExtensions="clr-namespace:WPFExtensions.AttachedBehaviours;assembly=WPFExtensions"
-                   xmlns:wpfExtConverters="clr-namespace:WPFExtensions.Converters;assembly=WPFExtensions"
+                   xmlns:wpfExtensionConverters="clr-namespace:WPFExtensions.Converters;assembly=WPFExtensions"
                    Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
                    WindowStartupLocation="CenterOwner">
 
@@ -19,7 +19,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Buttons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.CheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.GroupBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.RadioButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Slider.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
@@ -45,8 +44,9 @@
             
             <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter" />
             <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter" />
+            <converters:EqualityToBooleanConverter x:Key="EqualityConverter" />
             <metroConverters:ToUpperConverter x:Key="ToUpperConverter" />
-            <wpfExtConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <wpfExtensionConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
             <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
                 <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" Margin="0,0,5,0" />
@@ -153,18 +153,10 @@
                       Width="100" Height="30" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
             Settings
         </ToggleButton>
-        
-        <GroupBox Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="270" Height="180"
-                  Margin="10" Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}" 
-                  Visibility="{Binding ElementName=isMiniMapEnabled, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid Background="#FFFCFCFC">
-                <Canvas>
-                    <Canvas.Background>
-                        <VisualBrush Visual="{Binding ElementName=graphLayout}" Stretch="Uniform" />
-                    </Canvas.Background>
-                </Canvas>
-            </Grid>
-        </GroupBox>
+
+        <controls:MiniMapControl Grid.Column="1" Width="270" Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+                                 ZoomControl="{Binding ElementName=zoomControl}" ContentVisual="{Binding ElementName=graphLayout}"
+                                 Visibility="{Binding ElementName=isMiniMapEnabled, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
         <metro:FlyoutsControl>
             <metro:Flyout x:Name="settingsFlyout" Header="Settings" Position="Left" Theme="Adapt" IsOpen="True">

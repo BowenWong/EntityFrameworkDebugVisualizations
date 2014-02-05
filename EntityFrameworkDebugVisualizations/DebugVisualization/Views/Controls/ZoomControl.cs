@@ -88,12 +88,8 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
         private Point _mouseDownPos;
         private ZoomContentPresenter _presenter;
 
-        /// <summary>Applied to the presenter.</summary>
         private ScaleTransform _scaleTransform;
         private Vector _startTranslate;
-        private TransformGroup _transformGroup;
-
-        /// <summary>Applied to the scrollviewer.</summary>
         private TranslateTransform _translateTransform;
 
         private int _zoomAnimCount;
@@ -197,7 +193,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             }
         }
 
-        protected ZoomContentPresenter Presenter
+        private ZoomContentPresenter Presenter
         {
             get { return _presenter; }
             set
@@ -206,25 +202,24 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                 if (_presenter == null)
                     return;
 
-                //add the ScaleTransform to the presenter
-                _transformGroup = new TransformGroup();
+                var transformGroup = new TransformGroup();
                 _scaleTransform = new ScaleTransform();
+                transformGroup.Children.Add(_scaleTransform);
+
                 _translateTransform = new TranslateTransform();
-                _transformGroup.Children.Add(_scaleTransform);
-                _transformGroup.Children.Add(_translateTransform);
-                _presenter.RenderTransform = _transformGroup;
+                transformGroup.Children.Add(_translateTransform);
+
+                _presenter.RenderTransform = transformGroup;
                 _presenter.RenderTransformOrigin = new Point(0.5, 0.5);
             }
         }
 
-        /// <summary>Gets or sets the active modifier mode.</summary>
         public ZoomViewModifierMode ModifierMode
         {
             get { return (ZoomViewModifierMode)GetValue(ModifierModeProperty); }
             set { SetValue(ModifierModeProperty, value); }
         }
 
-        /// <summary>Gets or sets the mode of the zoom control.</summary>
         public ZoomControlModes Mode
         {
             get { return (ZoomControlModes)GetValue(ModeProperty); }
@@ -233,79 +228,12 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         private static object TranslateXCoerce(DependencyObject d, object basevalue)
         {
-            var zc = (ZoomControl)d;
-            return zc.GetCoercedTranslateX((double)basevalue, zc.Zoom);
-        }
-
-        private double GetCoercedTranslateX(double baseValue, double zoom)
-        {
-            if (_presenter == null)
-                return 0.0;
-
-            return GetCoercedTranslate(baseValue, zoom,
-                                       _presenter.ContentSize.Width,
-                                       _presenter.DesiredSize.Width,
-                                       ActualWidth);
+            return ((ZoomControl)d)._presenter == null ? 0.0 : (double)basevalue;
         }
 
         private static object TranslateYCoerce(DependencyObject d, object basevalue)
         {
-            var zc = (ZoomControl)d;
-            return zc.GetCoercedTranslateY((double)basevalue, zc.Zoom);
-        }
-
-        private double GetCoercedTranslateY(double baseValue, double zoom)
-        {
-            if (_presenter == null)
-                return 0.0;
-
-            return GetCoercedTranslate(baseValue, zoom,
-                                       _presenter.ContentSize.Height,
-                                       _presenter.DesiredSize.Height,
-                                       ActualHeight);
-        }
-
-        /// <summary>Coerces the translation.</summary>
-        /// <param name="translate">The desired translate.</param>
-        /// <param name="zoom">The factor of the zoom.</param>
-        /// <param name="contentSize">The size of the content inside the zoomed ContentPresenter.</param>
-        /// <param name="desiredSize">The desired size of the zoomed ContentPresenter.</param>
-        /// <param name="actualSize">The size of the ZoomControl.</param>
-        /// <returns>The coerced translation.</returns>
-        private static double GetCoercedTranslate(double translate, double zoom, double contentSize, double desiredSize, double actualSize)
-        {
-            /*if (_presenter == null)
-                return 0.0;
-
-            //the scaled size of the zoomed content
-            var scaledSize = desiredSize * zoom;
-
-            //the plus size above the desired size of the contentpresenter
-            var plusSize = contentSize > desiredSize ? (contentSize - desiredSize) * zoom : 0.0;
-
-            //is the zoomed content bigger than actual size of the zoom control?
-            /*var bigger = 
-                _presenter.ContentSize.Width * zoom > ActualWidth && 
-                _presenter.ContentSize.Height * zoom > ActualHeight;*/
-            /*var bigger = contentSize * zoom > actualSize;
-            var m = bigger ? -1 : 1;
-
-            if (bigger)
-            {
-                var topRange = m*(actualSize - scaledSize)/2.0;
-                var bottomRange = m*((actualSize - scaledSize)/2.0 - plusSize);
-
-                var minusRange = bigger ? bottomRange : topRange;
-                var plusRange = bigger ? topRange : bottomRange;
-
-                translate = Math.Max(-minusRange, translate);
-                translate = Math.Min(plusRange, translate);
-                return translate;
-            } else
-            {
-                return -plusSize/2.0;
-            }*/
-            return translate;
+            return ((ZoomControl)d)._presenter == null ? 0.0 : (double)basevalue;
         }
 
         private void ZoomControlMouseUp(object sender, MouseButtonEventArgs e)
@@ -417,7 +345,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
         private static void ZoomPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var zc = (ZoomControl)d;
-
             if (zc._scaleTransform == null)
                 return;
 
@@ -462,8 +389,8 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             var zoomedTargetPointPos = targetPoint * currentZoom + startTranslate;
             var endTranslate = vTarget - zoomedTargetPointPos;
 
-            double transformX = GetCoercedTranslateX(TranslateX + endTranslate.X, currentZoom);
-            double transformY = GetCoercedTranslateY(TranslateY + endTranslate.Y, currentZoom);
+            double transformX = _presenter == null ? 0.0 : TranslateX + endTranslate.X;
+            double transformY = _presenter == null ? 0.0 : TranslateY + endTranslate.Y;
 
             DoZoomAnimation(currentZoom, transformX, transformY);
             Mode = ZoomControlModes.Custom;

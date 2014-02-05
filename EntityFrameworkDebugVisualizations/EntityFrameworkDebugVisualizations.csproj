@@ -70,6 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DebugVisualization\Views\AttachedBehaviours\DragBehaviour.cs" />
+    <Compile Include="DebugVisualization\Views\Controls\MiniMapControl.xaml.cs">
+      <DependentUpon>MiniMapControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DebugVisualization\Views\Controls\ZoomContentPresenter.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControl.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControlModes.cs" />
@@ -96,6 +99,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DebugVisualization\Views\Controls\MiniMapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DebugVisualization\Views\Theme\ZoomControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

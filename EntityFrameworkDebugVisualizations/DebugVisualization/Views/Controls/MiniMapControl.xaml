@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="EntityFramework.Debug.DebugVisualization.Views.Controls.MiniMapControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.GroupBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <GroupBox Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}">
+        <Grid Background="#FFFCFCFC">
+            <Canvas>
+                <Canvas.Background>
+                    <VisualBrush Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}" Stretch="Uniform" />
+                </Canvas.Background>
+
+                <Rectangle Stroke="Green" 
+                           Canvas.Left="{Binding ViewportLeft, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                           Canvas.Top="{Binding ViewportTop, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                           Width="10" 
+                           Height="10" />
+            </Canvas>
+        </Grid>
+    </GroupBox>
+</UserControl>
