@@ -13,17 +13,15 @@
 
     <GroupBox Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}">
         <Grid Background="#FFFCFCFC">
-            <Canvas>
-                <Canvas.Background>
-                    <VisualBrush Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}" Stretch="Uniform" />
-                </Canvas.Background>
+            <Grid>
+                <Grid.Background>
+                    <VisualBrush
+                        Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Stretch="Uniform" />
+                </Grid.Background>
 
-                <Rectangle Stroke="Green" 
-                           Canvas.Left="{Binding ViewportLeft, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                           Canvas.Top="{Binding ViewportTop, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                           Width="10" 
-                           Height="10" />
-            </Canvas>
+                <Rectangle x:Name="Viewport" Stroke="Red" />
+            </Grid>
         </Grid>
     </GroupBox>
 </UserControl>

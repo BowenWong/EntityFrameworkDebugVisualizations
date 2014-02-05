@@ -270,8 +270,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
         {
             switch (ModifierMode)
             {
-                case ZoomViewModifierMode.None:
-                    return;
                 case ZoomViewModifierMode.Pan:
                     var translate = _startTranslate + (e.GetPosition(this) - _mouseDownPos);
                     TranslateX = translate.X;
@@ -302,12 +300,8 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
                 case ModifierKeys.Alt:
                     ModifierMode = ZoomViewModifierMode.ZoomBox;
                     break;
-                case ModifierKeys.Control:
-                    break;
                 case ModifierKeys.Shift:
                     ModifierMode = ZoomViewModifierMode.Pan;
-                    break;
-                case ModifierKeys.Windows:
                     break;
                 default:
                     return;

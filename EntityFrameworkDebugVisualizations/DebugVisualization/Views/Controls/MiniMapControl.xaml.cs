@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Media;
 
 namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 {
@@ -9,11 +10,11 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
         #region ContentVisual
 
         public static readonly DependencyProperty ContentVisualProperty = DependencyProperty.Register(
-                "ContentVisual", typeof (UIElement), typeof (MiniMapControl), new PropertyMetadata(default(UIElement)));
+                "ContentVisual", typeof(FrameworkElement), typeof(MiniMapControl), new PropertyMetadata(default(FrameworkElement)));
 
-        public UIElement ContentVisual
+        public FrameworkElement ContentVisual
         {
-            get { return (UIElement) GetValue(ContentVisualProperty); }
+            get { return (FrameworkElement)GetValue(ContentVisualProperty); }
             set { SetValue(ContentVisualProperty, value); }
         }
 
@@ -32,50 +33,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         #endregion
 
-        #region ViewportLeft/-Top
-
-        public static readonly DependencyProperty ViewportLeftProperty = DependencyProperty.Register(
-                "ViewportLeft", typeof (double), typeof (MiniMapControl), new PropertyMetadata(default(double)));
-
-        public double ViewportLeft
-        {
-            get { return (double) GetValue(ViewportLeftProperty); }
-            set { SetValue(ViewportLeftProperty, value); }
-        }
-
-        public static readonly DependencyProperty ViewportTopProperty = DependencyProperty.Register(
-                "ViewportTop", typeof (double), typeof (MiniMapControl), new PropertyMetadata(default(double)));
-
-        public double ViewportTop
-        {
-            get { return (double) GetValue(ViewportTopProperty); }
-            set { SetValue(ViewportTopProperty, value); }
-        }
-
-        #endregion
-
-        #region ViewportWidth/-Height
-
-        public static readonly DependencyProperty ViewportWidthProperty = DependencyProperty.Register(
-                "ViewportWidth", typeof (double), typeof (MiniMapControl), new PropertyMetadata(default(double)));
-
-        public double ViewportWidth
-        {
-            get { return (double) GetValue(ViewportWidthProperty); }
-            set { SetValue(ViewportWidthProperty, value); }
-        }
-
-        public static readonly DependencyProperty ViewportHeightProperty = DependencyProperty.Register(
-                "ViewportHeight", typeof (double), typeof (MiniMapControl), new PropertyMetadata(default(double)));
-
-        public double ViewportHeight
-        {
-            get { return (double) GetValue(ViewportHeightProperty); }
-            set { SetValue(ViewportHeightProperty, value); }
-        }
-
-        #endregion
-
         public MiniMapControl()
         {
             InitializeComponent();
@@ -87,35 +44,33 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
             DependencyPropertyDescriptor prop = DependencyPropertyDescriptor.FromProperty(ZoomControl.TranslateXProperty, typeof(ZoomControl));
             if (e.OldValue != null)
-                prop.RemoveValueChanged(e.OldValue, miniMapControl.OnZoomControlTranslateXChanged);
-            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.OnZoomControlTranslateXChanged);
+                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateViewportLayout);
+            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateViewportLayout);
 
             prop = DependencyPropertyDescriptor.FromProperty(ZoomControl.TranslateYProperty, typeof(ZoomControl));
             if (e.OldValue != null)
-                prop.RemoveValueChanged(e.OldValue, miniMapControl.OnZoomControlTranslateYChanged);
-            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.OnZoomControlTranslateYChanged);
+                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateViewportLayout);
+            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateViewportLayout);
+
+            prop = DependencyPropertyDescriptor.FromProperty(ZoomControl.ZoomProperty, typeof(ZoomControl));
+            if (e.OldValue != null)
+                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateViewportLayout);
+            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateViewportLayout);
         }
 
-        private double GetScaleFactor()
+        private void UpdateViewportLayout(object sender, EventArgs e)
         {
-            var widthScale = ZoomControl.ActualWidth/ActualWidth;
-            var heightScale = ZoomControl.ActualHeight/ActualHeight;
-            return (widthScale < heightScale) ? widthScale : heightScale;
-        }
+            Viewport.Width = ActualWidth/ZoomControl.Zoom;
+            Viewport.Height = ActualHeight/ZoomControl.Zoom;
 
-        private void OnZoomControlTranslateXChanged(object sender, EventArgs e)
-        {
-            var scale = GetScaleFactor();
-            ViewportLeft = ZoomControl.TranslateX / scale;
-        }
+            var transformGroup = new TransformGroup();
 
-        private void OnZoomControlTranslateYChanged(object sender, EventArgs e)
-        {
-            var scale = GetScaleFactor();
-            ViewportTop = ZoomControl.TranslateY / scale;
-        }
+#warning clip to bounds?
+            double translateX = -ZoomControl.TranslateX*ActualWidth/ContentVisual.ActualWidth;
+            double translateY = -ZoomControl.TranslateY*ActualHeight/ContentVisual.ActualHeight;
+            transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
 
-#warning TODO: set ViewportWidth/-Height (depending on size of Zoom- and MiniMapControl)
-#warning TODO: update ViewportLeft/-Top if ScaleFactor changes (depends on size of Zoom- and MiniMapControl)
+            Viewport.RenderTransform = transformGroup;
+        }
     }
 }
