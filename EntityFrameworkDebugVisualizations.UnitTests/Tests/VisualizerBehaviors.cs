@@ -36,8 +36,6 @@ namespace EntityFramework.Debug.UnitTests.Tests
                 parent.Children.Remove(secondChild);
 
                 context.ShowVisualizer();
-
-                context.SaveChanges();
             }
         }
     }
