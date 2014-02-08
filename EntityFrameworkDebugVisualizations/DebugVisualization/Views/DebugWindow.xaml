@@ -149,7 +149,7 @@
             Settings
         </ToggleButton>
 
-        <controls:MiniMapControl Width="240" Height="160" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+        <controls:MiniMapControl MiniMapScale="0.2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
                                  ZoomControl="{Binding ElementName=zoomControl}" ContentVisual="{Binding ElementName=graphLayout}"
                                  Visibility="{Binding ElementName=isMiniMapEnabled, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
