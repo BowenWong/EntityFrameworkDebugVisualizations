@@ -184,33 +184,6 @@
                                  IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Custom}}" />
 
                     <CheckBox x:Name="isMiniMapEnabled" IsChecked="True" Content="Display mini-map" Margin="5,15,0,5" FontFamily="Segoe UI" FontSize="14" />
-
-                    <TextBlock Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="X {0:N0} | Y {1:N0}">
-                                <Binding ElementName="zoomControl" Path="TranslateX"/>
-                                <Binding ElementName="zoomControl" Path="TranslateY"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-
-                    <TextBlock Margin="5,5,0,5" Style="{StaticResource HeaderTextBlock}">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="ZC: W {0:N0} | H {1:N0}">
-                                <Binding ElementName="zoomControl" Path="ActualWidth"/>
-                                <Binding ElementName="zoomControl" Path="ActualHeight"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-
-                    <TextBlock Margin="5,5,0,5" Style="{StaticResource HeaderTextBlock}">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="G: W {0:N0} | H {1:N0}">
-                                <Binding ElementName="graphLayout" Path="ActualWidth"/>
-                                <Binding ElementName="graphLayout" Path="ActualHeight"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
                 </StackPanel>
             </metro:Flyout>
         </metro:FlyoutsControl>
