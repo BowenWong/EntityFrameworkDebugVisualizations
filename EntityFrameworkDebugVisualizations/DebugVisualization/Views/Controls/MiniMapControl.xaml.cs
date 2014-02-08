@@ -44,33 +44,31 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
             DependencyPropertyDescriptor prop = DependencyPropertyDescriptor.FromProperty(ZoomControl.TranslateXProperty, typeof(ZoomControl));
             if (e.OldValue != null)
-                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateViewportLayout);
-            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateViewportLayout);
+                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateVisibleAreaIndicator);
+            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateVisibleAreaIndicator);
 
             prop = DependencyPropertyDescriptor.FromProperty(ZoomControl.TranslateYProperty, typeof(ZoomControl));
             if (e.OldValue != null)
-                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateViewportLayout);
-            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateViewportLayout);
+                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateVisibleAreaIndicator);
+            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateVisibleAreaIndicator);
 
             prop = DependencyPropertyDescriptor.FromProperty(ZoomControl.ZoomProperty, typeof(ZoomControl));
             if (e.OldValue != null)
-                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateViewportLayout);
-            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateViewportLayout);
+                prop.RemoveValueChanged(e.OldValue, miniMapControl.UpdateVisibleAreaIndicator);
+            prop.AddValueChanged(miniMapControl.ZoomControl, miniMapControl.UpdateVisibleAreaIndicator);
         }
 
-        private void UpdateViewportLayout(object sender, EventArgs e)
+        private void UpdateVisibleAreaIndicator(object sender, EventArgs e)
         {
-            Viewport.Width = MiniMapContent.ActualWidth/ZoomControl.Zoom;
-            Viewport.Height = MiniMapContent.ActualHeight/ZoomControl.Zoom;
+            VisibleAreaIndicator.Width = Math.Min(MiniMapContent.ActualWidth, MiniMapContent.ActualWidth / ZoomControl.Zoom);
+            VisibleAreaIndicator.Height = Math.Min(MiniMapContent.ActualHeight, MiniMapContent.ActualHeight / ZoomControl.Zoom);
 
-            var transformGroup = new TransformGroup();
-
-#warning clip to bounds?
             double translateX = -ZoomControl.TranslateX*(MiniMapContent.ActualWidth/ZoomControl.ActualWidth);
             double translateY = -ZoomControl.TranslateY*(MiniMapContent.ActualHeight/ZoomControl.ActualHeight);
-            transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
 
-            Viewport.RenderTransform = transformGroup;
+            var transformGroup = new TransformGroup();
+            transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
+            VisibleAreaIndicator.RenderTransform = transformGroup;
         }
     }
 }

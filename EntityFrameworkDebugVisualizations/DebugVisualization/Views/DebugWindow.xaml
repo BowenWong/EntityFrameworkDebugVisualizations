@@ -139,7 +139,7 @@
     </metro:MetroWindow.Resources>
 
     <Grid>
-        <controls:ZoomControl x:Name="zoomControl" Margin="10">
+        <controls:ZoomControl x:Name="zoomControl" Margin="10" MaxZoom="10">
             <graph:EntityGraphLayout x:Name="graphLayout" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
         </controls:ZoomControl>
         
