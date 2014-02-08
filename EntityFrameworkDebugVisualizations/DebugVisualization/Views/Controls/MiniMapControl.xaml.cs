@@ -60,14 +60,14 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         private void UpdateViewportLayout(object sender, EventArgs e)
         {
-            Viewport.Width = ActualWidth/ZoomControl.Zoom;
-            Viewport.Height = ActualHeight/ZoomControl.Zoom;
+            Viewport.Width = MiniMapContent.ActualWidth/ZoomControl.Zoom;
+            Viewport.Height = MiniMapContent.ActualHeight/ZoomControl.Zoom;
 
             var transformGroup = new TransformGroup();
 
 #warning clip to bounds?
-            double translateX = -ZoomControl.TranslateX*ActualWidth/ContentVisual.ActualWidth;
-            double translateY = -ZoomControl.TranslateY*ActualHeight/ContentVisual.ActualHeight;
+            double translateX = -ZoomControl.TranslateX*(MiniMapContent.ActualWidth/ZoomControl.ActualWidth);
+            double translateY = -ZoomControl.TranslateY*(MiniMapContent.ActualHeight/ZoomControl.ActualHeight);
             transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
 
             Viewport.RenderTransform = transformGroup;

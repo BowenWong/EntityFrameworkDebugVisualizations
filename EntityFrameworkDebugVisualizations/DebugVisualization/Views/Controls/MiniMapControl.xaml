@@ -12,15 +12,15 @@
     </UserControl.Resources>
 
     <GroupBox Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}">
-        <Grid Background="#FFFCFCFC">
-            <Grid>
+        <Grid Background="#FFFCFCFC" x:Name="MiniMapContent" Margin="0">
+            <Grid Margin="0">
                 <Grid.Background>
                     <VisualBrush
                         Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         Stretch="Uniform" />
                 </Grid.Background>
 
-                <Rectangle x:Name="Viewport" Stroke="Red" />
+                <Rectangle x:Name="Viewport" Stroke="Red" Margin="0" />
             </Grid>
         </Grid>
     </GroupBox>

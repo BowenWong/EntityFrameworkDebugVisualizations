@@ -139,13 +139,8 @@
     </metro:MetroWindow.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="180"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <controls:ZoomControl x:Name="zoomControl" Grid.ColumnSpan="2">
-            <graph:EntityGraphLayout x:Name="graphLayout" Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
+        <controls:ZoomControl x:Name="zoomControl" Margin="10">
+            <graph:EntityGraphLayout x:Name="graphLayout" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
         </controls:ZoomControl>
         
         <ToggleButton IsChecked="{Binding ElementName=settingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
@@ -154,7 +149,7 @@
             Settings
         </ToggleButton>
 
-        <controls:MiniMapControl Grid.Column="1" Width="270" Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+        <controls:MiniMapControl Width="240" Height="160" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
                                  ZoomControl="{Binding ElementName=zoomControl}" ContentVisual="{Binding ElementName=graphLayout}"
                                  Visibility="{Binding ElementName=isMiniMapEnabled, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
