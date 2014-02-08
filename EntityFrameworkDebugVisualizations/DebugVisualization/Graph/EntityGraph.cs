@@ -5,7 +5,7 @@ namespace EntityFramework.Debug.DebugVisualization.Graph
     public class EntityGraph : BidirectionalGraph<EntityVertex, RelationEdgeSet>
     {
         public EntityGraph()
-                : base(allowParallelEdges: true)
+                : base(false)
         {
         }
     }

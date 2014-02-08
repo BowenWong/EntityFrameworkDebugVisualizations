@@ -88,7 +88,7 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
             var toAdd = filteredVertices.Except(_currentlyVisibleVertices ?? new List<EntityVertex>()).ToList();
             var toRemove = (_currentlyVisibleVertices ?? new List<EntityVertex>()).Where(v => !filteredVertices.Contains(v)).ToList();
 
-            Graph.RemoveVertexIf(v => toRemove.Contains(v));
+            Graph.RemoveVertexIf(toRemove.Contains);
             Graph.AddVertexRange(toAdd);
 
             var filteredEdges = toAdd.SelectMany(v => v.Relations).Where(r => toAdd.Contains(r.Target));

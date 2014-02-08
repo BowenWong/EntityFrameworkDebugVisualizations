@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Markup;
+﻿using System.Collections.Generic;
 using EntityFramework.Debug.DebugVisualization.Graph;
 using EntityFramework.Debug.DebugVisualization.ViewModels;
-using EntityFramework.Debug.DebugVisualization.Views.Controls;
-using GraphSharp.Controls;
-using MahApps.Metro.Controls;
+using EntityFramework.Debug.DebugVisualization.Views;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 using Newtonsoft.Json;
 using WPFExtensions.Converters;
@@ -20,29 +12,13 @@ namespace EntityFramework.Debug.DebugVisualization
     {
         protected override void Show(IDialogVisualizerService windowService, IVisualizerObjectProvider objectProvider)
         {
-            // DO NOT REMOVE: this dummy calls load the assembly which is required for the xaml parser to know the contained types
-            var zoomControl = new ZoomControl();
-            var vertexControl = new VertexControl();
-            var metroWindow = new MetroWindow();
+            // DO NOT REMOVE: this dummy call loads the WpfExtensions assembly
             var dummy = new BoolToVisibilityConverter();
-
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceNames = assembly.GetManifestResourceNames();
-            var resourceName = resourceNames.First(n => n.Contains("DebugWindow.xaml"));
-
-            Window window;
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (stream == null)
-                    throw new Exception("Debug window resource not found!");
-
-                window = (Window)XamlReader.Load(stream);
-            }
 
             var jsonSerialized = (string)objectProvider.GetObject();
             var vertices = JsonConvert.DeserializeObject<List<EntityVertex>>(jsonSerialized);
 
-            window.DataContext = new VisualizerViewModel(vertices);
+            var window = new MainWindow {DataContext = new VisualizerViewModel(vertices)};
             window.Loaded += (o, e) => window.Activate();
             window.ShowDialog();
         }
