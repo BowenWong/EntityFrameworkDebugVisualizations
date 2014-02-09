@@ -13,7 +13,7 @@
 
     <GroupBox Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}">
         <Grid x:Name="MiniMapContentBounds" Background="#EAEAEA" ClipToBounds="True">
-            <Grid Background="#FFFCFCFC" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid Background="#FFFCFCFC" HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="False">
                 <Grid x:Name="MiniMapContent">
                     <Grid.Background>
                         <VisualBrush Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}" Stretch="Uniform" />

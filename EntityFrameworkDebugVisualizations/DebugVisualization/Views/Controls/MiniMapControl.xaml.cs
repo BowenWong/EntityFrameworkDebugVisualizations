@@ -107,17 +107,21 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             if (ContentVisual == null || ZoomControl == null || ContentVisual.ActualWidth <= 0)
                 return;
 
-            Width = GetWidth(ZoomControl.ActualWidth, MiniMapScale);
-            Height = GetHeight(ZoomControl.ActualHeight, MiniMapScale);
+            MiniMapContentBounds.Width = GetWidth(ZoomControl.ActualWidth, MiniMapScale);
+            MiniMapContentBounds.Height = GetHeight(ZoomControl.ActualHeight, MiniMapScale);
 
+#warning it seems the ContentVisual doesn't correctly grow / update always (drag a vertex to the right..) - why?
             MiniMapContent.Width = GetContentWidth(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
             MiniMapContent.Height = GetContentHeight(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
 
-            VisibleAreaIndicator.Width = Math.Min(ActualWidth, ActualWidth / ZoomControl.Zoom * ZoomControl.ActualWidth / ContentVisual.ActualWidth);
-            VisibleAreaIndicator.Height = Math.Min(ActualHeight, ActualHeight / ZoomControl.Zoom * ZoomControl.ActualHeight / ContentVisual.ActualHeight);
+#warning it seems the VisibleAreaIndicator size grows/shrinks with the size of the ContentVisual - why?
+            VisibleAreaIndicator.Width = ZoomControl.ActualWidth*MiniMapScale/ZoomControl.Zoom;
+            VisibleAreaIndicator.Height = ZoomControl.ActualHeight*MiniMapScale/ZoomControl.Zoom;
 
-            double translateX = -ZoomControl.TranslateX*(MiniMapContent.ActualWidth/ContentVisual.ActualWidth);
-            double translateY = -ZoomControl.TranslateY*(MiniMapContent.ActualHeight/ContentVisual.ActualHeight);
+            double translateX = -ZoomControl.TranslateX * (MiniMapContent.ActualWidth / ContentVisual.ActualWidth);
+            double translateY = -ZoomControl.TranslateY * (MiniMapContent.ActualHeight / ContentVisual.ActualHeight);
+            //double translateX = -ZoomControl.TranslateX*MiniMapScale;
+            //double translateY = -ZoomControl.TranslateY*MiniMapScale;
 
             var transformGroup = new TransformGroup();
             transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
