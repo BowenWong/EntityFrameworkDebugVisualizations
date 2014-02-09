@@ -110,13 +110,12 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             MiniMapContentBounds.Width = GetWidth(ZoomControl.ActualWidth, MiniMapScale);
             MiniMapContentBounds.Height = GetHeight(ZoomControl.ActualHeight, MiniMapScale);
 
-#warning it seems the ContentVisual doesn't correctly grow / update always (drag a vertex to the right..) - why?
             MiniMapContent.Width = GetContentWidth(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
             MiniMapContent.Height = GetContentHeight(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
 
 #warning it seems the VisibleAreaIndicator size grows/shrinks with the size of the ContentVisual - why?
-            VisibleAreaIndicator.Width = ZoomControl.ActualWidth*MiniMapScale/ZoomControl.Zoom;
-            VisibleAreaIndicator.Height = ZoomControl.ActualHeight*MiniMapScale/ZoomControl.Zoom;
+            VisibleAreaIndicator.Width = MiniMapContentBounds.ActualWidth/ZoomControl.Zoom;
+            VisibleAreaIndicator.Height = MiniMapContentBounds.ActualHeight/ZoomControl.Zoom;
 
             double translateX = -ZoomControl.TranslateX * (MiniMapContent.ActualWidth / ContentVisual.ActualWidth);
             double translateY = -ZoomControl.TranslateY * (MiniMapContent.ActualHeight / ContentVisual.ActualHeight);
@@ -146,7 +145,8 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             if (miniMapContentWidth < miniMapContentHeight && contentVisualHeight > contentVisualWidth)
                 return miniMapContentWidth;
 
-            return contentVisualWidth/contentVisualHeight*miniMapContentHeight;
+            // Math.Min is a compromise as it doesn't maintain the correct aspect ratio but preserves the visibility of the entire mini map
+            return Math.Min(miniMapContentWidth, contentVisualWidth / contentVisualHeight * miniMapContentHeight);
         }
 
         public static double GetContentHeight(double miniMapContentWidth, double miniMapContentHeight, double contentVisualWidth, double contentVisualHeight)
@@ -157,7 +157,8 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             if (miniMapContentHeight < miniMapContentWidth && contentVisualWidth > contentVisualHeight)
                 return miniMapContentHeight;
 
-            return contentVisualHeight/contentVisualWidth*miniMapContentWidth;
+            // Math.Min is a compromise as it doesn't maintain the correct aspect ratio but preserves the visibility of the entire mini map
+            return Math.Min(miniMapContentHeight, contentVisualHeight / contentVisualWidth * miniMapContentWidth);
         }
     }
 }

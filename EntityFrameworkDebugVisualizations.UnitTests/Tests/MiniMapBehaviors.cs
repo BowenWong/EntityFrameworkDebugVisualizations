@@ -217,5 +217,49 @@ namespace EntityFramework.Debug.UnitTests.Tests
             Assert.AreEqual(mapContentWidth, width);
             Assert.AreEqual(36, height);
         }
+
+        [TestMethod]
+        public void TestInnerDimensionsContentExtremeWide()
+        {
+            const double mapContentWidth = 100;
+            const double mapContentHeight = 60;
+
+            const double contentWidth = 1000;
+            const double contentHeight = 250;
+
+            var width = MiniMapControl.GetContentWidth(mapContentWidth, mapContentHeight, contentWidth, contentHeight);
+            var height = MiniMapControl.GetContentHeight(mapContentWidth, mapContentHeight, contentWidth, contentHeight);
+
+            Assert.IsTrue(0 < width);
+            Assert.IsTrue(0 < height);
+
+            Assert.IsTrue(width <= mapContentWidth);
+            Assert.IsTrue(height <= mapContentHeight);
+
+            Assert.AreEqual(mapContentWidth, width);
+            Assert.AreEqual(mapContentHeight, height);
+        }
+
+        [TestMethod]
+        public void TestInnerDimensionsContentExtremeHigh()
+        {
+            const double mapContentWidth = 60;
+            const double mapContentHeight = 100;
+
+            const double contentWidth = 250;
+            const double contentHeight = 1000;
+
+            var width = MiniMapControl.GetContentWidth(mapContentWidth, mapContentHeight, contentWidth, contentHeight);
+            var height = MiniMapControl.GetContentHeight(mapContentWidth, mapContentHeight, contentWidth, contentHeight);
+
+            Assert.IsTrue(0 < width);
+            Assert.IsTrue(0 < height);
+
+            Assert.IsTrue(width <= mapContentWidth);
+            Assert.IsTrue(height <= mapContentHeight);
+
+            Assert.AreEqual(mapContentWidth, width);
+            Assert.AreEqual(mapContentHeight, height);
+        }
     }
 }

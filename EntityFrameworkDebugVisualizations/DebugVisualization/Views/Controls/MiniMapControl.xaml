@@ -16,7 +16,7 @@
             <Grid Background="#FFFCFCFC" HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="False">
                 <Grid x:Name="MiniMapContent">
                     <Grid.Background>
-                        <VisualBrush Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}" Stretch="Uniform" />
+                        <VisualBrush Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}" Stretch="Fill" />
                     </Grid.Background>
 
                     <Rectangle x:Name="VisibleAreaIndicator" Stroke="#890725" Fill="#44F5F5F5" />
