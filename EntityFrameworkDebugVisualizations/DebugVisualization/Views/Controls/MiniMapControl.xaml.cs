@@ -104,16 +104,17 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 
         private void UpdateVisibleAreaIndicator(object sender, EventArgs e)
         {
-            if (ContentVisual == null || ZoomControl == null)
+            if (ContentVisual == null || ZoomControl == null || ContentVisual.ActualWidth <= 0)
                 return;
 
-            Width = ZoomControl.ActualWidth * MiniMapScale;
-            Height = ZoomControl.ActualHeight * MiniMapScale;
+            Width = GetWidth(ZoomControl.ActualWidth, MiniMapScale);
+            Height = GetHeight(ZoomControl.ActualHeight, MiniMapScale);
 
-            double widthScale = ContentVisual.ActualWidth > 0.0 ? ZoomControl.ActualWidth / ContentVisual.ActualWidth : 1.0;
-            VisibleAreaIndicator.Width = Math.Min(MiniMapContent.ActualWidth, MiniMapContent.ActualWidth / ZoomControl.Zoom * widthScale);
-            double heightScale = ContentVisual.ActualHeight > 0.0 ? ZoomControl.ActualHeight / ContentVisual.ActualHeight : 1.0;
-            VisibleAreaIndicator.Height = Math.Min(MiniMapContent.ActualHeight, MiniMapContent.ActualHeight / ZoomControl.Zoom * heightScale);
+            MiniMapContent.Width = GetContentWidth(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
+            MiniMapContent.Height = GetContentHeight(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
+
+            VisibleAreaIndicator.Width = Math.Min(ActualWidth, ActualWidth / ZoomControl.Zoom * ZoomControl.ActualWidth / ContentVisual.ActualWidth);
+            VisibleAreaIndicator.Height = Math.Min(ActualHeight, ActualHeight / ZoomControl.Zoom * ZoomControl.ActualHeight / ContentVisual.ActualHeight);
 
             double translateX = -ZoomControl.TranslateX*(MiniMapContent.ActualWidth/ContentVisual.ActualWidth);
             double translateY = -ZoomControl.TranslateY*(MiniMapContent.ActualHeight/ContentVisual.ActualHeight);
@@ -121,6 +122,38 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             var transformGroup = new TransformGroup();
             transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
             VisibleAreaIndicator.RenderTransform = transformGroup;
+        }
+
+        public static double GetWidth(double zoomControlWidth, double miniMapScale)
+        {
+            return zoomControlWidth*miniMapScale;
+        }
+
+        public static double GetHeight(double zoomControlHeight, double miniMapScale)
+        {
+            return zoomControlHeight*miniMapScale;
+        }
+
+        public static double GetContentWidth(double miniMapContentWidth, double miniMapContentHeight, double contentVisualWidth, double contentVisualHeight)
+        {
+            if (miniMapContentWidth <= miniMapContentHeight && contentVisualWidth >= contentVisualHeight)
+                return miniMapContentWidth;
+
+            if (miniMapContentWidth < miniMapContentHeight && contentVisualHeight > contentVisualWidth)
+                return miniMapContentWidth;
+
+            return contentVisualWidth/contentVisualHeight*miniMapContentHeight;
+        }
+
+        public static double GetContentHeight(double miniMapContentWidth, double miniMapContentHeight, double contentVisualWidth, double contentVisualHeight)
+        {
+            if (miniMapContentHeight <= miniMapContentWidth && contentVisualHeight >= contentVisualWidth)
+                return miniMapContentHeight;
+
+            if (miniMapContentHeight < miniMapContentWidth && contentVisualWidth > contentVisualHeight)
+                return miniMapContentHeight;
+
+            return contentVisualHeight/contentVisualWidth*miniMapContentWidth;
         }
     }
 }
