@@ -63,7 +63,7 @@
                                Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250" Foreground="White" 
                                Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}" />
 
-                    <StackPanel Orientation="Vertical" Background="#FFFCFCFC" Opacity="0.85">
+                    <StackPanel Orientation="Vertical" Background="#FCFCFC" Opacity="0.85">
                         <TextBlock Style="{StaticResource HeaderTextBlock}" Text="Relations:" Margin="0,5,0,0" />
                         <ItemsControl ItemsSource="{Binding RelationProperties}" Margin="5,0,0,0" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
 

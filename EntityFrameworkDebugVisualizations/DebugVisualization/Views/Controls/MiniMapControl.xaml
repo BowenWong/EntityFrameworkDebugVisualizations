@@ -12,16 +12,14 @@
     </UserControl.Resources>
 
     <GroupBox Padding="0" Header="Mini-Map" Style="{StaticResource MetroGroupBox}">
-        <Grid x:Name="MiniMapContentBounds" Background="DarkGray" Margin="1" ClipToBounds="True">
+        <Grid x:Name="MiniMapContentBounds" Background="#EAEAEA" ClipToBounds="True">
             <Grid Background="#FFFCFCFC" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid x:Name="MiniMapContent">
                     <Grid.Background>
-                        <VisualBrush
-                        Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                        Stretch="Uniform" />
+                        <VisualBrush Visual="{Binding ContentVisual, RelativeSource={RelativeSource AncestorType=UserControl}}" Stretch="Uniform" />
                     </Grid.Background>
 
-                    <Rectangle x:Name="VisibleAreaIndicator" Stroke="#83919F" Fill="#44F5F5F5" />
+                    <Rectangle x:Name="VisibleAreaIndicator" Stroke="#890725" Fill="#44F5F5F5" />
                 </Grid>
             </Grid>
         </Grid>
