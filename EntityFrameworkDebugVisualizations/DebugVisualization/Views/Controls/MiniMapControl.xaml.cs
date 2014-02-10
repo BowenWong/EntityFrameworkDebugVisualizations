@@ -113,14 +113,13 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             MiniMapContent.Width = GetContentWidth(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
             MiniMapContent.Height = GetContentHeight(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
 
-#warning it seems the VisibleAreaIndicator size grows/shrinks with the size of the ContentVisual - why?
-            VisibleAreaIndicator.Width = MiniMapContentBounds.ActualWidth/ZoomControl.Zoom;
-            VisibleAreaIndicator.Height = MiniMapContentBounds.ActualHeight/ZoomControl.Zoom;
+            double indicatorScaleX = MiniMapContentBounds.ActualWidth/MiniMapContent.ActualWidth/ZoomControl.Zoom;
+            VisibleAreaIndicator.Width = MiniMapContentBounds.ActualWidth*indicatorScaleX;
+            double indicatorScaleY = MiniMapContentBounds.ActualHeight/MiniMapContent.ActualHeight/ZoomControl.Zoom;
+            VisibleAreaIndicator.Height = MiniMapContentBounds.ActualHeight*indicatorScaleY;
 
-            double translateX = -ZoomControl.TranslateX * (MiniMapContent.ActualWidth / ContentVisual.ActualWidth);
-            double translateY = -ZoomControl.TranslateY * (MiniMapContent.ActualHeight / ContentVisual.ActualHeight);
-            //double translateX = -ZoomControl.TranslateX*MiniMapScale;
-            //double translateY = -ZoomControl.TranslateY*MiniMapScale;
+            double translateX = -ZoomControl.TranslateX*indicatorScaleX*MiniMapScale;
+            double translateY = -ZoomControl.TranslateY*indicatorScaleY*MiniMapScale;
 
             var transformGroup = new TransformGroup();
             transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
