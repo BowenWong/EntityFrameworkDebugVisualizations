@@ -73,7 +73,7 @@
     <Compile Include="DebugVisualization\Views\Controls\MiniMapControl.xaml.cs">
       <DependentUpon>MiniMapControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DebugVisualization\Views\Controls\ZoomContentPresenter.cs" />
+    <Compile Include="DebugVisualization\Views\Controls\ZoomContentControl.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControl.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControlModes.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomViewModifierMode.cs" />

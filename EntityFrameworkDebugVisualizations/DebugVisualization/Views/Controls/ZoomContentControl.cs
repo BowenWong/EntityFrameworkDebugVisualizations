@@ -4,27 +4,8 @@ using System.Windows.Media;
 
 namespace EntityFramework.Debug.DebugVisualization.Views.Controls
 {
-    public class ZoomContentPresenter : ContentPresenter
+    public class ZoomContentControl : ContentControl
     {
-        public delegate void ContentSizeChangedHandler(object sender, Size newSize);
-
-        public event ContentSizeChangedHandler ContentSizeChanged;
-
-        private Size _contentSize;
-
-        public Size ContentSize
-        {
-            get { return _contentSize; }
-            private set {
-                if (value == _contentSize)
-                    return;
-
-                _contentSize = value;
-                if (ContentSizeChanged != null)
-                    ContentSizeChanged(this, _contentSize);
-            }
-        }
-
         protected override Size MeasureOverride(Size constraint)
         {
             base.MeasureOverride(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -42,8 +23,6 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             if (child == null)
                 return arrangeBounds;
 
-            //set the ContentSize
-            ContentSize = child.DesiredSize;
             child.Arrange(new Rect(child.DesiredSize));
 
             return arrangeBounds;

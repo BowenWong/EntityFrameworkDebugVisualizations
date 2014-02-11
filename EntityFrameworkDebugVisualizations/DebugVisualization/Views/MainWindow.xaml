@@ -15,7 +15,6 @@
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/EntityFrameworkDebugVisualizations;component/DebugVisualization/Views/Theme/ZoomControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Buttons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.CheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
@@ -139,8 +138,10 @@
     </metro:MetroWindow.Resources>
 
     <Grid>
-        <controls:ZoomControl x:Name="ZoomControl" Margin="10" MaxZoom="10">
-            <graph:EntityGraphLayout x:Name="GraphLayout" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
+        <controls:ZoomControl x:Name="ZoomControl" Margin="10" MaxZoom="10" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+            <controls:ZoomContentControl>
+                <graph:EntityGraphLayout x:Name="GraphLayout" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />    
+            </controls:ZoomContentControl>
         </controls:ZoomControl>
 
         <ToggleButton IsChecked="{Binding ElementName=SettingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
