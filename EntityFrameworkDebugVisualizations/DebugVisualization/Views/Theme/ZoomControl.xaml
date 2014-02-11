@@ -6,11 +6,8 @@
         <Setter Property="Background" Value="White" />
         <Setter Property="ClipToBounds" Value="True" />
         <Style.Triggers>
-            <Trigger Property="ModifierMode" Value="Pan">
+            <Trigger Property="IsPanning" Value="True">
                 <Setter Property="Cursor" Value="SizeAll" />
-            </Trigger>
-            <Trigger Property="ModifierMode" Value="ZoomBox">
-                <Setter Property="Cursor" Value="Hand" />
             </Trigger>
         </Style.Triggers>
     </Style>

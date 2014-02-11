@@ -76,7 +76,6 @@
     <Compile Include="DebugVisualization\Views\Controls\ZoomContentControl.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControl.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControlModes.cs" />
-    <Compile Include="DebugVisualization\Views\Controls\ZoomViewModifierMode.cs" />
     <Compile Include="DebugVisualization\Views\Converters\DoubleToLog10Converter.cs" />
     <Compile Include="DebugVisualization\Views\Converters\EntityStateToBrushConverter.cs" />
     <Compile Include="DebugVisualization\ContextDebuggerVisualizer.cs" />
