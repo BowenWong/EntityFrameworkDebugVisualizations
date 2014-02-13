@@ -21,7 +21,7 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             if (child == null)
                 return arrangeBounds;
 
-            child.Arrange(new Rect(new Point(250, 250), child.DesiredSize));
+            child.Arrange(new Rect(child.DesiredSize));
 
             return arrangeBounds;
         }

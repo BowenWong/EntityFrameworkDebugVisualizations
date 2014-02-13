@@ -107,19 +107,19 @@ namespace EntityFramework.Debug.DebugVisualization.Views.Controls
             if (ContentVisual == null || ZoomControl == null || ContentVisual.ActualWidth <= 0)
                 return;
 
-            MiniMapContentBounds.Width = GetWidth(ZoomControl.ActualWidth, MiniMapScale);
-            MiniMapContentBounds.Height = GetHeight(ZoomControl.ActualHeight, MiniMapScale);
+            MiniMapContentBounds.Width = GetWidth(ZoomControl.ViewportWidth, MiniMapScale);
+            MiniMapContentBounds.Height = GetHeight(ZoomControl.ViewportHeight, MiniMapScale);
 
-            MiniMapContent.Width = GetContentWidth(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
-            MiniMapContent.Height = GetContentHeight(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ContentVisual.ActualWidth, ContentVisual.ActualHeight);
+            MiniMapContent.Width = GetContentWidth(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ZoomControl.ExtentWidth, ZoomControl.ExtentHeight);
+            MiniMapContent.Height = GetContentHeight(MiniMapContentBounds.ActualWidth, MiniMapContentBounds.ActualHeight, ZoomControl.ExtentWidth, ZoomControl.ExtentHeight);
 
             double indicatorScaleX = MiniMapContentBounds.ActualWidth/MiniMapContent.ActualWidth/ZoomControl.Zoom;
             VisibleAreaIndicator.Width = MiniMapContentBounds.ActualWidth*indicatorScaleX;
             double indicatorScaleY = MiniMapContentBounds.ActualHeight/MiniMapContent.ActualHeight/ZoomControl.Zoom;
             VisibleAreaIndicator.Height = MiniMapContentBounds.ActualHeight*indicatorScaleY;
 
-            double translateX = -ZoomControl.TranslateX*indicatorScaleX*MiniMapScale;
-            double translateY = -ZoomControl.TranslateY*indicatorScaleY*MiniMapScale;
+            double translateX = ZoomControl.HorizontalOffset*indicatorScaleX*MiniMapScale;
+            double translateY = ZoomControl.VerticalOffset*indicatorScaleY*MiniMapScale;
 
             var transformGroup = new TransformGroup();
             transformGroup.Children.Add(new TranslateTransform(translateX, translateY));
