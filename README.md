@@ -33,4 +33,4 @@ The graphical version is also implemented as a DebuggerVisualizer. At the moment
 
 There also is a [NuGet package](https://www.nuget.org/packages/EntityFrameworkDebugVisualization/) to install the project assemblies.
 
-This project uses [GraphSharp](https://graphsharp.codeplex.com/) to display the entity graph and [Json.Net](http://james.newtonking.com/json) to serialize it. The UI also uses [MahApps.Metro](http://mahapps.com/MahApps.Metro/).
+This project uses my [fork](https://github.com/andypelzer/GraphSharp) of [GraphSharp](https://graphsharp.codeplex.com/) to display the entity graph and [Json.Net](http://james.newtonking.com/json) to serialize it. The UI is implemented using [MahApps.Metro](http://mahapps.com/MahApps.Metro/).
