@@ -1,20 +1,20 @@
 ﻿<metro:MetroWindow x:Class="EntityFramework.Debug.DebugVisualization.Views.MainWindow"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:controls="clr-namespace:EntityFramework.Debug.DebugVisualization.Views.Controls"
                    xmlns:graphControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
                    xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Views.Converters"
                    xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph"
                    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                    xmlns:metroConverters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro"
                    xmlns:attachedBehaviours="clr-namespace:GraphSharp.AttachedBehaviours;assembly=GraphSharp.Controls"
+                   xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
+                   xmlns:graphConverters="clr-namespace:GraphSharp.Converters;assembly=GraphSharp.Controls"
                    Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
                    WindowStartupLocation="CenterOwner">
 
     <metro:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/EntityFrameworkDebugVisualizations;component/DebugVisualization/Views/Theme/ZoomControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Buttons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.CheckBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
@@ -44,6 +44,7 @@
             <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter" />
             <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter" />
             <metroConverters:ToUpperConverter x:Key="ToUpperConverter" />
+            <graphConverters:EqualityToBooleanConverter x:Key="EqualityConverter" />
 
             <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
                 <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" Margin="0,0,5,0" />
@@ -138,18 +139,18 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <controls:ZoomControl x:Name="zoomControl" Grid.ColumnSpan="2">
+        <zoom:ZoomControl x:Name="ZoomControl" Grid.ColumnSpan="2">
             <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
-        </controls:ZoomControl>
+        </zoom:ZoomControl>
 
-        <ToggleButton IsChecked="{Binding ElementName=settingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
+        <ToggleButton Grid.Column="0" IsChecked="{Binding ElementName=SettingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
                       Style="{StaticResource MetroToggleButton}" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal"
                       Width="100" Height="30" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
             Settings
         </ToggleButton>
 
-        <metro:FlyoutsControl>
-            <metro:Flyout x:Name="settingsFlyout" Header="Settings" Position="Left" Theme="Adapt" IsOpen="True">
+        <metro:FlyoutsControl Grid.Column="0">
+            <metro:Flyout x:Name="SettingsFlyout" Header="Settings" Position="Left" Theme="Adapt" IsOpen="True">
                 <StackPanel Margin="10" Width="160">
                     <TextBlock Text="Filter by Entity State" Margin="5,0,0,5" Style="{StaticResource HeaderTextBlock}"/>
                     <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="10,0,0,0" />
@@ -169,14 +170,14 @@
                     <TextBlock Text="Layout algorithm" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
                     <ComboBox ItemsSource="{Binding AlgorithmTypes}" SelectedItem="{Binding SelectedAlgorithmType, Mode=TwoWay}" Margin="10,0,10,0" />
 
-                    <TextBlock Text="{Binding ElementName=zoomControl,Path=Zoom,StringFormat='Zoom ({0:F2}x)'}" 
+                    <TextBlock Text="{Binding ElementName=ZoomControl,Path=Zoom,StringFormat='Zoom ({0:F2}x)'}" 
                                Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}" />
                     <RadioButton Content="1:1" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,0,0,0"
-                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Original}}" />
+                                 IsChecked="{Binding ElementName=ZoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static zoom:ZoomControlModes.Original}}" />
                     <RadioButton Content="Fill" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
-                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Fill}}" />
+                                 IsChecked="{Binding ElementName=ZoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static zoom:ZoomControlModes.Fill}}" />
                     <RadioButton Content="Custom" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
-                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Custom}}" />
+                                 IsChecked="{Binding ElementName=ZoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static zoom:ZoomControlModes.Custom}}" />
                 </StackPanel>
             </metro:Flyout>
         </metro:FlyoutsControl>
