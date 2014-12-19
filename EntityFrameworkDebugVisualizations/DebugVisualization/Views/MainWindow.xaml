@@ -1,0 +1,188 @@
+﻿<metro:MetroWindow x:Class="EntityFramework.Debug.DebugVisualization.Views.MainWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:behaviours="clr-namespace:EntityFramework.Debug.DebugVisualization.Views.AttachedBehaviours"
+                   xmlns:controls="clr-namespace:EntityFramework.Debug.DebugVisualization.Views.Controls"
+                   xmlns:graphControls="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
+                   xmlns:converters="clr-namespace:EntityFramework.Debug.DebugVisualization.Views.Converters"
+                   xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph"
+                   xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                   xmlns:metroConverters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro"
+                   xmlns:wpfExtensions="clr-namespace:WPFExtensions.AttachedBehaviours;assembly=WPFExtensions"
+                   Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
+                   WindowStartupLocation="CenterOwner">
+
+    <metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/EntityFrameworkDebugVisualizations;component/DebugVisualization/Views/Theme/ZoomControl.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Buttons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.CheckBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.RadioButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.Slider.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="CheckBox" BasedOn="{StaticResource MetroCheckBox}" />
+            <Style TargetType="ComboBox" BasedOn="{StaticResource MetroComboBox}" />
+            <Style TargetType="ComboBoxItem" BasedOn="{StaticResource MetroComboBoxItem}" />
+            <Style TargetType="Slider" BasedOn="{StaticResource MetroSlider}" />
+
+            <Style x:Key="HeaderTextBlock" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="15"/>
+            </Style>
+
+            <Style x:Key="ContentTextBlock" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <converters:EntityStateToBrushConverter x:Key="EntityStateToBrushConverter" />
+            <converters:RelationStateToBrushConverter x:Key="RelationStateToBrushConverter" />
+            <metroConverters:ToUpperConverter x:Key="ToUpperConverter" />
+
+            <DataTemplate x:Key="EntityPropertyTemplate" DataType="{x:Type graph:EntityProperty}">
+                <TextBlock x:Name="description" Style="{StaticResource ContentTextBlock}" Text="{Binding Description}" Margin="0,0,5,0" />
+                <DataTemplate.Triggers>
+                    <DataTrigger Value="True" Binding="{Binding HasValueChanged}">
+                        <Setter TargetName="description" Property="Foreground" Value="#086F9E" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate x:Key="EntityVertexTemplate" DataType="{x:Type graph:EntityVertex}">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock Text="{Binding Path=Header, Converter={StaticResource ToUpperConverter}, Mode=OneWay}" 
+                               Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250" Foreground="White" 
+                               Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}" />
+
+                    <StackPanel Orientation="Vertical" Background="#FFFCFCFC" Opacity="0.85">
+                        <TextBlock Style="{StaticResource HeaderTextBlock}" Text="Relations:" Margin="0,5,0,0" />
+                        <ItemsControl ItemsSource="{Binding RelationProperties}" Margin="5,0,0,0" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
+
+                        <Separator Foreground="#576573" />
+
+                        <TextBlock Style="{StaticResource HeaderTextBlock}" Text="Properties:" />
+                        <ItemsControl ItemsSource="{Binding ScalarProperties}" Margin="5,0,0,0" ItemTemplate="{StaticResource EntityPropertyTemplate}" />
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+
+            <Style TargetType="{x:Type graphControls:VertexControl}">
+                <!-- Deactivate wpfExtensions drag behavior.. -->
+                <Setter Property="wpfExtensions:DragBehaviour.IsDragEnabled" Value="False" />
+                <!-- .. and activate my fork of it. -->
+                <Setter Property="behaviours:DragBehaviour.IsDragEnabled" Value="True" />
+                <Setter Property="behaviours:DragBehaviour.X" Value="{Binding RelativeSource={RelativeSource Self},Path=(graphControls:GraphCanvas.X),Mode=TwoWay}" />
+                <Setter Property="behaviours:DragBehaviour.Y" Value="{Binding RelativeSource={RelativeSource Self},Path=(graphControls:GraphCanvas.Y),Mode=TwoWay}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type graphControls:VertexControl}">
+                            <Border BorderThickness="0" CornerRadius="0" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter Content="{TemplateBinding Vertex}"
+                                                  ContentTemplate="{StaticResource EntityVertexTemplate}" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type graphControls:EdgeControl}">
+                <Style.Resources>
+                    <ToolTip x:Key="ToolTipContent" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+                        <StackPanel Orientation="Vertical">
+                            <ItemsControl ItemsSource="{Binding Relations}" Background="#FFFCFCFC">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Vertical" Margin="0,0,0,15">
+                                            <TextBlock Style="{StaticResource HeaderTextBlock}" Padding="5" MinWidth="250" Foreground="White" 
+                                                       Background="{Binding State, Converter={StaticResource EntityStateToBrushConverter}}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} [{1}]">
+                                                        <Binding Path="Name" Converter="{StaticResource ToUpperConverter}" />
+                                                        <Binding Path="State" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Style="{StaticResource ContentTextBlock}" Text="{Binding Multiplicity, StringFormat='Cardinality: {0}'}" Margin="5,5,5,0" />
+                                                <TextBlock Style="{StaticResource ContentTextBlock}" Text="Will cascade on delete" Margin="5,5,5,0"
+                                                           Visibility="{Binding DisplayCascadedDelete}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ToolTip>
+                </Style.Resources>
+                <Setter Property="ToolTip" Value="{StaticResource ToolTipContent}" />
+                <Setter Property="StrokeThickness" Value="3" />
+                <Setter Property="Opacity" Value="0.9" />
+                <Setter Property="Foreground"
+                        Value="{Binding State, Converter={StaticResource RelationStateToBrushConverter}}" />
+                <Style.Triggers>
+                    <DataTrigger Value="True" Binding="{Binding ContainsMultipleRelations}">
+                        <Setter Property="StrokeThickness" Value="5" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </metro:MetroWindow.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <controls:ZoomControl x:Name="zoomControl" Grid.ColumnSpan="2">
+            <graph:EntityGraphLayout Margin="10" Graph="{Binding Graph}" LayoutAlgorithmType="{Binding SelectedAlgorithmType}" />
+        </controls:ZoomControl>
+
+        <ToggleButton IsChecked="{Binding ElementName=settingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
+                      Style="{StaticResource MetroToggleButton}" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal"
+                      Width="100" Height="30" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
+            Settings
+        </ToggleButton>
+
+        <metro:FlyoutsControl>
+            <metro:Flyout x:Name="settingsFlyout" Header="Settings" Position="Left" Theme="Adapt" IsOpen="True">
+                <StackPanel Margin="10" Width="160">
+                    <TextBlock Text="Filter by Entity State" Margin="5,0,0,5" Style="{StaticResource HeaderTextBlock}"/>
+                    <CheckBox IsChecked="{Binding ShowAddedEntities, Mode=TwoWay}" Content="Added" Margin="10,0,0,0" />
+                    <CheckBox IsChecked="{Binding ShowDeletedEntities, Mode=TwoWay}" Content="Deleted" Margin="10,0,0,0" />
+                    <CheckBox IsChecked="{Binding ShowModifiedEntities, Mode=TwoWay}" Content="Modified" Margin="10,0,0,0" />
+                    <CheckBox IsChecked="{Binding ShowUnchangedEntities, Mode=TwoWay}" Content="Unchanged" Margin="10,0,0,0" />
+
+                    <TextBlock Text="Filter by Entity Type" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
+                    <ItemsControl ItemsSource="{Binding EntityTypes}" Margin="10,0,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding TypeName}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Layout algorithm" Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}"/>
+                    <ComboBox ItemsSource="{Binding AlgorithmTypes}" SelectedItem="{Binding SelectedAlgorithmType, Mode=TwoWay}" Margin="10,0,10,0" />
+
+                    <TextBlock Text="{Binding ElementName=zoomControl,Path=Zoom,StringFormat='Zoom ({0:F2}x)'}" 
+                               Margin="5,15,0,5" Style="{StaticResource HeaderTextBlock}" />
+                    <RadioButton Content="1:1" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,0,0,0"
+                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Original}}" />
+                    <RadioButton Content="Fill" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
+                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Fill}}" />
+                    <RadioButton Content="Custom" GroupName="rbgZoomMode" Style="{StaticResource MetroRadioButton}" Margin="10,5,0,0"
+                                 IsChecked="{Binding ElementName=zoomControl,Path=Mode,Converter={StaticResource EqualityConverter},ConverterParameter={x:Static controls:ZoomControlModes.Custom}}" />
+                </StackPanel>
+            </metro:Flyout>
+        </metro:FlyoutsControl>
+    </Grid>
+</metro:MetroWindow>
