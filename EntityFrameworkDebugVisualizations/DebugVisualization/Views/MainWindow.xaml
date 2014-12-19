@@ -8,7 +8,6 @@
                    xmlns:graph="clr-namespace:EntityFramework.Debug.DebugVisualization.Graph"
                    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                    xmlns:metroConverters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro"
-                   xmlns:wpfExtensions="clr-namespace:WPFExtensions.AttachedBehaviours;assembly=WPFExtensions"
                    Title="Entity Framework Tracked Entities Visualizer" Width="1200" Height="800"
                    WindowStartupLocation="CenterOwner">
 
@@ -74,9 +73,6 @@
             </DataTemplate>
 
             <Style TargetType="{x:Type graphControls:VertexControl}">
-                <!-- Deactivate wpfExtensions drag behavior.. -->
-                <Setter Property="wpfExtensions:DragBehaviour.IsDragEnabled" Value="False" />
-                <!-- .. and activate my fork of it. -->
                 <Setter Property="behaviours:DragBehaviour.IsDragEnabled" Value="True" />
                 <Setter Property="behaviours:DragBehaviour.X" Value="{Binding RelativeSource={RelativeSource Self},Path=(graphControls:GraphCanvas.X),Mode=TwoWay}" />
                 <Setter Property="behaviours:DragBehaviour.Y" Value="{Binding RelativeSource={RelativeSource Self},Path=(graphControls:GraphCanvas.Y),Mode=TwoWay}" />
