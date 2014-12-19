@@ -49,7 +49,7 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
         private List<EntityVertex> _currentlyVisibleVertices;
 
         private readonly List<string> _algorithmTypes;
-        private string _selectedAlgorithmType = "BoundedFR";
+        private string _selectedAlgorithmType;
         public List<string> AlgorithmTypes
         {
             get { return _algorithmTypes; }
@@ -69,6 +69,7 @@ namespace EntityFramework.Debug.DebugVisualization.ViewModels
             _vertices = vertices;
             EntityTypes = _vertices.Select(v => v.TypeName).Distinct().Select(typeName => new EntityTypeFilterViewModel(typeName, UpdateGraph)).ToList();
             _algorithmTypes = new EntityGraphLayout().LayoutAlgorithmFactory.AlgorithmTypes.ToList();
+            _selectedAlgorithmType = _algorithmTypes.FirstOrDefault();
 
             Graph = new EntityGraph();
             UpdateGraph();
