@@ -79,7 +79,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugVisualization\Views\AttachedBehaviours\DragBehaviour.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomContentPresenter.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControl.cs" />
     <Compile Include="DebugVisualization\Views\Controls\ZoomControlModes.cs" />
