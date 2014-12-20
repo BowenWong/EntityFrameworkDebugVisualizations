@@ -41,11 +41,11 @@
     </Reference>
     <Reference Include="GraphSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\GraphSharp_Unofficial.1.0.1\lib\net45\GraphSharp.dll</HintPath>
+      <HintPath>..\packages\GraphSharp_Unofficial.1.0.3\lib\net45\GraphSharp.dll</HintPath>
     </Reference>
-    <Reference Include="GraphSharp.Controls, Version=1.0.5466.41671, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GraphSharp.Controls, Version=1.0.5467.23657, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\GraphSharp_Unofficial.1.0.1\lib\net45\GraphSharp.Controls.dll</HintPath>
+      <HintPath>..\packages\GraphSharp_Unofficial.1.0.3\lib\net45\GraphSharp.Controls.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -105,7 +105,9 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Page Include="DebugVisualization\Views\MainWindow.xaml">

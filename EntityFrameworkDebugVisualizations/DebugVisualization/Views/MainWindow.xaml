@@ -145,7 +145,7 @@
 
         <ToggleButton Grid.Column="0" IsChecked="{Binding ElementName=SettingsFlyout, Path=IsOpen, Mode=TwoWay}" Opacity="0.75"
                       Style="{StaticResource MetroToggleButton}" FontFamily="Segoe UI" FontSize="14" FontWeight="Normal"
-                      Width="100" Height="30" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left">
+                      Width="100" Height="30" Margin="5,50,10,10" VerticalAlignment="Top" HorizontalAlignment="Left">
             Settings
         </ToggleButton>
 
